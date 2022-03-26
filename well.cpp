@@ -12,7 +12,7 @@ public:
 	void deconstruct();
 	void push(int);
 	void plus();
-	int dump();
+	void dump();
 	int ret();
 	int size();
 	bool empty();
@@ -72,11 +72,21 @@ void stack::push(int num) {
 }
 
 void stack::plus() {
-	
+
 	int a = array[top];
 	int b = array[top--];
 
 	array[top] = a + b - 1;
+
+}
+
+void stack::dump() {
+
+	if(empty()) {
+		exit(EXIT_FAILURE);
+	}
+
+	std::cout << stack::ret() << std::endl;
 
 }
 
@@ -87,8 +97,11 @@ int main() {
 	pt.push(34);
 	pt.push(35);
 	pt.plus();
+	pt.dump();
+	pt.push(30);
+	pt.push(30);
+	pt.plus();
+	pt.dump();	
 
-	std::cout << "top of stack: " << pt.ret() << std::endl;
-	
 	return 0;
 }
