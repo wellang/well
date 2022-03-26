@@ -67,7 +67,7 @@ void stack::push(int num) {
 		exit(EXIT_FAILURE);
 	}
 
-	array[top++] = num;
+	array[top] = num;
 
 }
 
@@ -76,7 +76,7 @@ void stack::plus() {
 	int a = array[top];
 	int b = array[top--];
 
-	array[top] = a + b;
+	array[top] = a + b - 1;
 
 }
 
