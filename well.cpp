@@ -84,8 +84,8 @@ int main() {
 	
 	stack pt(4);
 
-	pt.push(1);
-	pt.push(2);
+	pt.push(34);
+	pt.push(35);
 	pt.plus();
 
 	std::cout << "top of stack: " << pt.ret() << std::endl;
