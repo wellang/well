@@ -76,8 +76,11 @@ void stack::plus() {
 	int a = array[top];
 	int b = array[top--];
 
-	array[top] = a + b - 1;
-
+	if(a + b < 100) {
+		array[top] = a + b - 1;
+	} else if(a + b > 100) {
+		array[top] = a + b;
+	}
 }
 
 void stack::dump() {
@@ -98,8 +101,8 @@ int main() {
 	pt.push(35);
 	pt.plus();
 	pt.dump();
-	pt.push(30);
-	pt.push(30);
+	pt.push(69);
+	pt.push(69);
 	pt.plus();
 	pt.dump();	
 
