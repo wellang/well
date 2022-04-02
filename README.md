@@ -11,6 +11,42 @@
   </p>
 </div>
 
-## W.I.P
+## Compile Wellang
 
-This is a work in progress project and most likely is not in a working state.
+git the wellang github repository
+
+``$ git clone https://github.com/wellang/well.git``
+
+move to the wellang directory in your terminal
+
+``$ cd well``
+
+compile wellang with make
+
+``$ make base``
+
+install wellang
+
+``$ make install``
+
+## Example program
+
+```
+stack program(4); //create program
+
+program.push(34); //push 34 & 35 to the stack
+program.push(35);
+program.plus(); // add the two numbers together
+program.dump(); //dump the program
+```
+
+## compile program
+to compile your well program you can run ``well`` in your terminal:
+```
+[test@test example]$ well
+:: Enter file name
+test.well
+done compiling program
+[test@test example]$ ./a.o
+69
+```
