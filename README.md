@@ -1,4 +1,4 @@
-# well
+# Wellang
 
 <div align="center">
   <br />
@@ -10,3 +10,7 @@
     <br> <a href="https://discord.gg/3mdNFb8ZyE"><img src="https://img.shields.io/discord/928763123362578552?color=5865F2&logo=discord&logoColor=white" alt="Well discord server" /></a> </br>
   </p>
 </div>
+
+## W.I.P
+
+This is a work in progress project and most likely is not in a working state.
