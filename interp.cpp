@@ -7,14 +7,20 @@ void file() {
 
 	std::cout << ":: Enter file name" << std::endl;
 	
+<<<<<<< HEAD
 	char fname[128];
 	scanf("%127s", fname);
+=======
+	char fname[80];
+	scanf("%79s", fname);
+>>>>>>> a2551dcbc71df74b153636aa57de659e9d5762c7
 
 	std::string line;
 
 	std::ifstream file(fname);
 
 	std::ofstream output("a.cpp");
+<<<<<<< HEAD
 	output << "#include <wellang/well.hpp>\n";
 
 	while(getline(file, line)) {
@@ -49,6 +55,15 @@ void file() {
 	}
 	
 	//output << "}\n";
+=======
+	output << "#include <wellang/well.hpp>\nint main() {";
+
+	while(getline(file, line)) {
+		output << line << "\n";
+	}
+	
+	output << "}\n";
+>>>>>>> a2551dcbc71df74b153636aa57de659e9d5762c7
 
 	file.close();
 	output.close();
@@ -58,7 +73,11 @@ void file() {
 void comp() {
 
 	system("g++ a.cpp -o a.o");
+<<<<<<< HEAD
 	//system("rm -f a.cpp");
+=======
+	system("rm -f a.cpp");
+>>>>>>> a2551dcbc71df74b153636aa57de659e9d5762c7
 	std::cout << "done compiling program" << std::endl;
 
 }
