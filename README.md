@@ -32,12 +32,20 @@ install wellang
 ## Example program
 
 ```
-stack program(4); //create program
+func:test() { // function to run program
+	stack program(4); //create program
 
-program.push(34); //push 34 & 35 to the stack
-program.push(35);
-program.plus(); // add the two numbers together
-program.dump(); //dump the program
+	program.push(34); //push nums to stack
+	program.push(35); 
+	program.plus(); // add last two stack variables together
+	program.dump(); // dump program
+}
+
+func:main() { // main function
+
+	test();
+
+}
 ```
 
 ## compile program
