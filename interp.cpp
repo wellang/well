@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-void file() {
+void interp_sim() {
 
 	std::cout << ":: Enter file name" << std::endl;
 
@@ -24,6 +24,7 @@ void file() {
 			output << "int main() {\n";
 			if(line.find("}") != std::string::npos) {
 				output << "}\n";
+			} else if() {
 			} else {
 				output << "//" << line << "\n";
 			}
@@ -32,15 +33,40 @@ void file() {
 			int32_t num = 5;
 			while(num != line.length()) {
 				output << line[num];
-				num++;
-				
+				num++;		
 			}
 			output << "\n";
                         if(line.find("}") != std::string::npos) {
                                 output << "}\n";
-                        } else {
-                                output << "//" << line << "\n";
+                        } else if(line.find("if:") != std::string::npos) {
+                        	output << "if";
+                         
+	                        int32_t IFNUM = 3;
+                         
+        	                while(IFNUM != line.length()) {
+                	                 output << line[IFNUM];
+                        	         IFNUM++;
+                        	}
+                         	output << "\n";
+                         	if(line.find("}") != std::string::npos) {
+                                 	output << "}\n";
+                         	}
+			} else {
+				output << "//" << line << "\n";
                         }
+		} else if(line.find("if:") != std::string::npos) {
+			output << "if";
+			
+			int32_t IFNUM = 3;
+			
+			while(IFNUM != line.length()) {
+				output << line[IFNUM];
+				IFNUM++;
+			}
+			output << "\n";
+			if(line.find("}") != std::string::npos) {
+				output << "}\n";
+			}
 		} else {
 			output << line << "\n";
 		}
@@ -65,9 +91,8 @@ void comp() {
 
 int main() {
 
-	file();
+	interp_sim();
 	comp();
 	return 0;
 
 }
-
