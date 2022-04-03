@@ -15,10 +15,7 @@ public:
 	void deconstruct();
 	void push(int);
 	void plus();
-<<<<<<< HEAD
 	void min();
-=======
->>>>>>> a2551dcbc71df74b153636aa57de659e9d5762c7
 	void dump();
 	int ret();
 	int size();
@@ -90,7 +87,6 @@ void stack::plus() {
 	}
 }
 
-<<<<<<< HEAD
 void stack::min() {
 
 	int a = array[top];
@@ -105,8 +101,6 @@ void stack::min() {
 	}
 }
 
-=======
->>>>>>> a2551dcbc71df74b153636aa57de659e9d5762c7
 void stack::dump() {
 
 	if(empty()) {
@@ -114,11 +108,8 @@ void stack::dump() {
 	}
 
 	std::cout << stack::ret() << std::endl;
-<<<<<<< HEAD
 //	stack::deconstruct();
-=======
-
->>>>>>> a2551dcbc71df74b153636aa57de659e9d5762c7
+	
 }
 
 #endif
