@@ -24,7 +24,38 @@ void interp_sim() {
 			output << "int main() {\n";
 			if(line.find("}") != std::string::npos) {
 				output << "}\n";
-			} else if() {
+			} else if(line.find("if:") != std::string::npos) {
+
+				output << "if";
+
+				int32_t IFNUM = 3;
+
+				while(IFNUM != line.length()) {
+					output << line[IFNUM];
+					IFNUM++;
+				}
+
+				output << "\n";
+				if(line.find("}") != std::string::npos) {
+					output << "}\n";
+				}
+
+			} else if(line.find("while:") != std::string::npos) {
+				
+				output << "while";
+
+				int32_t WHILENUM = 6;
+
+				while(WHILENUM != line.length()) {
+					output << line[WHILENUM];
+					WHILENUM++;
+				}
+
+				output << "\n";
+				if(line.find("}") != std::string::npos) {
+					output << "}\n";
+				}
+
 			} else {
 				output << "//" << line << "\n";
 			}
@@ -51,6 +82,22 @@ void interp_sim() {
                          	if(line.find("}") != std::string::npos) {
                                  	output << "}\n";
                          	}
+			} else if(line.find("while:") != std::string::npos) {
+				
+				output << "while";
+
+				int32_t WHILENUM = 6;
+
+				while(WHILENUM != line.length()) {
+					output << line[WHILENUM];
+					WHILENUM++;
+				}
+
+				output << "\n";
+				if(line.find("}") != std::string::npos) {
+					output << "}\n";
+				}
+
 			} else {
 				output << "//" << line << "\n";
                         }
@@ -62,6 +109,17 @@ void interp_sim() {
 			while(IFNUM != line.length()) {
 				output << line[IFNUM];
 				IFNUM++;
+			}
+			output << "\n";
+			if(line.find("}") != std::string::npos) {
+				output << "}\n";
+			}
+		} else if(line.find("while:") != std::string::npos) {
+			output << "while";
+			int32_t WNUM = 6;
+			while(WNUM != line.length()) {
+				output << line[WNUM];
+				WNUM++;
 			}
 			output << "\n";
 			if(line.find("}") != std::string::npos) {
