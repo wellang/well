@@ -11,6 +11,10 @@
   </p>
 </div>
 
+# About
+	
+### This is a small project made by yours truly (TristanWellman), it was originally meant to be completey stack based until I kept going on with the interpreter and made ways for it not to be stack based. This language includes your normal things like variables, mathamatics, loops, etc. It compiles directly to c++ (See below for compilation and simple documentation).
+
 ## Compile Wellang
 
 git the wellang github repository
