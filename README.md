@@ -46,7 +46,8 @@ install wellang
 func:while_func() {
 	stack program(4);
 	int i = 0;
-	
+}
+
 while:(i != 5) {
 	program.push(34);
 	program.push(35);
