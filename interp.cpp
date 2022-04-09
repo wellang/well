@@ -3,12 +3,19 @@
 #include <fstream>
 #include <string>
 
-void interp_sim() {
+int interp_sim(int argc, char *argv[]) {
 
-	std::cout << ":: Enter file name" << std::endl;
+	
+	std::string fname;
+	
+	if(argv[1] == NULL) {
+		
+		std::cout << "\n:: Invalid file name, ex: well (.well file) -o well.o\n\n";
+		return 0;
+	
+	} 
 
-	char fname[128];
-	scanf("%127s", fname);
+	fname = argv[1];
 
 	std::string line;
 
@@ -137,20 +144,35 @@ void interp_sim() {
 	file.close();
 	output.close();
 
-}
-
-void comp() {
-
-	system("g++ a.cpp -o a.o");
-	//system("rm -f a.cpp");
-	std::cout << "done compiling program" << std::endl;
+	return 0;
 
 }
 
-int main() {
+void comp(int argc, char *argv[]) {
 
-	interp_sim();
-	comp();
+	const char *gpp = "g++ a.cpp -o";
+	char buf[0x100];
+
+	std::string arg = "-o";
+	const char *OUTPUT_NAME;
+
+	if(argv[2] == arg) {
+		OUTPUT_NAME = argv[3];
+		snprintf(buf, sizeof(buf), "g++ a.cpp -o %s", OUTPUT_NAME);
+		system(buf);
+		std::cout << "done compiling programn\n" << argv[3] << std::endl;
+	} else {
+		system("g++ a.cpp -o a.o");
+		//system("rm -f a.cpp");
+		std::cout << "done compiling program" << argv[2] << std::endl;
+	}
+
+}
+
+int main(int argc, char *argv[]) {
+
+	interp_sim(argc, argv);
+	comp(argc, argv);
 	return 0;
 
 }
