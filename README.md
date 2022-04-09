@@ -15,6 +15,13 @@
 	
 ### This is a small project made by yours truly (TristanWellman). This language includes your normal things like variables, mathamatics, loops, etc. It compiles directly to c++ (See below for compilation and simple documentation).
 
+contact me at:
+
+email: wellangcode@gmail.com
+
+discord: ``__Oblivion__#3258``
+
+
 ## Compile Wellang
 
 git the wellang github repository
@@ -33,32 +40,38 @@ install wellang
 
 ``$ make install``
 
-## Example program
+## Example program: while.well (in /example/)
 
 ```
-func:test() { // function to run program
-	stack program(4); //create program
-
-	program.push(34); //push nums to stack
-	program.push(35); 
-	program.plus(); // add last two stack variables together
-	program.dump(); // dump program
+func:while_func() {
+	stack program(4);
+	int i = 0;
+	
+while:(i != 5) {
+	program.push(34);
+	program.push(35);
+	program.plus();
+	program.dump();
+	i++;
 }
 
-func:main() { // main function
+}
 
-	test();
-
+func:main() {
+	while_func();
 }
 ```
 
 ## compile program
 to compile your well program you can run ``well`` in your terminal:
 ```
-[test@test example]$ well
-:: Enter file name
-test.well
+[test@test example]$ well while.well -o test
 done compiling program
-[test@test example]$ ./a.o
+test
+[test@test example]$ ./test
+69
+69
+69
+69
 69
 ```
