@@ -1,7 +1,7 @@
 CC = g++
-COMMON_.cpp = interp.cpp
-COMMON_.o = interp.o
-INCLUDE = well.hpp
+COMMON_.cpp = src/interp.cpp src/thread_interp.cpp
+COMMON_.o = interp.o thread_interp.o
+INCLUDE = src/well.hpp
 
 INCLUDELOC = /usr/include/
 LOC = /usr/bin/
@@ -12,7 +12,8 @@ NAME = well
 .SUFFIXES: .cpp .o
 
 base:
-	$(CC) $(COMMON_.cpp) -o $(NAME)
+	$(CC) -L src -c $(COMMON_.cpp)
+	$(CC) -o $(NAME) $(COMMON_.o)
 
 install:
 	sudo mkdir $(INCLUDELOC)wellang
