@@ -1,0 +1,5 @@
+func:printf(const char *string, ...) {
+
+	std::cout << string << ...;
+
+}
