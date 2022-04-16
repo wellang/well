@@ -1,0 +1,6 @@
+stack program(4);
+
+program.push(69);
+program.push(34);
+program.min();
+program.dump();
