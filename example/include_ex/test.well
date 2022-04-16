@@ -1,7 +1,0 @@
-include:<printf.well>
-
-func:main() {
-
-	printf("hello world\n");
-
-}
