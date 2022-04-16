@@ -83,15 +83,15 @@ int interp_sim(int argc, char *argv[]) {
 			} else {
 				output << "//" << line << "\n";
 			}
-		} else if(line.find("func:") != std::string::npos) {
+		} else if(line.find("v:func:") != std::string::npos) {
 			output << "void \n";
-			int32_t num = 5;
+			int32_t num = 7;
 			while(num != line.length()) {
 				output << line[num];
 				num++;		
 			}
 			output << "\n";
-                        if(line.find("}") != std::string::npos) {
+                        if(line.find("end") != std::string::npos) {
                                 output << "}\n";
                         } else if(line.find("if:") != std::string::npos) {
                         	output << "if";
@@ -124,7 +124,20 @@ int interp_sim(int argc, char *argv[]) {
 
 			} else {
 				output << "//" << line << "\n";
-                        }
+			}
+		} else if(line.find("r:func:") != std::string::npos) {
+			output << "int \n";
+			int32_t Num = 7;
+			while(Num != line.length()) {
+				output << line[Num];
+				Num++;
+			}
+			output << "\n";
+
+			if(line.find("end") != std::string::npos) {
+				output << "}";
+			}
+
 		} else if(line.find("if:") != std::string::npos) {
 			output << "if";
 			
