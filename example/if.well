@@ -1,4 +1,4 @@
-func:if_func() {
+v:func:if_func() {
 	
 	stack program(4);
 
@@ -14,8 +14,9 @@ if:(i = 0) {
 
 }
 
-func:main() {
+r:func:main() {
 
 	if_func();
+	return 0;
 
 }

@@ -43,7 +43,7 @@ install wellang
 ## Example program: while.well (in /example/)
 
 ```
-func:while_func() {
+v:func:while_func() {
 	stack program(4);
 	int i = 0;
 }
@@ -58,7 +58,7 @@ while:(i != 5) {
 
 }
 
-func:main() {
+r:func:main() {
 	while_func();
 }
 ```

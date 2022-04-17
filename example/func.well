@@ -1,4 +1,4 @@
-func:test() {
+v:func:test() {
 	stack program(4);
 
 	program.push(34);
@@ -7,8 +7,9 @@ func:test() {
 	program.dump();
 }
 
-func:main() {
+r:func:main() {
 
 	test();
+	return 0;	
 
 }
