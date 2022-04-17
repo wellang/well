@@ -1,6 +1,7 @@
 CC = g++
 COMMON_.cpp = src/interp.cpp src/include.cpp src/thread_interp.cpp
 COMMON_.o = interp.o include.o thread_interp.o
+COMMON_.hpp = printf.hpp
 INCLUDE = src/well.hpp
 
 INCLUDELOC = /usr/include/
@@ -23,10 +24,12 @@ install:
 	sudo cp well $(LOC)
 	sudo cp $(INCLUDE) $(INCLUDELOC)wellang
 	cd lib
-	well printf.well -E printf.hpp && sudo cp printf.hpp $(INCLUDELOC)
+	well printf.well -E printf.hpp && sudo cp printf.hpp $(INCLUDELOC)wellang
 
 
 clean:
 	rm -f $(COMMON_.o)
+	rm -f $(COMMON_.hpp)
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)well
+
