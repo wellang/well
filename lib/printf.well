@@ -1,10 +1,72 @@
-r:func:vsnprintf_() {
+include: <iostream>
+include: <cstdarg>
 
-end
+r:func:convert_(unsigned int num, int base) {
+
+	static char REP[] = "0123456789ABCDEF";
+	static char buf[50];
+	char *ptr;
+	
+	ptr = &buf[49];
+	*ptr = '\0';
+
+while:(num != 0) {
+	*ptr-- = REP[num % base];
+	num /= base;
+}
+
+	return(ptr);
+
+}
 
 r:func:printf_(const char *string, ...) {
 
-	std::cout << string << ...;
+	const char *TRAVERSE;
+	unsigned int i;
+	char *S;
 
-end
+	va_list arg;
 
+	va_start(arg, string);
+
+for:(TRAVERSE = string; *TRAVERSE != '\0'; TRAVERSE++) {
+
+while:(*TRAVERSE != '\0') {
+	putchar(*TRAVERSE);
+	TRAVERSE++;
+}
+
+	TRAVERSE++;
+
+switch:(*TRAVERSE) {
+
+	case 'c' : i = va_arg(arg, int);
+		putchar(i);
+		break;
+
+	case 'd' : va_arg(arg, int);
+if(i < 0) {
+	i = -i;
+	putchar('-');
+}	
+		puts(convert_(i, 10));
+		break;
+	case 'o' : va_arg(arg, unsigned int);
+		puts(i, 8);
+		break;
+
+	case 's' : S = (arg, char *);
+		puts(S);
+		break;
+ 
+	case 'x' : i = va_arg(arg, unsigned int);
+		puts(convert_(i, 16));
+		break;
+
+}
+
+}	
+
+	va_end(arg);
+	return 0;
+}
