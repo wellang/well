@@ -10,13 +10,13 @@ v:func:if_func() {
 
 if:(i = 0) {
 	program.dump();
-end
+}
 
-end
+}
 
 r:func:main() {
 
 	if_func();
 	return 0;
 
-end
+}
