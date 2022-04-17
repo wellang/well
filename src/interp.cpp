@@ -23,24 +23,43 @@ int interp_sim(int argc, char *argv[]) {
 
 	std::ifstream file(fname);
         
-	std::string N_EXC = "-E";
+	//std::string N_EXC = "-E";
 	
-	std::ofstream output(NULL);
+	std::ofstream output("a.cpp");
 
-	if(argv[2] == N_EXC) {
+	/*if(argv[2] == N_EXC) {
 		char buf[0x100];
 		const char *OUTPUT_NAME = argv[3];
         	snprintf(buf, sizeof(buf), "%s", OUTPUT_NAME);
 		std::ofstream output(buf);
 	} else {
 		std::ofstream output("a.cpp");
-	}
+	}*/
 
 	output << "#include <wellang/well.hpp>\n";
 
 	while(getline(file, line)) {
 		
-		include_interp(file, output, line);
+		/*if(line.find("include:") != std::string::npos) {
+
+            		if(line.find("<") != std::string::npos && line.find(".well") != std::string::npos) {
+
+                        	output << "\n#include<";
+                        	int32_t InNum = 8;
+
+                        	while(InNum != line.length()) {
+
+                                	output << line;
+                                	InNum ++;
+
+                        	}
+			} else {
+			
+				std::cout << "\nInclude ERROR at line: \n\e[4;35m" << line << "\e[0m\n\n";
+
+			}
+		}*/
+		//__include_interp(file2, output, line);
 		
 		int32_t FUNC_NUM = 0;
 
@@ -91,7 +110,7 @@ int interp_sim(int argc, char *argv[]) {
 				num++;		
 			}
 			output << "\n";
-                        if(line.find("end") != std::string::npos) {
+                        if(line.find("}") != std::string::npos) {
                                 output << "}\n";
                         } else if(line.find("if:") != std::string::npos) {
                         	output << "if";
@@ -134,7 +153,7 @@ int interp_sim(int argc, char *argv[]) {
 			}
 			output << "\n";
 
-			if(line.find("end") != std::string::npos) {
+			if(line.find("}") != std::string::npos) {
 				output << "}";
 			}
 
@@ -164,6 +183,79 @@ int interp_sim(int argc, char *argv[]) {
 			}
 		//} else if(line.find("thread:")) {
 		//	thread_interp(file, output, argc, argv);
+		} else if(line.find("for:") != std::string::npos) {
+			output << "for";
+			int32_t FOR_NUM = 4;
+
+			while(FOR_NUM != line.length()) {
+				output << line[FOR_NUM];
+				FOR_NUM++;
+			}
+			output << "\n";
+			if(line.find("}") != std::string::npos) {
+				output << "}\n";
+			}
+		} else if(line.find("switch:") != std::string::npos) {
+			output << "switch";
+			int32_t SNUM = 7;
+
+			while(SNUM != line.length()) {
+				output << line[SNUM];
+				SNUM++;
+			}
+			output << "\n";
+			if(line.find("}") != std::string::npos) {
+				output << "}\n";
+			}
+	
+		} else if(line.find("do: {") != std::string::npos) {
+			output << "do {";
+			output << "//" << line;
+			if(line.find("} while:") != std::string::npos) {
+				output << "}while";
+				int32_t DWNUM = 8;
+				while(DWNUM != line.length()) {
+					output << line[DWNUM];
+					DWNUM++;
+				}
+			}
+		} else if(line.find("define:") != std::string::npos) {
+			output << "#define ";
+			int32_t DEFNUM = 7;
+
+			while(DEFNUM != line.length()) {
+				output << line[DEFNUM];
+				DEFNUM++;
+			}
+			output << "\n";
+		} else if(line.find("include:") != std::string::npos) {
+			
+			output << "\n#include";
+			output << "/*" << line << "*/";
+			int32_t INNUM = 8;
+			while(INNUM != line.length()) {
+				output << line[INNUM];
+				INNUM++;
+			}
+			output << "\n";
+			
+
+            		/*if(line.find("<") != std::string::npos && line.find(".well") != std::string::npos) {
+
+                        	output << "\n#include<";
+                        	int32_t InNum = 8;
+
+                        	while(InNum != line.length()) {
+
+                                	output << line;
+                                	InNum ++;
+
+                        	}
+			} */ /*else {
+			
+				std::cout << "\nInclude ERROR at line: \n\e[4;35m" << line << "\e[0m\n\n";
+
+			}*/
 		} else {
 			output << line << "\n";
 		}
@@ -212,6 +304,10 @@ int main(int argc, char *argv[]) {
 
         } else if(argv[2] == N_EXC) {
 		interp_sim(argc, argv);
+		const char *OUTNAME = argv[3];
+		char buf[0x100];
+		snprintf(buf, sizeof(buf), "cp a.cpp %s", OUTNAME);
+		system(buf);
 		return 0;
 	}
 
@@ -220,3 +316,4 @@ int main(int argc, char *argv[]) {
 	return 0;
 
 }
+
