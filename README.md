@@ -21,6 +21,16 @@ email: wellangcode@gmail.com
 
 discord: ``__Oblivion__#3258``
 
+## Supported OSs
+- ex:
+    - [x] OS is supported(compiles and runs)
+    - [ ] not supported/untested
+
+- supports:
+    - [x] Linux
+    - [x] FreeBSD
+    - [ ] MacOS - untested
+    - [ ] Windows - untested
 
 ## Compile Wellang
 
