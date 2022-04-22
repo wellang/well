@@ -29,6 +29,7 @@ discord: ``__Oblivion__#3258``
 - supports:
     - [x] Linux
     - [x] FreeBSD
+    - [ ] Solaris - Untested
     - [ ] MacOS - untested
     - [ ] Windows - untested
 
