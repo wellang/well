@@ -40,39 +40,37 @@ install wellang
 
 ``$ make install``
 
-## Example program: while.well (in /example/)
+## Example program: helloworld.well (in /example/)
 
 ```
-v:func:while_func() {
-	stack program(4);
-	int i = 0;
-}
+var:main {
 
-while:(i != 5) {
-	program.push(34);
-	program.push(35);
-	program.plus();
-	program.dump();
-	i++;
-}
+string~ text = 'hello world!'
+length~ text_length, text
 
 }
 
-r:func:main() {
-	while_func();
+r:func:main {
+
+move~ 1, rax
+move~ 1, rdi
+move~ text, rsi
+move~ text_length, rdx
+return
+
+move~ 60, rax
+move~ 0, rdi 
+return
+
 }
+
 ```
 
 ## compile program
-to compile your well program you can run ``well`` in your terminal:
+to compile your well program you can run ``wesm`` in your terminal:
 ```
-[test@test example]$ well while.well -o test
+[test@test example]$ wesm helloworld.well -o hello.o hello
 done compiling program
-test
-[test@test example]$ ./test
-69
-69
-69
-69
-69
+[test@test example]$ ./hello
+hello world!
 ```
