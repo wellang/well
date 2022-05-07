@@ -1,9 +1,9 @@
 CC = g++
 C = gcc
 COMMON_.cpp = src/interp.cpp src/include.cpp src/thread_interp.cpp
-COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c
+COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c
 COMMONC++_.o = interp.o include.o thread_interp.o
-COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o
+COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o
 COMMON_.hpp = printf.hpp
 INCLUDE = src/well.hpp
 
