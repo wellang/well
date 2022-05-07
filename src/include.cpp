@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-void include_interp(std::ifstream file, std::ofstream output, std::string line) {
+void __include_interp(std::ifstream file, std::ofstream output, std::string line) {
 
 	
 	getline(file, line);

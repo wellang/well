@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <bits/stdc++.h>
 
 #define __STACK_SIZE__ 3
 
@@ -91,14 +92,11 @@ void stack::min() {
 
 	int a = array[top];
 	int b = array[top--];
+	int c;
 	
-	std::cout << "Minus function is a W.I.P" << std::endl;
-
-	if(a - b < 100) {
-		array[top] = a - b - 1;
-	} else if(b - a > 100) {
-		array[top] = a - b;
-	}
+	__asm__("subl %%ebx, %%eax" : "=a"(c) : "a"(a), "b"(b));
+	
+	c = array[top++];
 }
 
 void stack::dump() {

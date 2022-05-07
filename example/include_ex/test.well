@@ -1,0 +1,8 @@
+include: <printf.well>
+
+r:func:main() {
+
+	printf("hello world\n");
+	return 0;
+
+end

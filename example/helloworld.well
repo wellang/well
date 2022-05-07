@@ -1,0 +1,7 @@
+include: <printf.well>
+
+r:func:main() {
+
+	printf_("Hello World!!!\n");
+
+}

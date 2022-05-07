@@ -1,3 +1,10 @@
+/*
+ *
+ *	NOTE:: This is the OLD and unused wellang compiler.
+ *		ONLY USE FOR TESTING PURPOSES.
+ *
+ * */
+
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -37,6 +44,8 @@ int interp_sim(int argc, char *argv[]) {
 	}*/
 
 	output << "#include <wellang/well.hpp>\n";
+	
+	const char *__STACK_NAME__;
 
 	while(getline(file, line)) {
 		
@@ -221,8 +230,8 @@ int interp_sim(int argc, char *argv[]) {
 			}
 		} else if(line.find("define:") != std::string::npos) {
 			output << "#define ";
-			int32_t DEFNUM = 7;
-
+			int32_t DEFNUM = 8;
+			output << "/*" << line << "*/";
 			while(DEFNUM != line.length()) {
 				output << line[DEFNUM];
 				DEFNUM++;
@@ -256,6 +265,24 @@ int interp_sim(int argc, char *argv[]) {
 				std::cout << "\nInclude ERROR at line: \n\e[4;35m" << line << "\e[0m\n\n";
 
 			}*/
+		} else if(line.find("	ASM:(") != std::string::npos) {
+			int32_t ANUM = 6;
+			output << "asm volatile(";
+			output << "/*" << line << "*/";
+			while(ANUM != line.length()) {
+				output << line[ANUM];
+				ANUM++;
+			}
+			output << "\n";
+		} else if(line.find("ASM:(") != std::string::npos) {
+			int32_t ANUM = 4;
+			output << "asm volatile(";
+			output << "/*" << line << "*/";
+			while(ANUM != line.length()) {
+				output << line[ANUM];
+				ANUM++;
+			}
+			output << "\n";
 		} else {
 			output << line << "\n";
 		}
@@ -274,7 +301,7 @@ int interp_sim(int argc, char *argv[]) {
 
 void comp(int argc, char *argv[]) {
 
-	const char *gpp = "g++ a.cpp -o";
+	const char *gpp = "g++ -no-pie a.cpp -o";
 	char buf[0x100];
 
 	std::string arg = "-o";
@@ -282,11 +309,11 @@ void comp(int argc, char *argv[]) {
 
 	if(argv[2] == arg) {
 		OUTPUT_NAME = argv[3];
-		snprintf(buf, sizeof(buf), "g++ a.cpp -o %s", OUTPUT_NAME);
+		snprintf(buf, sizeof(buf), "g++ -no-pie a.cpp -o %s", OUTPUT_NAME);
 		system(buf);
 		std::cout << "done compiling programn\n" << argv[3] << std::endl;
 	} else {
-		system("g++ a.cpp -o a.o");
+		system("g++ -no-pie a.cpp -o a.o");
 		//system("rm -f a.cpp");
 		std::cout << "done compiling program" << argv[2] << std::endl;
 	}
@@ -316,4 +343,3 @@ int main(int argc, char *argv[]) {
 	return 0;
 
 }
-
