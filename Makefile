@@ -30,7 +30,6 @@ install:
 	sudo cp wesm $(LOC)
 	sudo cp $(INCLUDE) $(INCLUDELOC)wellang
 	cd lib
-	well printf.well -E printf.well && sudo cp printf.well $(INCLUDELOC)wellang
 	well sizeof.well -E sizeof.well && sudo cp sizeof.well $(INCLUDELOC)wellang
 
 
