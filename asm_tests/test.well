@@ -1,6 +1,0 @@
-r:func:main {
-
-move~ 34, rax
-return
-
-}
