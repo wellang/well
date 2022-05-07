@@ -1,0 +1,1 @@
+#define: sizeof(x) ((char *) (&x + 1) - (char *)&x)
