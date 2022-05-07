@@ -17,12 +17,9 @@ int asm_interp(int argc, char *argv[]) {
 	FILE *output;
 	output = fopen("a.asm", "a");
 
-	while(fgets(line, sizeof(line), file) != NULL) {
-	
-		fprintf(output, "section .data ;variables & data not implimented yet\n\nsection .text\n\n");
-		fclose(output);
-		break;
-	}
+	fprintf(output, "section .data ;variables & data not implimented yet\n\nsection .text\n\n");
+	fclose(output);
+
 	while(fgets(line, sizeof(line), file) != NULL) {
 		char search[] = "r:func:main {";
 	       	char *func = strstr(line, search);
