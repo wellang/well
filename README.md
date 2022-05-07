@@ -13,7 +13,7 @@
 
 # About
 	
-### This is a small project made by yours truly (TristanWellman). This language includes your normal things like variables, mathamatics, loops, etc. It compiles directly to c++ (See below for compilation and simple documentation).
+### This is a small project made by yours truly (TristanWellman). This language includes your normal things like variables, mathamatics, loops, etc. It compiles directly to assembly(NASM), See below for compilation and simple documentation.
 
 contact me at:
 
