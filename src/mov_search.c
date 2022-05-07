@@ -12,7 +12,7 @@ int mov_interp(char line[], FILE *out) {
 	
 		out = fopen("a.asm", "a");
 
-		fprintf(out, "; %s \n\tmov", line);
+		fprintf(out, "; %s \tmov", line);
 	
 		fclose(out);
 
