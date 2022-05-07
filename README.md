@@ -45,22 +45,22 @@ install wellang
 ```
 var:main {
 
-string~ text = 'hello world!'
-length~ text_length, text
+	string~ text = 'hello world!'
+	length~ text_length, text
 
 }
 
 r:func:main {
 
-move~ 1, rax
-move~ 1, rdi
-move~ text, rsi
-move~ text_length, rdx
-return
+	move~ 1, rax
+	move~ 1, rdi
+	move~ text, rsi
+	move~ text_length, rdx
+	return
 
-move~ 60, rax
-move~ 0, rdi 
-return
+	move~ 60, rax
+	move~ 0, rdi 
+	return
 
 }
 
