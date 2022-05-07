@@ -1,0 +1,22 @@
+v:func:if_func() {
+	
+	stack program(4);
+
+	program.push(34);
+	program.push(35);
+	program.plus();
+
+	int i = 0;	
+
+if:(i = 0) {
+	program.dump();
+end
+
+end
+
+r:func:main() {
+
+	if_func();
+	return 0;
+
+end
