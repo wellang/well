@@ -38,6 +38,7 @@ int asm_interp(int argc, char *argv[]) {
 				} else {
 					string_interp(mainlines, out2);
 					length_interp(mainlines, out2);
+					int_interp(mainlines, out2);
 				}
 			}
 
@@ -54,9 +55,10 @@ int asm_interp(int argc, char *argv[]) {
 
 	FILE *file2 = fopen(fname, "r+");
 	char line3[256];
+	int line_num1 = 0;
 	while(fgets(line3, sizeof(line3), file2) != NULL) {
 
-		char search[] = "r:func:main {";
+		char search[] = "r~func:main {";
                 char *func = strstr(line3, search);
 
 		if(func != NULL) {
@@ -66,25 +68,153 @@ int asm_interp(int argc, char *argv[]) {
 
 			FILE *funcread = fopen(fname, "r+");
 			char mainline[256];
+			int line_num2 = 0;
 			while(fgets(mainline, sizeof(mainline), funcread) != NULL) {
 				
 				FILE *out;
-
-				if(mainline == NULL) {
-					break;
-				} else {
-					mov_interp(mainline, out);
-					push_interp(mainline, out);
-					syscall_interp(mainline, out);
+				char end[] = "}";
+				
+				if(line_num2 == line_num1) {
+					if(mainline == NULL) {
+						break;
+					} else if(mainline == end) {
+						break;
+					} else {
+						mov_interp(mainline, out);
+						push_interp(mainline, out);
+						syscall_interp(mainline, out);
+					}
+					line_num1++;
 				}
-
+				line_num2++;
+				//line_num1++;
 			}
 			//fclose(funcread);
 		}	
 
 		if(line3 == NULL) {
 			break;
-		}	
+		}
+		line_num1++;	
+
+	}
+
+	fclose(file2);
+	FILE *file3 = fopen(fname, "r+");
+	char line4[256];
+	int line_num = 0;
+	while(fgets(line4, sizeof(line4), file3) != NULL) {
+
+		char search[] = "v~func:";
+		char *func = strstr(line4, search);
+
+		if(func != NULL) {
+				char *after_func = strchr(line4, ':');
+				if(after_func != NULL) {
+						after_func++;
+						char *func_name = strtok(after_func, "{");
+						if(func_name != NULL) {
+							FILE *funcread = fopen(fname, "r+");
+							char line5[256];
+							int file_line = 0;
+							
+							FILE *func_out = fopen("a.asm", "a");
+							func_name[strlen(func_name)-1] = '\0';
+							fprintf(func_out, "\n%s:\n", func_name);
+							fclose(func_out);
+
+							while(fgets(line5, sizeof(line5), funcread) != NULL) {
+								
+								if(file_line == line_num) {
+									
+									FILE *out;
+
+									if(line5 != NULL) {
+										mov_interp(line5, out);
+										push_interp(line5, out);
+										syscall_interp(line5, out);
+									} else if(line5 == "}") {
+										break;
+									}
+										
+									//line_num++;
+									file_line++;
+								}
+
+								if(line5 == NULL) {
+									break;
+								} else if(line5 == "func:main {") {
+									break;
+								} else if(line5 == "func:main ") {
+									break;
+								} else if(line5 == "func:main") {
+									break;
+								}
+								
+								line_num++;
+							}
+							fclose(funcread);		
+						} else if(func_name == "main") {
+							continue;
+						} else if(func_name == "main ") {
+							continue;
+						} else if(func_name == "main {") {
+							continue;
+						} else {
+							FILE *func_out = fopen("a.asm", "a");
+							fprintf(func_out, "%s:\n", after_func);
+							fclose(func_out);
+
+							FILE *funcread = fopen(fname, "r+");
+							char line6[256];
+							int fline = 0;
+							while(fgets(line6, sizeof(line6), funcread) != NULL) {
+								
+								if(fline == line_num) {
+									FILE *out;
+
+									if(line6 != NULL) {
+										mov_interp(line6, out);
+										push_interp(line6, out);
+										syscall_interp(line6, out);
+									} else if(line6 == "}") {
+										break;
+									}
+									line_num++;
+									fline++;
+								}
+								
+								if(line6 == NULL) {
+									break;
+								}
+								fline++;
+
+							}
+
+						}
+				} else if(after_func == NULL) {
+						printf("ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
+						continue;
+				} else if(after_func == "main {") {
+					continue;
+				} else if(after_func == "main ") {
+					continue;
+				} else if(after_func == "main") {
+					continue;
+				}
+		} else if(func == NULL) {
+			continue;
+		} else if(line4 == "func:main") {
+			continue;
+		} else if(line4 == "func:main {") {
+			continue;
+		} else if(line4 == "func:main ") {
+			continue;
+		}
+		line_num++;
+		if(line4 == NULL) {
+			break;
+		}
 
 	}
 
@@ -97,7 +227,7 @@ int asm_interp(int argc, char *argv[]) {
 void compile(int argc, char *argv[]) {
 
 	char buf[0x100];
-	char arg[] = "-o";
+	char *arg = "-o";
 	const char *OUTPUT_NAME;
 	const char *EXEC_NAME;
 
