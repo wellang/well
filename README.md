@@ -81,3 +81,9 @@ to install wellang syntax highlighting for vim all you have to do is
 ```
 make vim
 ```
+
+if it says you don't have ``~/.vim/syntax/`` or ``~/.vim/ftdetect/`` then you can do
+```
+cd {path/to/.vim}
+mkdir syntax && mkdir ftdetect
+```
