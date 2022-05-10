@@ -14,12 +14,6 @@ func:main {
 	move~ string, rsi
 	move~ string_length, rdx
 	return
-
-	move~ 1, rax
-	move~ 1, rdi
-	move~ number, rsi
-	move~ num_length, rdx
-	return
 	
 	move~ 60, rax
 	move~ 0, rdi
