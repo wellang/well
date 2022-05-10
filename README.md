@@ -51,7 +51,7 @@ var:main {
 
 }
 
-r~func:main {
+~func:main {
 
 	move~ 1, rax
 	move~ 1, rdi
