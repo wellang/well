@@ -40,7 +40,7 @@ int mov_interp(char line[], FILE *out) {
 				const char delim2[] = ";";
 			} else if(after_var1 == NULL){
 				printf("ERROR:: move missing ',' or second var in line:\n\n");
-				//return 0;
+				return 0;
 			}
 
 

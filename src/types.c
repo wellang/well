@@ -83,18 +83,41 @@ int length_interp(char line[], FILE *out) {
 }
 
 
+int int_interp(char line[], FILE *out) {
 
+	char search[] = "int~ ";
+	char *string = strstr(line, search);
+	if(string != NULL) {
+		
+		char *after_i = strchr(line, '~');
+		if(after_i != NULL) {
+		
+			after_i++;
 
+			const char delim[] = "=";
 
+			char *after_name = strchr(after_i, '=');
+			char *var_name = strtok(after_i, delim);
+			if(after_name != NULL) {
+				after_name++;
+			} else {
+				printf("ERROR:: Variable missing '=', EX:(type~ foo = 1234)\n");
+				return 0;
+			}
 
+			after_name[strlen(after_name)-1] = '\0';
+			var_name[strlen(var_name)-1] = '\0';
+			out = fopen("a.asm", "a");
+			fprintf(out, "\t%s: dw%s\n", var_name, after_name);
+			fclose(out);
 
+		} else {
+			printf("ERROR:: Variable missing '~', EX:(type~ foo = 1234)\n");
+			return 0;
+		}
 
+	} else {
+		return 0;
+	}
 
-
-
-
-
-
-
-
-
+}

@@ -13,7 +13,7 @@
 
 # About
 	
-### This is a small project made by yours truly (TristanWellman). This language includes your normal things like variables, mathamatics, loops, etc. It compiles directly to c++ (See below for compilation and simple documentation).
+### This is a small project made by yours truly (TristanWellman). This language includes your normal things like variables, mathamatics, loops, etc. It compiles directly to assembly(NASM), See below for compilation and simple documentation.
 
 contact me at:
 
@@ -21,6 +21,7 @@ email: wellangcode@gmail.com
 
 discord: ``__Oblivion__#3258``
 
+wellang discord server: https://discord.gg/K4ufunGxJv
 
 ## Compile Wellang
 
@@ -45,22 +46,22 @@ install wellang
 ```
 var:main {
 
-string~ text = 'hello world!'
-length~ text_length, text
+	string~ text = 'hello world!'
+	length~ text_length, text
 
 }
 
-r:func:main {
+~func:main {
 
-move~ 1, rax
-move~ 1, rdi
-move~ text, rsi
-move~ text_length, rdx
-return
+	move~ 1, rax
+	move~ 1, rdi
+	move~ text, rsi
+	move~ text_length, rdx
+	return
 
-move~ 60, rax
-move~ 0, rdi 
-return
+	move~ 60, rax
+	move~ 0, rdi 
+	return
 
 }
 
@@ -75,3 +76,8 @@ done compiling program
 hello world!
 ```
 
+## Vim syntax highlighting
+to install wellang syntax highlighting for vim all you have to do is
+```
+make vim
+```
