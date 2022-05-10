@@ -1,0 +1,28 @@
+var:main {
+
+	string~ test = 'test'
+	length~ test_length, test
+
+}
+
+~func:run {
+
+	move~ 34, rax
+	return
+
+}
+
+~func:main {
+
+	move~ 1, rax
+	move~ 1, rdi
+	move~ test, rsi
+	move~ test_length, rdx
+	return
+
+	move~ 60, rax
+	move~ 0, rdi
+	return	
+
+}
+

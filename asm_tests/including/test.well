@@ -1,0 +1,6 @@
+v~func:test {
+
+	push~ 34
+	return
+
+}
