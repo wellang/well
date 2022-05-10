@@ -76,3 +76,8 @@ done compiling program
 hello world!
 ```
 
+## Vim syntax highlighting
+to install wellang syntax highlighting for vim all you have to do is
+```
+make vim
+```
