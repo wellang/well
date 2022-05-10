@@ -174,13 +174,9 @@ int asm_interp(int argc, char *argv[]) {
 					char end_search[] = "}";
 					char *end = strstr(mainline, end_search);
 					FILE *out;
-					if(end_search != NULL) {
-						break;
-					} else {
-						mov_interp(mainline, out);
-						push_interp(mainline, out);
-						syscall_interp(mainline, out);
-					}
+					mov_interp(mainline, out);
+					push_interp(mainline, out);
+					syscall_interp(mainline, out);
 				}
 				if(mainline == NULL) {
 					break;
