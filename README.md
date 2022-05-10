@@ -21,6 +21,7 @@ email: wellangcode@gmail.com
 
 discord: ``__Oblivion__#3258``
 
+wellang discord server: https://discord.gg/K4ufunGxJv
 
 ## Compile Wellang
 
