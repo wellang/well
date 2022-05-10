@@ -22,6 +22,23 @@ int asm_interp(int argc, char *argv[]) {
 	fprintf(output, "section .data ;variables & data not implimented yet\n\n"/*section .text\n\n"*/);
 	fclose(output);
 	
+	FILE *file6 = fopen(fname, "r+");
+	char line7[256];
+
+	while(fgets(line7, sizeof(line7), file6) != NULL) {
+		
+		char include_search[] = "include~ ";
+		char *include = strstr(line7, include_search);
+
+		if(include != NULL) {
+			
+		}
+		if(line7 == NULL) {
+			break;
+		}
+
+	}
+
 	while(fgets(line, sizeof(line), file) != NULL) {
 				
 		char var_search[] = "var:main {";
@@ -53,62 +70,17 @@ int asm_interp(int argc, char *argv[]) {
 	fprintf(out3, "section .text\n\n");
 	fclose(out3);
 
-	FILE *file2 = fopen(fname, "r+");
-	char line3[256];
-	int line_num1 = 0;
-	while(fgets(line3, sizeof(line3), file2) != NULL) {
-
-		char search[] = "r~func:main {";
-                char *func = strstr(line3, search);
-
-		if(func != NULL) {
-			FILE *outputfunc = fopen("a.asm", "a");
-			fprintf(outputfunc, "global _start\n\n_start:\n\t");
-			fclose(outputfunc);
-
-			FILE *funcread = fopen(fname, "r+");
-			char mainline[256];
-			int line_num2 = 0;
-			while(fgets(mainline, sizeof(mainline), funcread) != NULL) {
-				
-				FILE *out;
-				char end[] = "}";
-				
-				if(line_num2 == line_num1) {
-					if(mainline == NULL) {
-						break;
-					} else if(mainline == end) {
-						break;
-					} else {
-						mov_interp(mainline, out);
-						push_interp(mainline, out);
-						syscall_interp(mainline, out);
-					}
-					line_num1++;
-				}
-				line_num2++;
-				//line_num1++;
-			}
-			//fclose(funcread);
-		}	
-
-		if(line3 == NULL) {
-			break;
-		}
-		line_num1++;	
-
-	}
-
-	fclose(file2);
 	FILE *file3 = fopen(fname, "r+");
 	char line4[256];
 	int line_num = 0;
 	while(fgets(line4, sizeof(line4), file3) != NULL) {
 
-		char search[] = "v~func:";
+		char search[] = "~func:";
 		char *func = strstr(line4, search);
+		char search_main[] = "~func:main"; 
+		char *main = strstr(line4, search_main);
 
-		if(func != NULL) {
+		if(func != NULL && main == NULL) {
 				char *after_func = strchr(line4, ':');
 				if(after_func != NULL) {
 						after_func++;
@@ -137,29 +109,17 @@ int asm_interp(int argc, char *argv[]) {
 										break;
 									}
 										
-									//line_num++;
+									/*line_num++;*/
 									file_line++;
 								}
 
 								if(line5 == NULL) {
-									break;
-								} else if(line5 == "func:main {") {
-									break;
-								} else if(line5 == "func:main ") {
-									break;
-								} else if(line5 == "func:main") {
 									break;
 								}
 								
 								line_num++;
 							}
 							fclose(funcread);		
-						} else if(func_name == "main") {
-							continue;
-						} else if(func_name == "main ") {
-							continue;
-						} else if(func_name == "main {") {
-							continue;
 						} else {
 							FILE *func_out = fopen("a.asm", "a");
 							fprintf(func_out, "%s:\n", after_func);
@@ -195,20 +155,40 @@ int asm_interp(int argc, char *argv[]) {
 				} else if(after_func == NULL) {
 						printf("ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
 						continue;
-				} else if(after_func == "main {") {
-					continue;
-				} else if(after_func == "main ") {
-					continue;
-				} else if(after_func == "main") {
-					continue;
 				}
-		} else if(func == NULL) {
-			continue;
-		} else if(line4 == "func:main") {
-			continue;
-		} else if(line4 == "func:main {") {
-			continue;
-		} else if(line4 == "func:main ") {
+		} else if(func != NULL && main != NULL) {
+      			FILE *outputfunc = fopen("a.asm", "a");
+	                fprintf(outputfunc, "global _start\n\n_start:\n\t");
+ 	                fclose(outputfunc);
+
+			FILE *main_func = fopen(fname, "r+");
+			char mainline[256];
+			int mainline_num = 0;
+			int line_line = line_num;
+			while(fgets(mainline, sizeof(mainline), main_func) != NULL) {
+				if(mainline_num != line_line) {
+					mainline_num++;
+				} else if(mainline_num == line_line) {
+					line_line++;
+					mainline_num++;
+					char end_search[] = "}";
+					char *end = strstr(mainline, end_search);
+					FILE *out;
+					if(end_search != NULL) {
+						break;
+					} else {
+						mov_interp(mainline, out);
+						push_interp(mainline, out);
+						syscall_interp(mainline, out);
+					}
+				}
+				if(mainline == NULL) {
+					break;
+				}
+			}
+			fclose(main_func);
+
+		} else if(func == NULL && main == NULL) {
 			continue;
 		}
 		line_num++;
@@ -218,8 +198,8 @@ int asm_interp(int argc, char *argv[]) {
 
 	}
 
-	//fclose(file);
-	//fclose(output);
+	/*fclose(file);*/
+	/*fclose(output);*/
 	return 0;
 
 }
