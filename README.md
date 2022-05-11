@@ -3,7 +3,7 @@
 <div align="center">
   <br />
   <p>
-    <a href="https://github.com/wellang/wellang.git"><img src="https://avatars.githubusercontent.com/u/102248284?s=400&u=3136606a100a8538df92d7158e7d2ca119c233b3&v=4" width="250" alt="wellang" /></a>
+    <a href="https://github.com/wellang/wellang.git"><img src="https://avatars.githubusercontent.com/u/102248284?s=400&u=5d92de95684e16d63035c33aadca8e07c11ccdf9&v=4" width="250" alt="wellang" /></a>
   </p>
   <br />
   <p>
