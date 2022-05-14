@@ -1,0 +1,91 @@
+*
+{
+
+	margin: 0;
+	padding 0;
+	box-sizing: border-box;
+	font-family: arial;
+
+}
+body {
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 50vh;
+	background: #262626;
+	overflow: hidden
+
+}
+ul {
+	
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+ul li {
+
+	list-style: none;
+
+}
+ul li a {
+
+	position: relative;
+	min-height: 10vh;
+	color: #fff;
+	font-size: 1em;
+	text-decoration: none;
+	display: inline-block;
+	padding: 10px 20px;
+	font-weight: 300;
+	background: rgba(255, 255, 255, 0.05);
+	box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+	border-top: 1px solid rgba(255,255,255,0.1);
+	border-bottom: 1px solid rgba(255,255,255,0.1);
+
+}
+ul li a:before {
+
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 50%;
+	height: 100%;
+	background: rgba(255,255,255,0.1);
+
+}
+h2 {
+	position: relative;
+	font-size: 4em;
+	text-transform: uppercase;
+	color: #575757;
+	width: 100%;
+	text-align: center;
+	-webkit-box-reflect: below -45px linear-gradient(transparent, #0004);
+}
+h2 span{
+
+	animation: animate 5s linear infinite;
+
+} @keyframes animate {
+
+	0%,18%,20%,50.1%,60%,65.1%,80%,90.1%,92% {
+		color: #575757;
+		text-shadow: none;
+	}
+	18.1%,20.1%,30%,50%,60.1%,65%,80.1%,90%,92.1%,100% {
+	
+		color: #fbd4ad;
+		text-shadow: 0 0 10px #d47408,
+		0 0 20px #d47408,
+		0 0 40px #d47408,
+		0 0 80px #d47408,
+		0 0 160px #d47408,
+		0 0 400px #d47408;
+
+	}
+
+}
