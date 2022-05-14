@@ -25,7 +25,7 @@ clean_vim:
 clean:
 	rm -f $(COMMONC_.o)
 	sudo rm -R $(INCLUDELOC)wellang
-	sudo rm -R $(LOC)well
+	sudo rm -R $(LOC)wesm
 purge:
 	rm -f $(COMMONC_.o)
 	rm -f ~/.vim/syntax/well.vim
