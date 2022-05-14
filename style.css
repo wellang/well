@@ -34,7 +34,7 @@ ul li a {
 	padding: 10px 20px;
 	font-weight: 300;
 	background: rgba(255, 255, 255, 0.05);
-	box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+	box-shadow: 0 35px 15px rgba(0,0,0,0.2);
 	border-top: 1px solid rgba(255,255,255,0.1);
 	border-bottom: 1px solid rgba(255,255,255,0.1);
 
