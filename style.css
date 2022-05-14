@@ -7,16 +7,6 @@
 	font-family: arial;
 
 }
-body {
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 50vh;
-	background: #262626;
-	overflow: hidden
-
-}
 ul {
 	
 	position: relative;
@@ -57,7 +47,13 @@ ul li a:before {
 	background: rgba(255,255,255,0.1);
 
 }
-h2 {
+h2 {	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 50vh;
+	background: #262626;
+	overflow: hidden
 	position: relative;
 	font-size: 4em;
 	text-transform: uppercase;
