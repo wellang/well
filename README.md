@@ -87,3 +87,9 @@ if it says you don't have ``~/.vim/syntax/`` or ``~/.vim/ftdetect/`` then you ca
 cd {path/to/.vim}
 mkdir syntax && mkdir ftdetect
 ```
+
+# New Features!
+
+5/14/22: Added Function handling. You can now make use of more than just the main function in wellang!
+
+5/10/22: Added support for vim syntax highlighting with wellang
