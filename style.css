@@ -7,6 +7,9 @@
 	font-family: arial;
 
 }
+body {
+	background: #262626;
+}
 ul {
 	
 	position: relative;
@@ -52,7 +55,6 @@ h2 {
 	justify-content: center;
 	align-items: center;
 	min-height: 50vh;
-	background: #262626;
 	overflow: hidden
 	position: relative;
 	font-size: 4em;
