@@ -1,6 +1,0 @@
-r:func:main {
-
-push~ 34
-return
-
-}
