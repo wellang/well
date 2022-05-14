@@ -6,6 +6,7 @@
 #include "syscall_interp.h"
 #include "push_search.h"
 #include "types.h"
+#include "instructions.h"
 
 int asm_interp(int argc, char *argv[]) {
 
@@ -117,6 +118,7 @@ int asm_interp(int argc, char *argv[]) {
 										mov_interp(line6, out);
 										push_interp(line6, out);
 										syscall_interp(line6, out);
+										pop_interp(out, line6);
 									}
 								}
 							}	
@@ -167,6 +169,7 @@ int asm_interp(int argc, char *argv[]) {
 									mov_interp(lineline, out);
 									push_interp(lineline, out);
 									syscall_interp(lineline, out);
+									pop_interp(out, lineline);
 								}
 
 							}
