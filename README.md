@@ -15,8 +15,6 @@
 	
 ### This is a small project made by yours truly (TristanWellman). This is a high level assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.
 
-Website: https://wellang.github.io
-
 contact me at:
 
 email: wellangcode@gmail.com
