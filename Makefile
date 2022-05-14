@@ -1,6 +1,6 @@
 C = gcc -std=c89
-COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c
-COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o
+COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c src/instructions.c
+COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o instructions.o
 INCLUDELOC = /usr/include/
 LOC = /usr/bin/
 
