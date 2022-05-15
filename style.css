@@ -4,86 +4,50 @@
 	margin: 0;
 	padding 0;
 	box-sizing: border-box;
-	font-family: arial;
-
+}
+@media (min-width: 64em) {
+	.text { flex-grow: 1; }
 }
 body {
-	background: #262626;
+	background: #111;
 }
-ul {
-	
-	position: relative;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 
-}
-ul li {
+#welcome {
 
-	list-style: none;
+	overflow: hidden;
+	white-space
 
 }
-ul li a {
+#welcome::before {
 
-	position: relative;
-	min-height: 10vh;
-	color: #fff;
-	font-size: 1em;
-	text-decoration: none;
-	display: inline-block;
-	padding: 10px 20px;
-	font-weight: 300;
-	background: rgba(255, 255, 255, 0.05);
-	box-shadow: 0 35px 15px rgba(0,0,0,0.2);
-	border-top: 1px solid rgba(255,255,255,0.1);
-	border-bottom: 1px solid rgba(255,255,255,0.1);
+	content: "$ ";
 
 }
-ul li a:before {
+#welcome::after {
 
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 50%;
-	height: 100%;
-	background: rgba(255,255,255,0.1);
+	content: "█";
 
 }
-h2 {	
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 50vh;
-	overflow: hidden
-	position: relative;
-	font-size: 4em;
-	text-transform: uppercase;
-	color: #575757;
-	width: 100%;
-	text-align: center;
-	-webkit-box-reflect: below 0px linear-gradient(transparent, #0004);
+h1 {
+
+	font-weight: bold;
+	color: #FFFFFF;
+	font-family: monospace;
+
+
 }
-h2 span{
-
-	animation: animate 5s linear infinite;
-
-} @keyframes animate {
-
-	0%,18%,20%,50.1%,60%,65.1%,80%,90.1%,92% {
-		color: #575757;
-		text-shadow: none;
-	}
-	18.1%,20.1%,30%,50%,60.1%,65%,80.1%,90%,92.1%,100% {
-	
-		color: #fbd4ad;
-		text-shadow: 0 0 10px #d47408,
-		0 0 20px #d47408,
-		0 0 40px #d47408,
-		0 0 80px #d47408,
-		0 0 160px #d47408,
-		0 0 400px #d47408;
-
-	}
-
+h2 {
+	font-family: monospace;
+	color: #FFFFFF;
+	display: block;
+    	font-size: 1.5em;
+    	margin-block-start: 0.83em;
+    	margin-block-end: 0.83em;
+    	margin-inline-start: 0px;
+    	margin-inline-end: 0px;
+    	font-weight: bold;
+}
+.text {
+	border: 6px double #FFFFFF;
+	padding: 1em;
 }
