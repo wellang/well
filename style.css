@@ -10,6 +10,7 @@
 }
 body {
 	background: #111;
+	color: #FFFFFF;
 }
 
 #welcome {
@@ -75,10 +76,36 @@ h2 {
     	margin-inline-end: 0px;
     	font-weight: bold;
 }
+hr {
+    	display: block;
+    	unicode-bidi: isolate;
+    	margin-block-start: 0.5em;
+    	margin-block-end: 0.5em;
+    	margin-inline-start: auto;
+    	margin-inline-end: auto;
+    	overflow: hidden;
+    	border-style: inset;
+    	border-width: 1px;
+}
+p {
+   	 display: block;
+   	 margin-block-start: 1em;
+   	 margin-block-end: 1em;
+   	 margin-inline-start: 0px;
+ 	 margin-inline-end: 0px;
+}
 .logo {
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
+}
+.grid {
+	border-collapse: collapse;
+}
+.row {
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row-reverse;
 }
 .text {
 	border: 6px double #FFFFFF;
