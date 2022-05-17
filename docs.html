@@ -22,10 +22,34 @@
 		WELLANG DOCS
 	     	</h1>
 	</div>
-	<div class="text">
-		<h2>This is a project originally started by Tristan Wellman(read CONTRIBUTING.md for contribution info). This is a high level assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.</h2>
-		
+	<div class="grid">
+		<div class="row">
+			<div class="text">
+				<h2>This is a project originally started by Tristan Wellman(read CONTRIBUTING.md for contribution info). This is a high level assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="text">
+				<h2>DOCUMENTATION: </h2>
+				<hr>
+				<p>Simple Hello world:</p>
+				<p class="line">var:main {</p>
+				<p class="line-i">string~ text = 'hello world!'</p>
+				<p class="line-i">length~ text_length, text</p>
+				<p class="line"> </p>
+				<p class="line">}</p>
+				<p class="line">~func:main {</p>
+				<p class="line-i">move~ 1, rax</p>
+				<p class="line-i">move~ 1, rdi</p>
+				<p class="line-i">move~ text, rsi</p>
+				<p class="line-i">move~ text_length, rdx</p>
+				<p class="line-i">return</p>
+				<p class="line-i">move~ 60, rax</p>
+				<p class="line-i">move~ 0, rdi </p>
+				<p class="line-i">return</p>
+				<p class="line">}</p>
+			</div>
+		</div>
 	</div>
   </body>
 </html>
-
