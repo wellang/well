@@ -88,6 +88,9 @@ cd ~/.vim
 mkdir syntax && mkdir ftdetect
 ```
 
+### Credits
+![Contributors](https://contrib.rocks/image?repo=wellang/well)
+
 # New Features!
 
 5/14/22: Added Function handling. You can now make use of more than just the main function in wellang!
