@@ -84,7 +84,7 @@ make vim
 
 if it says you don't have ``~/.vim/syntax/`` or ``~/.vim/ftdetect/`` then you can do
 ```
-cd {path/to/.vim}
+cd ~/.vim
 mkdir syntax && mkdir ftdetect
 ```
 
