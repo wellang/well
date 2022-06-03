@@ -96,3 +96,8 @@ mkdir syntax && mkdir ftdetect
 5/14/22: Added Function handling. You can now make use of more than just the main function in wellang!
 
 5/10/22: Added support for vim syntax highlighting with wellang
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/wellang/well.svg)](https://starchart.cc/wellang/well)
+
