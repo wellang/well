@@ -1,6 +1,7 @@
-C = gcc -std=c89
-COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c src/instructions.c
-COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o instructions.o
+C = gcc
+CFLAGS = -std=c99
+COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c src/instructions.c src/log.c src/array_interp.c
+COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o instructions.o log.o array_interp.o
 INCLUDELOC = /usr/include/
 LOC = /usr/bin/
 
@@ -9,8 +10,8 @@ LOC = /usr/bin/
 .SUFFIXES: .c .o
 
 base:
-	$(C) -L src -c $(COMMON_.c)
-	$(C) -o wesm $(COMMONC_.o)
+	$(C) $(CFLAGS) -L src -c $(COMMON_.c)
+	$(C) $(CFLAGS) -o wesm $(COMMONC_.o)
 
 install:
 	sudo mkdir $(INCLUDELOC)wellang

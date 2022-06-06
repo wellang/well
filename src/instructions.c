@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "log.h"
 
 int pop_interp(FILE *out, char line[]) {
 
@@ -15,7 +16,7 @@ int pop_interp(FILE *out, char line[]) {
 			after_pop++;
 			fprintf(out, "pop %s\n", after_pop);
 		} else if(after_pop == NULL) {
-			printf("ERROR:: Pop instruction expects item\n\n");
+			log_error("ERROR:: Pop instruction expects item\n\n");
 			return 0;
 		}
 

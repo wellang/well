@@ -1,7 +1,11 @@
+/*Copyright 2022 Tristan Wellman*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "log.h"
+#include "array_interp.h"
 
 int string_interp(char line[], FILE *out) {
 
@@ -25,7 +29,7 @@ int string_interp(char line[], FILE *out) {
 			if(after_name != NULL) {
 				after_name++;
 			} else {
-				printf("ERROR:: string missing '=' (string~ foo = 'bar')\n");
+				log_error("ERROR:: string missing '=' (string~ foo = 'bar')\n");
 				return 0;
 			}
 			
@@ -35,7 +39,7 @@ int string_interp(char line[], FILE *out) {
 			fclose(out2);
 
 		} else {
-			printf("ERROR:: string missing '~' (string~ foo = 'bar')\n");
+			log_error("ERROR:: string missing '~' (string~ foo = 'bar')\n");
 			return 0;
 		}
 
@@ -101,7 +105,7 @@ int int_interp(char line[], FILE *out) {
 			if(after_name != NULL) {
 				after_name++;
 			} else {
-				printf("ERROR:: Variable missing '=', EX:(type~ foo = 1234)\n");
+				log_error("ERROR:: Variable missing '=', EX:(type~ foo = 1234)\n");
 				return 0;
 			}
 
@@ -112,12 +116,19 @@ int int_interp(char line[], FILE *out) {
 			fclose(out);
 
 		} else {
-			printf("ERROR:: Variable missing '~', EX:(type~ foo = 1234)\n");
+			log_error("ERROR:: Variable missing '~', EX:(type~ foo = 1234)\n");
 			return 0;
 		}
 
 	} else {
 		return 0;
 	}
+
+}
+
+int array_run(FILE *out, char line[]) {
+
+	array_interp(out, line);
+	return 0;
 
 }

@@ -6,6 +6,7 @@
 #include "syscall_interp.h"
 #include "push_search.h"
 #include "types.h"
+#include "log.h"
 #include "instructions.h"
 
 int asm_interp(int argc, char *argv[]) {
@@ -212,10 +213,10 @@ void compile(int argc, char *argv[]) {
 		EXEC_NAME = argv[4];
 		snprintf(buf, sizeof(buf), "nasm -f elf64 a.asm -o %s && ld %s -o %s && rm -f %s", OUTPUT_NAME, OUTPUT_NAME, EXEC_NAME, OUTPUT_NAME);
 		system(buf);
-		printf("%s Compiled successfully!\n", OUTPUT_NAME);
+		log_info("%s Compiled successfully!\n", OUTPUT_NAME);
 	} else {
 		system("nasm -f elf64 a.asm -o a.o && ld a.o -o out");
-		printf("Program Compiled successfully!\n");
+		log_info("Program Compiled successfully!\n");
 	}
 
 }
@@ -223,7 +224,7 @@ void compile(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
 
 	if(argv[1] == NULL) {
-		printf("\n:: Invalid file name, ex: wesm (.well file) -o (.o file) (executable name)\n > wesm test.well -o test.o test\n\n");
+		log_error("\n:: Invalid file name, ex: wesm (.well file) -o (.o file) (executable name)\n > wesm test.well -o test.o test\n\n");
 		return 0;
 	}
 

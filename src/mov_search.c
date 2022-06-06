@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "log.h"
 
 int mov_interp(char line[], FILE *out) {
 
@@ -39,7 +40,7 @@ int mov_interp(char line[], FILE *out) {
 		*/		
 				const char delim2[] = ";";
 			} else if(after_var1 == NULL){
-				printf("ERROR:: move missing ',' or second var in line:\n\n");
+				log_error("ERROR:: move missing ',' or second var in line:\n\n");
 				return 0;
 			}
 
@@ -59,7 +60,7 @@ int mov_interp(char line[], FILE *out) {
 			fclose(out5);
 
 		} else {
-			printf("ERROR:: move missing '~' in line:\n\n");
+			log_error("ERROR:: move missing '~' in line:\n\n");
 			return 0;
 		}		
 
