@@ -75,14 +75,17 @@ int asm_interp(int argc, char *argv[]) {
 	FILE *file3 = fopen(fname, "r+");
 	char line4[256];
 	int line_num = 0;
+	int lineline_num = 0;
 	while(fgets(line4, sizeof(line4), file3) != NULL) {
-
+		
+		lineline_num++;
 		char search[] = "~func:";
 		char *func = strstr(line4, search);
 		char search_main[] = "~func:main"; 
 		char *main = strstr(line4, search_main);
 
 		if(func != NULL && main == NULL) {
+				log_info("found function at line: %d", lineline_num);
 				char *after_func = strchr(line4, ':');
 				if(after_func != NULL) {
 						after_func++;
@@ -120,18 +123,20 @@ int asm_interp(int argc, char *argv[]) {
 										push_interp(line6, out);
 										syscall_interp(line6, out);
 										pop_interp(out, line6);
+										array_run(out, line6);
 									}
 								}
 							}	
 						} else if(brack == NULL) {
-							printf("sub function brackets not implimented yet\n\n");
+							log_warn("sub function brackets not implimented yet\n\n");
 						}
 
 				} else if(after_func == NULL) {
-						printf("ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
+						log_error("ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
 						continue;
 				}
 		} else if(func != NULL && main != NULL) {
+			log_info("found main fuction at line: %d", lineline_num);
       			FILE *outputfunc = fopen("a.asm", "a");
 	                fprintf(outputfunc, "\n\nglobal _start\n\n_start:\n\t");
  	                fclose(outputfunc);

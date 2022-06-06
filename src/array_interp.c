@@ -9,6 +9,9 @@ int array_interp(FILE *out, char line[]) {
 	/*array~ foo{123,456,789}*/
 
 	char search[] = "array~ ";
+	
+
+	
 	return 0;
 
 
