@@ -44,7 +44,7 @@ install wellang
 ### Example program (using linux x86_x64 syscall table): helloworld.well (in /example/)
 
 ```
-var:main {
+~var:main {
 
 	string~ text = 'hello world!'
 	length~ text_length, text
