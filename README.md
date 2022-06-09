@@ -93,6 +93,8 @@ mkdir syntax && mkdir ftdetect
 
 # New Features!
 
+6/6/22: log.c, and log.h additions
+
 5/14/22: Added Function handling. You can now make use of more than just the main function in wellang!
 
 5/10/22: Added support for vim syntax highlighting with wellang
