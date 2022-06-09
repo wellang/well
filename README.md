@@ -41,7 +41,7 @@ install wellang
 
 ``$ make install``
 
-## Example program (uses linux x86 syscall table): helloworld.well (in /example/)
+### Example program (using linux x86_x64 syscall table): helloworld.well (in /example/)
 
 ```
 var:main {

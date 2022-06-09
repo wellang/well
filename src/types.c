@@ -126,6 +126,61 @@ int int_interp(char line[], FILE *out) {
 
 }
 
+int char_interp(FILE *out, char line[]) {
+
+	char dot_search[] = "char~ *";
+	char *dot = strstr(line, dot);	
+
+	char search[] = "char~ ";
+	char *char_search = strstr(line, search);
+	if(char_search != NULL) {
+		
+		char *after_c = strchr(line, '~');
+		if(after_c != NULL) {
+			after_c++;
+			const char delim[] = "=";
+			char *after_name = strchr(after_c, '=');
+			char *var_name = strtok(after_c, delim);
+			if(after_name != NULL) {
+				after_name++;
+			} else {
+				log_error("char missing '='\n");
+				return 0;
+			}
+			after_name[strlen(after_name)-1] = '\0';
+			var_name[strlen(var_name)-1] = '\0';
+			out = fopen("a.asm", "a");
+			fprintf(out, "\t%s: db%s\n", var_name, after_name);
+			fclose(out);
+		}
+
+	} /*else if(char_search != NULL && dot != NULL) {
+		char *after_c = strchr(line, '*');
+		if(after_c != NULL) {
+			after_c++;
+			const char delim[] = "=";
+			char *after_name = strchr(after_c, '=');
+			char *var_name = strtok(after_c, delim);
+
+			if(after_name != NULL) {
+				after_name++;
+			} else {
+				log_error("char missing '='\n");
+				return 0;
+			}
+			after_name[strlen(after_name) - 1] = '\0';
+			var_name[strlen(var_name)-1] = '\0';
+			out = fopen("a.asm", "a");
+			fprintf(out, "\t%s: .quad %s", var_name, after_name);
+			fclose(out);
+
+		}
+
+	}*/
+	
+	return 0;
+}
+
 int array_run(FILE *out, char line[]) {
 
 	array_interp(out, line);

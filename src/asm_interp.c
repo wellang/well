@@ -1,3 +1,5 @@
+/*Copyright (c) 2022 Tristan Wellman*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -8,12 +10,24 @@
 #include "types.h"
 #include "log.h"
 #include "instructions.h"
+#include "asm_macro_interp.h"
 
 int asm_interp(int argc, char *argv[]) {
 
 	const char *fname;
 
 	fname = argv[1];
+
+	char line8[256];
+	FILE *bits = fopen(fname, "r+");
+	FILE *bit_out;
+	while(fgets(line8, sizeof(line8), bits) != NULL) {
+		bits_interp(bit_out, line8);
+		if(line8 == NULL) {
+			break;
+		}
+	}
+
 	char line[256];
 
 	FILE *file;
@@ -21,7 +35,7 @@ int asm_interp(int argc, char *argv[]) {
 	FILE *output;
 	output = fopen("a.asm", "a");
 
-	fprintf(output, "section .data ;variables & data not implimented yet\n\n"/*section .text\n\n"*/);
+	fprintf(output, "section .data\n"/*section .text\n\n"*/);
 	fclose(output);
 	
 	FILE *file6 = fopen(fname, "r+");
@@ -43,7 +57,7 @@ int asm_interp(int argc, char *argv[]) {
 
 	while(fgets(line, sizeof(line), file) != NULL) {
 				
-		char var_search[] = "var:main {";
+		char var_search[] = "~var:main {";
 		char *var = strstr(line, var_search);
 
 		if(var != NULL) {
@@ -58,6 +72,8 @@ int asm_interp(int argc, char *argv[]) {
 					string_interp(mainlines, out2);
 					length_interp(mainlines, out2);
 					int_interp(mainlines, out2);
+					char_interp(out2, mainlines);
+					print_asm_interp(out2, mainlines);
 				}
 			}
 
@@ -124,6 +140,11 @@ int asm_interp(int argc, char *argv[]) {
 										syscall_interp(line6, out);
 										pop_interp(out, line6);
 										array_run(out, line6);
+										cif_interp(out, line6);
+										halt_interp(out, line6);
+										bits_interp(out, line6);
+										run_interp(out, line6);
+										print_asm_interp(out, line6);
 									}
 								}
 							}	
@@ -176,6 +197,12 @@ int asm_interp(int argc, char *argv[]) {
 									push_interp(lineline, out);
 									syscall_interp(lineline, out);
 									pop_interp(out, lineline);
+									array_run(out, lineline);
+									cif_interp(out, lineline);
+									halt_interp(out, lineline);
+									bits_interp(out, lineline);
+									run_interp(out, lineline);
+									print_asm_interp(out, lineline);
 								}
 
 							}
