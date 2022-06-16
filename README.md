@@ -13,7 +13,7 @@
 
 # About
 	
-### This is a project originally started by Tristan Wellman(read CONTRIBUTING.md for contribution info). This is a high level assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.
+### This is a project originally started by Tristan Wellman(read CONTRIBUTING.md for contribution info). This is a high level compiled assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.
 
 contact me at:
 
@@ -33,13 +33,9 @@ move to the wellang directory in your terminal
 
 ``$ cd well``
 
-compile wellang with make
+compile and install wellang with make
 
-``$ make base``
-
-install wellang
-
-``$ make install``
+``$ make base install``
 
 ### Example program (using linux x86_x64 syscall table): helloworld.well (in /example/)
 
