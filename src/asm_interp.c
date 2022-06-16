@@ -10,7 +10,7 @@
 #include "types.h"
 #include "log.h"
 #include "instructions.h"
-#include "asm_macro_interp.h"
+#include "asm_macros.h"
 
 int asm_interp(int argc, char *argv[]) {
 

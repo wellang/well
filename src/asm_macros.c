@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "log.h"
 
-int macro_interp(const char fname) {
+int macro_interp(const char *__restrict fname) {
 
-	FILE *file = fopen(fnamem "r+");
+	FILE *file = fopen(fname, "r+");
 	char line[256];
 	int line_num = 0;
 
@@ -22,7 +23,7 @@ int macro_interp(const char fname) {
 			char *after_macro = strchr(line, ':');
 			if(after_macro != NULL) {
 				after_macro++;
-				/*well: ~macro:name[2] {}
+				/*well: ~macro:foo[2] {}
 				 *nasm: %macro foo 2
 				 	%endmacro*/
 				char num_search[] = "[";
@@ -32,6 +33,8 @@ int macro_interp(const char fname) {
 
 				} else {
 					char *macro_name = strtok(after_macro, "{");
+					FILE *mac = fopen("a.asm", "a");
+
 
 				}
 			} else {
