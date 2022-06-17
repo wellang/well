@@ -37,6 +37,10 @@ compile and install wellang with make
 
 ``$ make base install``
 
+## Compile Wellang on windows
+
+[`windows installation`](windows/WINDOWS.md)
+
 ### Example program (using linux x86_x64 syscall table): helloworld.well (in /example/)
 
 ```
