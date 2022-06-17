@@ -38,7 +38,7 @@ int asm_interp(int argc, char *argv[]) {
 	fprintf(output, "section .data\n"/*section .text\n\n"*/);
 	fclose(output);
 	
-	FILE *file6 = fopen(fname, "r+");
+	/*FILE *file6 = fopen(fname, "r+");
 	char line7[256];
 
 	while(fgets(line7, sizeof(line7), file6) != NULL) {
@@ -53,7 +53,7 @@ int asm_interp(int argc, char *argv[]) {
 			break;
 		}
 
-	}
+	}*/
 
 	while(fgets(line, sizeof(line), file) != NULL) {
 				
