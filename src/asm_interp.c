@@ -73,7 +73,7 @@ int asm_interp(int argc, char *argv[]) {
 					length_interp(mainlines, out2);
 					int_interp(mainlines, out2);
 					char_interp(out2, mainlines);
-					print_asm_interp(out2, mainlines);
+					/*print_asm_interp(out2, mainlines);*/
 				}
 			}
 
@@ -87,6 +87,9 @@ int asm_interp(int argc, char *argv[]) {
 	FILE *out3 = fopen("a.asm", "a");
 	fprintf(out3, "section .text\n\n");
 	fclose(out3);
+
+	/*macro compiler*/
+	macro_interp(fname);
 
 	FILE *file3 = fopen(fname, "r+");
 	char line4[256];
@@ -128,10 +131,10 @@ int asm_interp(int argc, char *argv[]) {
 									char *end = strstr(line6, "}");
 									char *main = strstr(line6, "func:main");
 									if(end != NULL) {
-										printf("line:%d is the end of a function\n", line_better);
+										log_info("line:%d is the end of a function\n", line_better);
 										continue;
 									} else if(main != NULL) {
-										printf("line:%d found main function\n", line_better);
+										log_info("line:%d found main function\n", line_better);
 										break;
 									} else if(end == NULL && main == NULL){
 										FILE *out;

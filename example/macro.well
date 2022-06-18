@@ -1,0 +1,25 @@
+~var:main {
+	
+	string~ text = 'hello world'
+	length~ text_length, text
+
+}
+
+~macro:print[2] {
+
+	move~ 1, rax
+	move~ 1, rdi
+	move~ %%1, rsi
+	move~ %%2, rdx
+	return
+	move~ 60, rax
+	move~ 0, rdi
+	return
+
+}
+
+~func:main {
+
+	asm~ print text, text_length
+
+}
