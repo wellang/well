@@ -93,6 +93,8 @@ mkdir syntax && mkdir ftdetect
 
 # New Features!
 
+6/18/22: You can now make use of macros in wellang!
+
 6/9/22: added char type. Added halt, cif, bits, resb, and print to assembly instructions
 
 6/6/22: log.c, and log.h additions
