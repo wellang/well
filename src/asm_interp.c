@@ -11,12 +11,39 @@
 #include "log.h"
 #include "instructions.h"
 #include "asm_macros.h"
+#include "include.h"
 
 int asm_interp(int argc, char *argv[]) {
 
 	const char *fname;
 
 	fname = argv[1];
+
+	FILE *file6 = fopen(fname, "r+");
+	char line7[256];
+
+        /*
+         * WESM INCLUDE:
+         *      opens included file and adds its buffer to the beginning of the 
+         *      compiled buffer, this then compiles through nasm
+         * */
+        while(fgets(line7, sizeof(line7), file6) != NULL) {
+                
+                char include_search[] = "include~ ";
+                char *include = strstr(line7, include_search);
+                if(include != NULL) {
+                        char *bracks = strchr(line7, '(');
+			char *dir = strtok(bracks, ")");
+
+			include_comp(fname, dir, argc, argv);
+                        
+                        return 0;
+                }
+                if(line7 == NULL) {
+                        break;
+                }       
+                
+        }  
 
 	char line8[256];
 	FILE *bits = fopen(fname, "r+");
@@ -37,23 +64,6 @@ int asm_interp(int argc, char *argv[]) {
 
 	fprintf(output, "section .data\n"/*section .text\n\n"*/);
 	fclose(output);
-	
-	/*FILE *file6 = fopen(fname, "r+");
-	char line7[256];
-
-	while(fgets(line7, sizeof(line7), file6) != NULL) {
-		
-		char include_search[] = "include~ ";
-		char *include = strstr(line7, include_search);
-
-		if(include != NULL) {
-			
-		}
-		if(line7 == NULL) {
-			break;
-		}
-
-	}*/
 
 	while(fgets(line, sizeof(line), file) != NULL) {
 				

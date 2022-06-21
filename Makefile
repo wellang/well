@@ -1,7 +1,7 @@
 C = gcc
 CFLAGS = -std=c99
-COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c src/instructions.c src/log.c src/array_interp.c src/asm_macros.c
-COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o instructions.o log.o array_interp.o asm_macros.o
+COMMON_.c = src/asm_interp.c src/mov_search.c src/syscall_interp.c src/push_search.c src/types.c src/instructions.c src/log.c src/array_interp.c src/asm_macros.c src/include.c
+COMMONC_.o = asm_interp.o mov_search.o syscall_interp.o push_search.o types.o instructions.o log.o array_interp.o asm_macros.o include.o
 INCLUDELOC = /usr/include/
 LOC = /usr/bin/
 
