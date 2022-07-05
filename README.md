@@ -11,6 +11,10 @@
   </p>
 </div>
 
+#NOTE:
+
+Wellang is in an extremely early state, with pending syntax changes, and the development of the compiler. MAKE SURE you keep wellang up to date in these early stages.
+
 # About
 	
 ### This is a project originally started by Tristan Wellman(read CONTRIBUTING.md for contribution info). This is a high level compiled assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.
