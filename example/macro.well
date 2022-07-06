@@ -12,6 +12,9 @@
 	move~ %%1, rsi
 	move~ %%2, rdx
 	return
+}
+
+~macro:exit0[] {
 	move~ 60, rax
 	move~ 0, rdi
 	return
@@ -21,5 +24,6 @@
 ~func:main {
 
 	asm~ print text, text_length
+	asm~ exit0
 
 }
