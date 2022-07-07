@@ -146,12 +146,12 @@ int return0(FILE *out, char line[]) {
  * syscall
  */
 	char search[] = "return 0";
-	char return_search = strstr(line, search);
+	char *return_search = strstr(line, search);
 
 	if(return_search != NULL) {
 		out = fopen("a.asm", "a");
 		fprintf(out, "\tmov rax, 60\n\tmov rdi, 0\n\tsyscall\n");
-		fclose(out)
+		fclose(out);
 	}
 	
 
