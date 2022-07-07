@@ -124,22 +124,40 @@ int print_asm_interp(FILE *out, char line[]) {
 
 int ret_interp(FILE *out, char line[]) {
 
-	char search[] = "return";
-	char *return_search = strstr(line, search);
-
 	char search_ret[] = "ret";
 	char *ret_search = strstr(line, search_ret);
 
-	if(return_search != NULL) {
+	if(ret_search != NULL) {
 	
 		out = fopen("a.asm", "a");
 		fprintf(out, "\tret\n");
 		fclose(out);
 
-	} else if(ret_search != NULL) {
-		log_error("ret is not an instruction! Did you mean return?\n");
-		return 0;
 	}
 	return 0;
 
-} 
+}
+
+int return0(FILE *out, char line[]) {
+
+/*
+ * mov rax, 60
+ * mov rdi, 0
+ * syscall
+ */
+	char search[] = "return 0";
+	char return_search = strstr(line, search);
+
+	if(return_search != NULL) {
+		out = fopen("a.asm", "a");
+		fprintf(out, "\tmov rax, 60\n\tmov rdi, 0\n\tsyscall\n");
+		fclose(out)
+	}
+	
+
+}
+
+/*int return1(FILE *out, char line[]) {
+
+}*/
+

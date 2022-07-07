@@ -4,7 +4,7 @@
 
 int syscall_interp(char line[], FILE *out) {
 
-	char search[] = "return";
+	char search[] = "syscall";
 
 	char *syscall = strstr(line, search);
 

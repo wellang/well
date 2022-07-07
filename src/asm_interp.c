@@ -158,6 +158,7 @@ int asm_interp(int argc, char *argv[]) {
 										bits_interp(out, line6);
 										run_interp(out, line6);
 										print_asm_interp(out, line6);
+										return0(out, line6);
 									}
 								}
 							}	
@@ -216,6 +217,7 @@ int asm_interp(int argc, char *argv[]) {
 									bits_interp(out, lineline);
 									run_interp(out, lineline);
 									print_asm_interp(out, lineline);
+									return0(out, lineline);
 								}
 
 							}

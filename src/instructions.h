@@ -11,5 +11,6 @@ int bits_interp(FILE *out, char line[]);
 int run_interp(FILE *out, char line[]);
 int print_asm_interp(FILE *out, char line[]);
 int resb_interp(FILE *out, char line[]);
+int return0(FILE *out, char line[]);
 
 #endif
