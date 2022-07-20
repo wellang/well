@@ -61,11 +61,11 @@ compile and install wellang with make
 	move~ 1, rdi
 	move~ text, rsi
 	move~ text_length, rdx
-	return
+	syscall
 
 	move~ 60, rax
 	move~ 0, rdi 
-	return
+	syscall
 
 }
 
