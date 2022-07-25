@@ -63,10 +63,7 @@ compile and install wellang with make
 	move~ text_length, rdx
 	syscall
 
-	move~ 60, rax
-	move~ 0, rdi 
-	syscall
-
+	return 0
 }
 
 ```

@@ -11,19 +11,13 @@
 	move~ 1, rdi
 	move~ %%1, rsi
 	move~ %%2, rdx
-	return
-}
-
-~macro:exit0[] {
-	move~ 60, rax
-	move~ 0, rdi
-	return
-
+	syscall
 }
 
 ~func:main {
 
 	asm~ print text, text_length
-	asm~ exit0
+	
+	return 0
 
 }

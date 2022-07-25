@@ -125,13 +125,12 @@ int macro_interp(const char *fname) {
 				log_error("Macro missing name and/or ':' delimeter!\n");
 				return 0;
 			}
+	        	FILE *end = fopen("a.asm", "a");
+	        	fprintf(end, "\n%%endmacro\n");
+        		fclose(end);
 		} 
 
 	}
 	
-	FILE *end = fopen("a.asm", "a");
-	fprintf(end, "\n%%endmacro\n");
-	fclose(end);
-
 	return 0;
 }
