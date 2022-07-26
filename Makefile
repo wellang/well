@@ -28,7 +28,7 @@ endif
 
 vim:
 	mkdir -p ~/.vim/syntax
-	mkdir -p ~/vim/ftdetect
+	mkdir -p ~/.vim/ftdetect
 	cp vim/syntax/well.vim ~/.vim/syntax/
 	cp vim/ftdetect/well.vim ~/.vim/ftdetect/
 clean_vim:
