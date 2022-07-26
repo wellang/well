@@ -6,6 +6,17 @@
 
 #include "asm2obj.h"
 
+/*
+    Reference for asm for 32 bits: 'x86, coder32 edition'
+    - http://ref.x86asm.net/geek32.html
+    - http://sparksandflames.com/files/x86InstructionChart.html
+
+    Development auxiliary (different edition: coder32 (traditional))
+    - http://ref.x86asm.net/coder32.html
+*/
+
+#define STR__EQUAL(_string_, _compare_) (strcmp((_string_), (_compare_)) == 0)
+
 // Generate object code from asm
 void asm2obj(char* asm_path, char* os, char* arch) {
     FILE* asm_file = fopen(asm_path, "r");
@@ -15,7 +26,7 @@ void asm2obj(char* asm_path, char* os, char* arch) {
     FILE* obj_file = fopen(asm_path, "wb");
 
     // Architecture of 32 bits
-    if (strcmp(arch, "~x32") == 0) {
+    if (STR__EQUAL(arch, "~x32")) {
 
     // Illegal architecture
     } else {
@@ -52,7 +63,7 @@ bool lexer(FILE* file, token_t* token, size_t* line_number, size_t* char_number)
                     switch (character) {
 
                         // Continuation of mnemonic
-                        case 'a'...'z': case 'A'...'Z': case '_':
+                        case 'a'...'z': case 'A'...'Z': case '_': (*char_number)++;
                             token->value = resalloc(token->value, BYTE_TO_STR(character));
                             continue;
 
@@ -75,7 +86,7 @@ bool lexer(FILE* file, token_t* token, size_t* line_number, size_t* char_number)
                     switch (character) {
 
                         // Continuation of number
-                        case '0'...'9':
+                        case '0'...'9': (*char_number)++;
                             token->value = resalloc(token->value, BYTE_TO_STR(character));
                             continue;
 
@@ -102,6 +113,9 @@ bool lexer(FILE* file, token_t* token, size_t* line_number, size_t* char_number)
 
                         // Content of string
                         default:
+                            if (character == '\n') { (*line_number)++; (*char_number) = 0; }
+                            else { (*char_number)++; }
+
                             if (is_first) {
                                 token->value = salloc(BYTE_TO_STR(character));
                                 is_first = false;
@@ -131,6 +145,9 @@ bool lexer(FILE* file, token_t* token, size_t* line_number, size_t* char_number)
 
                         // Content of string
                         default:
+                            if (character == '\n') { (*line_number)++; (*char_number) = 0; }
+                            else { (*char_number)++; }
+
                             if (is_first) {
                                 token->value = salloc(BYTE_TO_STR(character));
                                 is_first = false;
@@ -158,6 +175,33 @@ bool lexer(FILE* file, token_t* token, size_t* line_number, size_t* char_number)
     return false;
 }
 
+// ASM error handler
+typedef struct {
+    char*  path;
+    size_t line_number;
+    size_t char_number;
+    char*  token;
+} error_t;
+
+// Error handler for asm code
+void errasm(error_t* error, char* message) {
+    fprintf(stderr, "error: %s '%s' in %s[%u:%u]",
+        message,
+        error->token,
+        error->path,
+        error->line_number,
+        error->char_number
+    );
+    exit(EXIT_FAILURE);
+}
+
+#define ERROR__TOKEN_DATA(_error_, _token_) ({       \
+    unsalloc((_error_).token);                       \
+    (_error_).token       = salloc((_token_).value); \
+    (_error_).line_number = (_token_).line_number;   \
+    (_error_).char_number = (_token_).char_number;   \
+})
+
 // Syntactic analyzer (1 file of asm)
 void parser(char* asm_path, char* codegen) {
     FILE* asm_file = fopen(asm_path, "r");
@@ -175,8 +219,35 @@ void parser(char* asm_path, char* codegen) {
         char_number: 0
     };
 
+    error_t error = {
+        path:        salloc(asm_path),
+        line_number: 1,
+        char_number: 0,
+        token:       salloc(""),
+    };
+
+    // Analyze file (token by token)
     while (lexer(asm_file, &token, &line_number, &char_number)) {
-        printf("[%s]", token.value);
+
+        // Error: illegal token
+        if (!(token.id == TABLE__NAME && STR__EQUAL(strlwr(token.value), "section"))) {
+            ERROR__TOKEN_DATA(error, token);
+            errasm(&error, "illegal section");
+        }
+
+        // Error: is empty, but expected token
+        if (!lexer(asm_file, &token, &line_number, &char_number)) {
+            ERROR__TOKEN_DATA(error, token);
+            error.char_number += strlen(error.token)+1;
+            unsalloc(error.token); error.token = salloc("");
+            errasm(&error, "expecting some section");
+        }
+
+        if () {
+        } else {
+        }
+
+        //printf("[%s]", token.value);
     }
 
     free(token.value); // Remove last token (analyzed)
@@ -185,3 +256,5 @@ void parser(char* asm_path, char* codegen) {
 
 // Remove macros (locals)
 #undef BYTE_TO_STR
+#undef STR__EQUAL
+#undef ERROR__TOKEN_DATA
