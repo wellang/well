@@ -238,13 +238,13 @@ void parser(char* asm_path, char* codegen) {
     }
 
     // [ TEST ] //
-
-    char* obj_path = salloc(asm_path);
-    obj_path = resalloc(obj_path, ".o");
+    char* obj_path = salloc(asm_path); obj_path = resalloc(obj_path, ".o");
     FILE* obj_file = fopen(obj_path, "wb");
     elf_header_t* elf_header = new_elf_header();
+
     char elf_header_bytes[ELF_HEADER_SIZE];
     join_elf_header(elf_header, elf_header_bytes);
+
     printf("[");
     for (int i = 0; i < ELF_HEADER_SIZE; ++i) {
         fprintf(obj_file, "%c", elf_header_bytes[i]);
@@ -252,6 +252,7 @@ void parser(char* asm_path, char* codegen) {
     }
     printf("]");
     fclose(obj_file);
+    // [ END TEST ] //
 
     token_t token = {
         id:          TABLE__ILLEGAL,

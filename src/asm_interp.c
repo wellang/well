@@ -273,10 +273,10 @@ void compile(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
 
 	// [ TEST ] //
-	
-	//asm2obj("test.asm", "~win", "~x32");
-	parser("./test/test.asm", "./test/test.o");
-	return 0;
+	//asm2obj("./test/test.asm", "~win", "~x32");
+	//parser("./test/test.asm", "./test/test.o");
+	//return 0;
+	// [ END TEST ] //
 
 	if(argv[1] == NULL) {
 		log_error("\n:: Invalid file name, ex: wesm (.well file) -o (.o file) (executable name)\n > wesm test.well -o test.o test\n\n");
