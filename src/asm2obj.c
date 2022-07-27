@@ -3,6 +3,7 @@
 
 #include "libwesm/memory.h"
 #include "log.h"
+#include "asm2obj_elf.h"
 
 #include "asm2obj.h"
 
@@ -13,6 +14,11 @@
 
     Development auxiliary (different edition: coder32 (traditional))
     - http://ref.x86asm.net/coder32.html
+
+    ELF (Executable and linkable format) for GCC '.o'
+    - https://en.wikipedia.org/wiki/Executable_and_Linkable_Format (elf info)
+    - https://upload.wikimedia.org/wikipedia/commons/e/e4/ELF_Executable_and_Linkable_Format_diagram_by_Ange_Albertini.png
+    - https://es.wikipedia.org/wiki/Executable_and_Linkable_Format (sections info)
 */
 
 #define STR__EQUAL(_string_, _compare_) (strcmp((_string_), (_compare_)) == 0)
@@ -164,7 +170,14 @@ bool lexer(FILE* file, token_t* token, size_t* line_number, size_t* char_number)
             break; default:
                 unsalloc(token->value); (*char_number)++;
 
-                token->id          =  TABLE__NAME;
+                switch (character) {
+                    // Token: '.'
+                    break; case '.': token->id = TABLE__DOT;
+
+                    // Token: illegal
+                    break; default:  token->id = TABLE__ILLEGAL;
+                }
+
                 token->value       =  salloc(BYTE_TO_STR(character));
                 token->line_number = *line_number;
                 token->char_number = *char_number;
@@ -243,7 +256,7 @@ void parser(char* asm_path, char* codegen) {
             errasm(&error, "expecting some section");
         }
 
-        if () {
+        if (token.id == TABLE__DOT) {
         } else {
         }
 

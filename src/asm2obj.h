@@ -9,6 +9,7 @@ enum {
     TABLE__NUMBER,               // 100
     TABLE__STRING_DOUBLE_QUOTES, // "Hi!"
     TABLE__STRING_SINGLE_QUOTES, // 'Hi!'
+    TABLE__DOT,                  // .
     TABLE__ILLEGAL
 };
 
