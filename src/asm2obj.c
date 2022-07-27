@@ -31,6 +31,17 @@ void asm2obj(char* asm_path, char* os, char* arch) {
     obj_path = resalloc(obj_path, ".o");
     FILE* obj_file = fopen(asm_path, "wb");
 
+    elf_header_t* elf_header = new_elf_header();
+
+    char elf_header_bytes[ELF_HEADER_SIZE];
+    join_elf_header(elf_header, elf_header_bytes);
+
+    printf("[");
+    for (int i = 0; i < ELF_HEADER_SIZE; ++i) {
+        printf("%c", elf_header_bytes[i]);
+    }
+    printf("]");
+
     // Architecture of 32 bits
     if (STR__EQUAL(arch, "~x32")) {
 
@@ -39,6 +50,7 @@ void asm2obj(char* asm_path, char* os, char* arch) {
         log_error("the specified architecture does not exist or is not supported '%s'", arch);
     }
 
+    remove_elf_header(elf_header);
     unsalloc(obj_path);
     fclose(asm_file); fclose(obj_file);
 }
@@ -224,6 +236,22 @@ void parser(char* asm_path, char* codegen) {
     if (asm_file == NULL) {
         log_error("the file could not be opened '%s'", asm_path);
     }
+
+    // [ TEST ] //
+
+    char* obj_path = salloc(asm_path);
+    obj_path = resalloc(obj_path, ".o");
+    FILE* obj_file = fopen(obj_path, "wb");
+    elf_header_t* elf_header = new_elf_header();
+    char elf_header_bytes[ELF_HEADER_SIZE];
+    join_elf_header(elf_header, elf_header_bytes);
+    printf("[");
+    for (int i = 0; i < ELF_HEADER_SIZE; ++i) {
+        fprintf(obj_file, "%c", elf_header_bytes[i]);
+        printf("%c", elf_header_bytes[i]);
+    }
+    printf("]");
+    fclose(obj_file);
 
     token_t token = {
         id:          TABLE__ILLEGAL,

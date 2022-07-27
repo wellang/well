@@ -1,42 +1,44 @@
 #pragma once
 
+#define ELF_HEADER_SIZE (84)
+
 // Only header data of elf //
 
 // Program header
 typedef struct {
-    char[4] p_type;
-    char[4] p_offset;
-    char[4] p_vaddr;
-    char[4] p_paddr;
-    char[4] p_filesz;
-    char[4] p_memsz;
-    char[4] p_flags;
-    char[4] p_fill;
+    char p_type[4];
+    char p_offset[4];
+    char p_vaddr[4];
+    char p_paddr[4];
+    char p_filesz[4];
+    char p_memsz[4];
+    char p_flags[4];
+    char p_fill[4];
 } elf_header_program_t;
 
 typedef struct {
-    char[4] ei_mag;
-    char    ei_class; char ei_data; // 2 bytes for both
-    char[4] ei_version;
-    char[6] ei_fill;
+    char ei_mag[4];
+    char ei_class; char ei_data; // 2 bytes for both
+    char ei_version[4];
+    char ei_fill[6];
 } elf_header_e_ident_t;
 
 // ELF data
 typedef struct { // 84 bytes size of all items of header
     elf_header_e_ident_t* e_ident;
-    char[2]               e_type;
-    char[2]               e_machine;
-    char[4]               e_version;
-    char[4]               e_entry;
-    char[4]               e_phoff;
-    char[4]               e_shoff;
-    char[4]               e_fill;
-    char[2]               e_ehsize;
-    char[2]               e_phentsize;
-    char[2]               e_phnum;
-    char[2]               e_shentsize;
-    char[2]               e_shnum;
-    char[2]               e_shstrndx;
+    char                  e_type[2];
+    char                  e_machine[2];
+    char                  e_version[4];
+    char                  e_entry[4];
+    char                  e_phoff[4];
+    char                  e_shoff[4];
+    char                  e_fill[4];
+    char                  e_ehsize[2];
+    char                  e_phentsize[2];
+    char                  e_phnum[2];
+    char                  e_shentsize[2];
+    char                  e_shnum[2];
+    char                  e_shstrndx[2];
     elf_header_program_t* header_program;
 } elf_header_t;
 
@@ -59,5 +61,5 @@ typedef struct {
 } elf_t;
 
 elf_header_t* new_elf_header(); // Create new elf header in zeros 'nulls'
-char* join_elf_header(elf_header_t* elf_header);
+void join_elf_header(elf_header_t* elf_header, char elf_header_bytes[ELF_HEADER_SIZE]);
 void remove_elf_header(elf_header_t* elf_header);
