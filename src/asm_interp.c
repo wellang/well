@@ -85,7 +85,7 @@ int asm_interp(int argc, char *argv[]) {
 					length_interp(mainlines, out2);
 					int_interp(mainlines, out2);
 					char_interp(out2, mainlines);
-					/*print_asm_interp(out2, mainlines);*/
+					print_asm_interp(out2, mainlines);
 				}
 			}
 
@@ -175,7 +175,7 @@ int asm_interp(int argc, char *argv[]) {
 		} else if(func != NULL && main != NULL) {
 			log_info("found main fuction at line: %d", lineline_num);
       			FILE *outputfunc = fopen("a.asm", "a");
-	                fprintf(outputfunc, "\n\nglobal _start\n\n_start:\n\t");
+	                fprintf(outputfunc, "\n\nglobal main\n\nmain:\n\t");
  	                fclose(outputfunc);
 
 			FILE *main_func = fopen(fname, "r+");
@@ -264,7 +264,7 @@ void compile(int argc, char *argv[]) {
 		system(buf);
 		log_info("%s Compiled successfully!\n", OUTPUT_NAME);
 	} else {
-		system("nasm -f elf64 a.asm -o a.o && ld a.o -o out");
+		system("nasm -f elf64 a.asm -o a.o && gcc a.o -o out -no-pie");
 		log_info("Program Compiled successfully!\n");
 	}
 

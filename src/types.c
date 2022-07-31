@@ -35,7 +35,7 @@ int string_interp(char line[], FILE *out) {
 			
 			after_name[strlen(after_name)-1] = '\0';
 			FILE *out2 = fopen("a.asm", "a");
-			fprintf(out2, "%s: db%s, 10\n", string_name, after_name);
+			fprintf(out2, "%s: db%s, 0\n", string_name, after_name);
 			fclose(out2);
 
 		} else {
