@@ -133,8 +133,13 @@ int asm_interp(int argc, char *argv[]) {
 							FILE *read = fopen(fname, "r+");
 							char line6[256];
 							int line_better = 0;
-							int line_line = line_num;
+							int line_line = lineline_num;
 							while(fgets(line6, sizeof(line6), read) != NULL) {
+								/*char search_for_func[] = function_name;
+								char func = strstr(line6, search_for_func);
+								if(func != NULL) {
+									
+								}*/
 								if(line_better != line_line) {
 									line_better++;
 								} else if(line_better == line_line) {
@@ -144,7 +149,7 @@ int asm_interp(int argc, char *argv[]) {
 									char *main = strstr(line6, "func:main");
 									if(end != NULL) {
 										log_info("line:%d is the end of a function\n", line_better);
-										continue;
+										break;
 									} else if(main != NULL) {
 										log_info("line:%d found main function\n", line_better);
 										break;
