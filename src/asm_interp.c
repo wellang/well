@@ -78,6 +78,13 @@ int asm_interp(int argc, char *argv[]) {
 			char mainlines[256];
 
 			while(fgets(mainlines, sizeof(mainlines), varread) != NULL) {
+				
+				char brack_s[] = "}";
+				char *search_b = strstr(mainlines, brack_s);
+				if(search_b != NULL) {
+					break;
+				}
+				
 				if(mainlines == NULL) {
 					break;
 				} else {
