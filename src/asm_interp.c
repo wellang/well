@@ -12,6 +12,7 @@
 #include "instructions.h"
 #include "asm_macros.h"
 #include "include.h"
+#include "lea.h"
 
 #include "asm2obj.h"
 
@@ -172,6 +173,7 @@ int asm_interp(int argc, char *argv[]) {
 										bits_interp(out, line6);
 										run_interp(out, line6);
 										print_asm_interp(out, line6);
+										lea_interp(line6, out, line_better);
 										return0(out, line6);
 									}
 								}
@@ -231,6 +233,7 @@ int asm_interp(int argc, char *argv[]) {
 									bits_interp(out, lineline);
 									run_interp(out, lineline);
 									print_asm_interp(out, lineline);
+									lea_interp(lineline, out, line_yo);
 									return0(out, lineline);
 								}
 
