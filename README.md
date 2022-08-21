@@ -71,7 +71,7 @@ compile and install wellang with make
 ## compile program
 to compile your well program you can run ``wesm`` in your terminal:
 ```
-[test@test example]$ wesm helloworld.well -o hello.o hello
+[test@test example]$ wesm helloworld.well -o helloworld
 done compiling program
 [test@test example]$ ./hello
 hello world!
@@ -94,13 +94,11 @@ mkdir syntax && mkdir ftdetect
 
 # New Features!
 
+8/21/22: wesm arg overhaul
+
 6/18/22: You can now make use of macros in wellang!
 
 6/9/22: added char type. Added halt, cif, bits, resb, and print to assembly instructions
-
-6/6/22: log.c, and log.h additions
-
-5/14/22: Added Function handling. You can now make use of more than just the main function in wellang!
 
 5/10/22: Added support for vim syntax highlighting with wellang
 
