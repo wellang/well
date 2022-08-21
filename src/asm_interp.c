@@ -13,6 +13,8 @@
 #include "asm_macros.h"
 #include "include.h"
 
+#include "argparse/argparse.h"
+
 #include "asm2obj.h"
 
 int asm_interp(int argc, char *argv[]) {
@@ -264,12 +266,80 @@ int asm_interp(int argc, char *argv[]) {
 
 void compile(int argc, char *argv[]) {
 
-	char buf[0x100];
-	char *arg = "-o";
-	const char *OUTPUT_NAME;
-	const char *EXEC_NAME;
+	struct ArgparseParser parser = argparse_init("wesm", argc, argv);
 
-	if(argv[2] == arg) {
+	argparse_add_option(&parser, "--object", "-o", ARGPARSE_FLAG);
+	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG); // keeps the tmp assembly file
+   	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG); // ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main
+
+
+	const char *out;
+	bool keep_asm;
+
+	const char *gcc_options;
+
+	const char *start = "nasm -f elf64 a.asm -o a.o";
+	const char *linker = "gcc a.o -no-pie";
+
+	char out_buf[0x100];
+	char gcc_buf[0x100];
+	char final_buf[0x100];
+
+    	if(argparse_option_exists(parser, "--output") != ARGPARSE_NOT_FOUND ||
+    		argparse_option_exists(parser, "-o") != ARGPARSE_NOT_FOUND) {
+
+       		int i = 1;
+		for(i = 1; i < 256; i++) {
+			if(!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")) {
+
+				out = argv[i + 1];
+				snprintf(out_buf, sizeof(out_buf), "-o %s", out);	
+				break;	
+
+			}
+		}
+    	}
+	if(argparse_option_exists(parser, "--assembly") != ARGPARSE_NOT_FOUND ||
+			argparse_option_exists(parser, "-a" != ARGPARSE_NOT_FOUND)) {
+	
+		keep_asm = true;
+	
+	} else {
+		keep_asm = false;
+	}
+	if(argparse_option_exists(parser, "--gcc") != ARGPARSE_NOT_FOUND ||
+			argparse_option_exists(parser, "-cc") != ARGPARSE_NOT_FOUND) {
+		int i = 1;
+		for(i = 1; i < 256; i++) {
+			if(!strcmp(argv[i], "-gcc") || !strcmp(argv[i], "-cc")) {
+				gcc_options = argv[i + 1];
+				char *tmp = strstr(gcc_options, "::");
+				if(tmp != NULL) {
+					tmp++;
+					//const char delim[] = "\"";
+					//char *gcc = strtok(tmp, delim);
+				} else {
+					log_error("ERROR:: Bad gcc options: %s\n (ex: wesm main.well -cc ::-lpthread -lcurl -g::)\n", gcc_options);
+				}
+				const char delim[] = "::";
+				char *gcc = strtok(tmp, delim);
+				snprintf(gcc_buf, sizeof(gcc_buf), "%s", gcc);
+				break;
+			}
+		}
+			
+	}
+
+
+	snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
+	system(final_buf);
+	log_info(final_buf);
+	if(keep_asm == false) {
+		system("rm -f a.asm a.o");
+	} else {
+		system("rm -f a.o");
+	}
+	/*if(!strcmp(argv[2], "-o")) {
 		OUTPUT_NAME = argv[3];
 		EXEC_NAME = argv[4];
 		snprintf(buf, sizeof(buf), "nasm -f elf64 a.asm -o %s && ld %s -o %s && rm -f %s", OUTPUT_NAME, OUTPUT_NAME, EXEC_NAME, OUTPUT_NAME);
@@ -278,8 +348,9 @@ void compile(int argc, char *argv[]) {
 	} else {
 		system("nasm -f elf64 a.asm -o a.o && gcc a.o -o out -no-pie");
 		log_info("Program Compiled successfully!\n");
-	}
+	}*/
 
+	argparse_free(parser);
 }
 
 int main(int argc, char *argv[]) {
