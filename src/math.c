@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "log.h"
 
-int math(char line[], char[] final_buf) {
+int math(char line[], char final_buf[]) {
 
 	char plus[] = "+";
 	char sub[] = "-";
@@ -14,8 +14,8 @@ int math(char line[], char[] final_buf) {
 
 	char *PLUS = strstr(line, plus);
 	char *SUB = strstr(line, sub);
-	char *mult = strstr(line, mult);
-	char *div = strstr(line, div);
+	char *MULT = strstr(line, mult);
+	char *DIV = strstr(line, div);
 
 	if(PLUS != NULL || 
 			SUB != NULL ||
@@ -35,7 +35,7 @@ int math(char line[], char[] final_buf) {
 			after_after++;
 		}
 
-		char *math_prblem = strtok(after, delim);
+		char *math_problem = strtok(after, delim);
 
 		/*
 			 move~ :32+{5*[49*3*(-4-9)]+56}*(-5):, rax
@@ -60,22 +60,51 @@ int math(char line[], char[] final_buf) {
 					
 					const char delimlim[] = "{";
 					char *math_prob = math_problem;
-					char before_brack = strtok(math_prob, delimlim);
-					const char delimlimlim[] = "}";
+					char *before_brack = strtok(math_prob, delimlim);
 					char *math_probob = math_problem;
-					char after_brack = strtok(math_probob, delimlimlim);
+					char *after_brack = strchr(math_probob, '}');
 					// before = 32+
 					// after = *(-5)
 
+					const char delim_zer[] = "[";
+					char *first_math = math_problem;
+					char *after_bracket = strchr(first_math, ']');
+					if(after_bracket != NULL) {
+						after_bracket++;
+					}
+					char *before_bracket = strtok(first_math, delim_zer);
+					// before = 5*
+					// after = +56
+
 					const char delim_one[] = "]";
-					char after_brackets = strchr(math_problem, '[');
+					char *after_brackets = strchr(math_problem, '[');
 					if(after_brackets != NULL) {
 						after_brackets++;
 					}
-					char before_brackets = strtok(after_brackets, delim_one);
-					// after = []
+					char *before_brackets = strtok(after_brackets, delim_one);
+					// before_brackets = [49*3*(-4-9)]
+					
+					const char delimlimlimlim[] = ")";
+					char *after_per = strstr(before_brackets, "(");
+					char *math_probb = strtok(after_per, delimlimlimlim);
+					// math_probb = -4-9
+					
+					char *PLU = strstr(math_probb, plus);
+					if(PLU != NULL) {
+							
+					}
+					char *MIN = strstr(math_probb, sub);
+					if(MIN != NULL) {
+					
+					}
 
-					unsigned long long par_num = 					
+					char after_problem[] = "}";
+					char *AFTER_PROB = strstr(line, after_problem);
+
+					char buf[0x100];
+					snprintf(buf, sizeof(buf), "%s%s;true", before, AFTER_PROB);
+					final_buf = buf;
+					return buf;
 				}
 			}
 
@@ -90,34 +119,12 @@ int math(char line[], char[] final_buf) {
 		}
 	
 	} else {
-		final_buf = "false";
+		char buf[0x100];
+		snprintf(buf, sizeof(buf), "%s ;false", line);
+		final_buf = buf;
 		return final_buf;
 	}
 
 	return final_buf; // should be move~ 47335, rax
-
-}
-
-int math_check(char line[], char buf[], bool MATH_IS_THERE) {
-
-	math(line, buf);
-
-	char true_[] = "true";
-	char false_[] = "false";
-	
-	char *TRUE = strstr(line, true_);
-	char *FALSE = strstr(line, false_);
-	
-	if(TRUE != NULL) {
-	
-		MATH_IS_THERE = true;
-	
-	} else if(FALSE != NULL) {
-	
-		MATH_IS_THERE = false
-	
-	}
-
-	return MATH_IS_THERE && buf;
 
 }

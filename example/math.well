@@ -1,0 +1,15 @@
+~var:main {
+	asm~ intstr db '%d', 10, 0
+} 
+
+~func:main {
+
+	extern printf
+
+	move~ intstr, rdi
+	move~ :32+{5*[49*3*(-4-9)]+56}*(-5):, rsi
+	move~ 0, rax
+	asm~ call printf
+	
+	return 0
+}

@@ -105,7 +105,7 @@ int int_interp(char line[], FILE *out) {
 			if(after_name != NULL) {
 				after_name++;
 			} else {
-				log_error("ERROR:: Variable missing '=', EX:(type~ foo = 1234)\n");
+				log_error("ERROR:: Variable missing '=', EX:(int~ foo = 1234)\n");
 				return 0;
 			}
 
@@ -116,15 +116,57 @@ int int_interp(char line[], FILE *out) {
 			fclose(out);
 
 		} else {
-			log_error("ERROR:: Variable missing '~', EX:(type~ foo = 1234)\n");
+			log_error("ERROR:: Variable missing '~', EX:(int~ foo = 1234)\n");
 			return 0;
 		}
 
 	} else {
 		return 0;
 	}
+	return 0;
 
 }
+
+/*int _floa_interp_(char line[], FILE *out) {
+
+	// well: float~ test = 3.1459
+        //  nasm: test: dd3.1458
+
+	char search[] = "float~ ";
+	char *floatstr = strstr(line, search);
+	if(floatstr != NULL) {
+	
+		char *after_f = strchr(line, '~');
+		if(after_f != NULL) {
+			after_f++;
+			const char delim[] = "=";
+			
+			char *after_name = strchr(after_f, '=');
+			char *var_name = strtok(after_f, delim);
+			if(after_name != NULL) {
+				after_name++;
+			} else {
+				log_error("ERROR:: Variable missing '=' EX:(float~ foo = 3.1459)\n");
+				return 0;
+			}
+
+			after_name[strlen(after_name-1)] = '\0';
+			var_name[strlen(var_name)-1] = '\0';
+			out = fopen("a.asm", "a");
+			fprintf(out, "\t%s: dd%s\n", var_name, after_name);
+			fclose(out);
+
+		} else {
+			log_error("ERROR:: Variable missing '~', EX:(float~ foo = 3.1459)\n");
+			return 0;
+		}
+		
+	} else {
+		return 0;
+	}
+	return 0;
+
+}*/
 
 int char_interp(FILE *out, char line[]) {
 

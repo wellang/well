@@ -94,6 +94,7 @@ int asm_interp(int argc, char *argv[]) {
 					string_interp(mainlines, out2);
 					length_interp(mainlines, out2);
 					int_interp(mainlines, out2);
+					//_floa_interp_(mainlines, out2);
 					char_interp(out2, mainlines);
 					print_asm_interp(out2, mainlines);
 				}
@@ -293,6 +294,10 @@ void compile(int argc, char *argv[]) {
 
        		int i = 1;
 		for(i = 1; i < 256; i++) {
+			if(argv[i] == NULL) {
+				snprintf(out_buf, sizeof(out_buf), "-o a.out");
+				break;
+			}
 			if(!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")) {
 
 				out = argv[i + 1];
@@ -314,6 +319,9 @@ void compile(int argc, char *argv[]) {
 			argparse_option_exists(parser, "-cc") != ARGPARSE_NOT_FOUND) {
 		int i = 1;
 		for(i = 1; i < 256; i++) {
+			if(argv[i] == NULL) {
+				break;
+			}
 			if(!strcmp(argv[i], "-gcc") || !strcmp(argv[i], "-cc")) {
 				gcc_options = argv[i + 1];
 				char *tmp = strstr(gcc_options, "::");
@@ -332,7 +340,6 @@ void compile(int argc, char *argv[]) {
 		}
 			
 	}
-
 
 	snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
 	system(final_buf);
