@@ -33,7 +33,7 @@
 				<h2>DOCUMENTATION: </h2>
 				<hr>
 				<p>Simple Hello world:</p>
-				<p class="line">var:main {</p>
+				<p class="line">~var:main {</p>
 				<p class="line-i">string~ text = 'hello world!'</p>
 				<p class="line-i">length~ text_length, text</p>
 				<p class="line"> </p>
@@ -43,10 +43,9 @@
 				<p class="line-i">move~ 1, rdi</p>
 				<p class="line-i">move~ text, rsi</p>
 				<p class="line-i">move~ text_length, rdx</p>
-				<p class="line-i">return</p>
-				<p class="line-i">move~ 60, rax</p>
-				<p class="line-i">move~ 0, rdi </p>
-				<p class="line-i">return</p>
+				<p class="line-i">syscall</p>
+				<p class="line"> </p>
+				<p class="line-i">return 0</p>
 				<p class="line">}</p>
 			</div>
 		</div>
