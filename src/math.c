@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "log.h"
 
-int math(char line[], char final_buf[]) {
+char *math(char line[], char final_buf[]) {
 
 	char plus[] = "+";
 	char sub[] = "-";

@@ -45,7 +45,7 @@ compile and install wellang with make
 
 [`windows installation`](windows/WINDOWS.md)
 
-### Example program (using linux x86_x64 syscall table): helloworld.well (in /example/)
+### Example program (using linux x86_x64 syscall table)
 
 ```
 ~var:main {
@@ -71,10 +71,11 @@ compile and install wellang with make
 ## compile program
 to compile your well program you can run ``wesm`` in your terminal:
 ```
-[test@test example]$ wesm helloworld.well -o helloworld
-done compiling program
-[test@test example]$ ./hello
-hello world!
+❯ wesm helloworld.well -o helloworld
+20:14:46 INFO  src/asm_interp.c:393: Compile time:: 0.000451 seconds
+❯ ./helloworld
+hello world
+
 ```
 
 ## Vim syntax highlighting

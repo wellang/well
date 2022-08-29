@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
+
 #include "mov_search.h"
 #include "syscall_interp.h"
 #include "push_search.h"
@@ -18,7 +20,7 @@
 
 #include "asm2obj.h"
 
-int asm_interp(int argc, char *argv[]) {
+int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
 	const char *fname;
 
@@ -127,7 +129,7 @@ int asm_interp(int argc, char *argv[]) {
 		char *main = strstr(line4, search_main);
 
 		if(func != NULL && main == NULL) {
-				log_info("found function at line: %d", lineline_num);
+				if(INFO_DEBUG == true){log_info("found function at line: %d", lineline_num);}
 				char *after_func = strchr(line4, ':');
 				if(after_func != NULL) {
 						after_func++;
@@ -159,10 +161,10 @@ int asm_interp(int argc, char *argv[]) {
 									char *end = strstr(line6, "}");
 									char *main = strstr(line6, "func:main");
 									if(end != NULL) {
-										log_info("line:%d is the end of a function\n", line_better);
+										if(INFO_DEBUG == true){log_info("line:%d is the end of a function\n", line_better);}
 										break;
 									} else if(main != NULL) {
-										log_info("line:%d found main function\n", line_better);
+										if(INFO_DEBUG == true){log_info("line:%d found main function\n", line_better);}
 										break;
 									} else if(end == NULL && main == NULL){
 										FILE *out;
@@ -190,7 +192,7 @@ int asm_interp(int argc, char *argv[]) {
 						continue;
 				}
 		} else if(func != NULL && main != NULL) {
-			log_info("found main fuction at line: %d", lineline_num);
+			if(INFO_DEBUG == true){log_info("found main fuction at line: %d", lineline_num);}
       			FILE *outputfunc = fopen("a.asm", "a");
 	                fprintf(outputfunc, "\n\nglobal main\n\nmain:\n\t");
  	                fclose(outputfunc);
@@ -275,6 +277,7 @@ void compile(int argc, char *argv[]) {
 	argparse_add_option(&parser, "--object", "-o", ARGPARSE_FLAG);
 	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG); // keeps the tmp assembly file
    	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG); // ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main
+	argparse_add_option(&parser, "--info", "-i", ARGPARSE_FLAG);
 
 
 	const char *out;
@@ -310,7 +313,16 @@ void compile(int argc, char *argv[]) {
 	if(argparse_option_exists(parser, "--assembly") != ARGPARSE_NOT_FOUND ||
 			argparse_option_exists(parser, "-a" != ARGPARSE_NOT_FOUND)) {
 	
-		keep_asm = true;
+
+
+		int i = 1;
+		for(i = 1; i < 256; i++) {
+			if(argv[i] == NULL) {
+				keep_asm = false;
+			}
+			if(!strcmp) {
+			}
+		}
 	
 	} else {
 		keep_asm = false;
@@ -341,14 +353,45 @@ void compile(int argc, char *argv[]) {
 			
 	}
 
+	bool INFO_DEBUG;
+
+	if(argparse_option_exists(parser, "--info") != ARGPARSE_NOT_FOUND ||
+			argparse_option_exists(parser, "-i") != ARGPARSE_NOT_FOUND) {
+	
+		int i = 1;
+		for(i = 2; i < 256; i++) {
+		
+			if(argv[i] == NULL) {
+				INFO_DEBUG = false;
+				break;
+			}
+			if(!strcmp(argv[i], "--info") || !strcmp(argv[i], "-i")) {
+					INFO_DEBUG = true;
+					break;
+			} else {
+				continue;
+			}
+		
+		}
+
+	}
+
+	clock_t time_start, time_end;
+	time_start = clock();
+
+	asm_interp(argc, argv, INFO_DEBUG);
+
 	snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
 	system(final_buf);
-	log_info(final_buf);
+	if(INFO_DEBUG == true){log_info(final_buf);}
 	if(keep_asm == false) {
 		system("rm -f a.asm a.o");
 	} else {
 		system("rm -f a.o");
 	}
+
+	time_end = clock();
+	log_info("Compile time:: %f seconds\n", ((double)(time_end - time_start) / CLOCKS_PER_SEC));
 	/*if(!strcmp(argv[2], "-o")) {
 		OUTPUT_NAME = argv[3];
 		EXEC_NAME = argv[4];
@@ -376,7 +419,6 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	asm_interp(argc, argv);
 	compile(argc, argv);
 	return 0;	
 
