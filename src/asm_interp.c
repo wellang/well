@@ -16,6 +16,8 @@
 #include "include.h"
 #include "lea.h"
 
+#include "asm_interp_funcs.h"
+
 #include "argparse/argparse.h"
 
 #include "asm2obj.h"
@@ -29,23 +31,35 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	FILE *file6 = fopen(fname, "r+");
 	char line7[256];
 
-        /*
-         * WESM INCLUDE:
-         *      opens included file and adds its buffer to the beginning of the 
-         *      compiled buffer, this then compiles through nasm
-         * */
         while(fgets(line7, sizeof(line7), file6) != NULL) {
                 
                 char include_search[] = "include~ ";
                 char *include = strstr(line7, include_search);
-                if(include != NULL) {
-                        char *bracks = strchr(line7, '(');
-			char *dir = strtok(bracks, ")");
+                
+		char comment[] = "//";
+		char *search_com = strstr(line7, comment);
+		
+		if(include != NULL && search_com == NULL) {
+         		/* WELLANG INCLUDE SYNTAX
+			*
+         		*  include~ relative_file_path.wesm
+         		*  lib~ relative_file_path.a
+         		* 
+			* */
+                        char *tild = strchr(line7, '~');
 
-			include_comp(fname, dir, argc, argv);
+			if(tild != NULL) {
+				tild++;
+			}
+
+			const char *fpath = tild;		
+
+			include_comp(fpath);
                         
                         return 0;
-                }
+                } else {
+			continue;	
+		}
                 if(line7 == NULL) {
                         break;
                 }       
@@ -66,6 +80,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
 	FILE *file;
 	file = fopen(fname, "r+");
+
 	FILE *output;
 	output = fopen("a.asm", "a");
 
@@ -93,12 +108,8 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 				if(mainlines == NULL) {
 					break;
 				} else {
-					string_interp(mainlines, out2);
-					length_interp(mainlines, out2);
-					int_interp(mainlines, out2);
 					//_floa_interp_(mainlines, out2);
-					char_interp(out2, mainlines);
-					print_asm_interp(out2, mainlines);
+					asm_interp_var_funcs(mainlines, out2);
 				}
 			}
 
@@ -168,18 +179,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 										break;
 									} else if(end == NULL && main == NULL){
 										FILE *out;
-										mov_interp(line6, out);
-										push_interp(line6, out);
-										syscall_interp(line6, out);
-										pop_interp(out, line6);
-										array_run(out, line6);
-										cif_interp(out, line6);
-										halt_interp(out, line6);
-										bits_interp(out, line6);
-										run_interp(out, line6);
-										print_asm_interp(out, line6);
-										lea_interp(line6, out, line_better);
-										return0(out, line6);
+										asm_interp_func_funcs(line6, out, line_better);
 									}
 								}
 							}	
@@ -228,18 +228,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									break;	
 								} else if(end_of_main == NULL && main_search == NULL) {
 									FILE *out;
-									mov_interp(lineline, out);
-									push_interp(lineline, out);
-									syscall_interp(lineline, out);
-									pop_interp(out, lineline);
-									array_run(out, lineline);
-									cif_interp(out, lineline);
-									halt_interp(out, lineline);
-									bits_interp(out, lineline);
-									run_interp(out, lineline);
-									print_asm_interp(out, lineline);
-									lea_interp(lineline, out, line_yo);
-									return0(out, lineline);
+									asm_interp_func_funcs(lineline, out, line_yo);
 								}
 
 							}
@@ -319,9 +308,14 @@ void compile(int argc, char *argv[]) {
 		for(i = 1; i < 256; i++) {
 			if(argv[i] == NULL) {
 				keep_asm = false;
+				break;
 			}
-			if(!strcmp) {
-			}
+                        if(!strcmp(argv[i], "--assembly") || !strcmp(argv[i], "-a")) {
+                                        keep_asm = true;
+                                        break;
+                        } else {
+				continue;
+			} 			
 		}
 	
 	} else {
@@ -385,6 +379,25 @@ void compile(int argc, char *argv[]) {
 	system(final_buf);
 	if(INFO_DEBUG == true){log_info(final_buf);}
 	if(keep_asm == false) {
+		/*FILE *included_files = fopen("a.asm", "r+");
+		char line[256];
+		while(fgets(line, sizeof(line), included_files) != NULL) {
+			if(line == NULL) {
+				break;
+			}
+			char include[] = "include ";
+			char *find = strstr(line, include);
+			if(include != NULL) {
+				const char delim[] = "\"";
+				char *file_uno = strstr(include, "\"");
+				char *file = strtok(file_uno, delim);
+				char buf[0x100];
+				snprintf(buf, sizeof(buf), "r -f %s", file);
+				system(buf);
+			} else {
+				continue;
+			}
+		}*/
 		system("rm -f a.asm a.o");
 	} else {
 		system("rm -f a.o");

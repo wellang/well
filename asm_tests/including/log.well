@@ -1,0 +1,18 @@
+lib~ log.w
+
+~var:main {
+
+	asm~ str: sb '%s', 10, 0
+	string~ log_test = 'This is a log test'
+
+}
+
+~func:main {
+
+	move~ str, rdi
+	move~ log_test, rdi
+	asm~ call log_info
+
+	return 0;
+
+}
