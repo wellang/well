@@ -7,6 +7,8 @@
 #include "log.h"
 #include "array_interp.h"
 
+#include "rodata.h"
+
 int string_interp(char line[], FILE *out) {
 
 	char search[] = "string~ ";
@@ -35,9 +37,18 @@ int string_interp(char line[], FILE *out) {
 			
 			after_name[strlen(after_name)-1] = '\0';
 			FILE *out2 = fopen("a.asm", "a");
-			fprintf(out2, "%s: db%s, 0\n", string_name, after_name);
-			fclose(out2);
+			/*char line[256];
+			fgets(line, sizeof(line), out2);
+			if(line == NULL) {
+				fprintf(out2, "section .rodata\n%s:\n\tdb%s, 00H\n");
+				fclose(out2);
+			} else {
+				fprintf(out2, "%s:\n\tdb%s, 00H\n", string_name, after_name);
+				fclose(out2);
 
+			*/
+			fprintf(out2, "%s: db%s\n", string_name, after_name);
+			fclose(out2);
 		} else {
 			log_error("ERROR:: string missing '~' (string~ foo = 'bar')\n");
 			return 0;

@@ -16,6 +16,8 @@
 #include "include.h"
 #include "lea.h"
 
+#include "rodata.h"
+
 #include "asm_interp_funcs.h"
 
 #include "argparse/argparse.h"
@@ -252,6 +254,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 		}
 
 	}
+
+
+	//rodata_to_asm();
 
 	/*fclose(file);*/
 	/*fclose(output);*/
