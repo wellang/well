@@ -1,0 +1,31 @@
+~var:main {
+	int~ x = 1
+	int~ y = 1
+}
+
+~func:test2 {
+
+	return 0
+
+}
+
+~func:test1 {
+
+	return 0
+
+}
+
+~func:main {
+
+	asm~ extern printf
+
+	move~ x, rdi
+	move~ y, rsi
+	asm~ cmp rdi, rsi
+
+	asm~ jnz test1
+	asm~ jmp test2
+
+	return 0
+
+}

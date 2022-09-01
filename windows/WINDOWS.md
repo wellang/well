@@ -13,7 +13,7 @@ After installing the requirements for wellang on windows do the following:
 2.  go to desired directory. ex: ``cd /path/to/Downloads``
 3.  download wellang: ``git clone https://wellang/well.git``
 4.  ``cd well``
-5.  install wellang: ``make base install_windows``
+5.  install wellang: ``make base install``
 
 ## Adding wellang to Path variables
 
