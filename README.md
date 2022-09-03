@@ -29,7 +29,7 @@ wellang discord server: https://discord.gg/K4ufunGxJv
 
 # Compile Wellang
 
-###Linux
+Linux
 
 ```
 $ git clone https://github.com/wellang/well.git
@@ -37,7 +37,7 @@ $ cd well``
 $ make base install
 ```
 
-###FreeBSD
+FreeBSD
 
 ```
 $ git clone https://github.com/wellang/well.git
@@ -45,7 +45,7 @@ $ cd well
 $ gmake base install
 ```
 
-### windows
+Windows
 
 [`windows installation`](windows/WINDOWS.md)
 
