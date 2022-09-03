@@ -11,13 +11,13 @@
   </p>
 </div>
 
-#NOTE:
+# NOTE
 
 Wellang is in an extremely early state, with pending syntax changes, and the development of the compiler. MAKE SURE you keep wellang up to date in these early stages.
 
 # About
 	
-### This is a project originally started by Tristan Wellman(read CONTRIBUTING.md for contribution info). This is a high level compiled assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to assembly(NASM), See below for compilation and simple documentation.
+### This is a project originally started by Tristan Wellman. This is a high level compiled assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to NASM, See below for compilation and simple documentation.
 
 contact me at:
 
@@ -27,30 +27,34 @@ discord: ``__Oblivion__#3258``
 
 wellang discord server: https://discord.gg/K4ufunGxJv
 
-## Compile Wellang
+# Compile Wellang
 
-git the wellang github repository
+###Linux
 
-``$ git clone https://github.com/wellang/well.git``
+```
+$ git clone https://github.com/wellang/well.git
+$ cd well``
+$ make base install
+```
 
-move to the wellang directory in your terminal
+###FreeBSD
 
-``$ cd well``
+```
+$ git clone https://github.com/wellang/well.git
+$ cd well
+$ gmake base install
+```
 
-compile and install wellang with make
-
-``$ make base install``
-
-## Compile Wellang on windows
+### windows
 
 [`windows installation`](windows/WINDOWS.md)
 
-### Example program (using linux x86_x64 syscall table)
+## Hello World program (using linux x86_x64 syscall table)
 
 ```
 ~var:main {
 
-	string~ text = 'hello world!'
+	string~ text = 'Hello World!'
 	length~ text_length, text
 
 }
@@ -74,7 +78,7 @@ to compile your well program you can run ``wesm`` in your terminal:
 ❯ wesm helloworld.well -o helloworld
 20:14:46 INFO  src/asm_interp.c:393: Compile time:: 0.000451 seconds
 ❯ ./helloworld
-hello world
+Hello World
 
 ```
 

@@ -1,6 +1,6 @@
 ~var:main {
 
-    string~ text = 'hello world!'
+    string~ text = 'Hello World!'
     length~ text_length, text
 
 }
