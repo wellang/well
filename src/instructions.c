@@ -3,6 +3,8 @@
 #include <string.h>
 #include "log.h"
 
+#include "include.h"
+
 int pop_interp(FILE *out, char line[]) {
 
 	char search[] = "pop~ ";
@@ -80,13 +82,24 @@ int bits_interp(FILE *out, char line[]) {
 
 }
 
-int run_interp(FILE *out, char line[]) {
+
+// replaced with call_interp
+/*int run_interp(FILE *out, char line[]) {
 
 	return 0;
 
-}
+}*/
 
 int call_interp(FILE *out, char line[]) {
+
+	/*well: 
+	 * 	call~ wellfile.wellfunc 
+	 *nasm:
+	 * 	%include "asmfile.asm"
+	 *	call asmfunc
+	 */
+
+	include_comp(out, line);
 
 	return 0;
 

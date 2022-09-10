@@ -1,0 +1,6 @@
+~func:print {
+
+	move~ 0, rax
+	asm~ call printf
+
+}

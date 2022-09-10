@@ -1,0 +1,15 @@
+~var:main {
+	asm~ str: db '%s', 10, 0
+	string~ test = 'test'
+}
+
+~func:main {
+
+	asm~ extern printf
+	
+	move~ str, rdi 
+	move~ test, rsi
+	call~ test_include.print
+	return 0
+
+}

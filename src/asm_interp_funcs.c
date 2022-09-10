@@ -35,10 +35,11 @@ int asm_interp_func_funcs(char line[], FILE *out, int line_num) {
         cif_interp(out, line);
         halt_interp(out, line);
         bits_interp(out, line);
-        run_interp(out, line);
+ //       run_interp(out, line);
         print_asm_interp(out, line);
         lea_interp(line, out, line_num);
-        return0(out, line);
+ 	call_interp(out, line);
+ 	return0(out, line);
  
         return 0;
 

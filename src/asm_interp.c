@@ -33,7 +33,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	FILE *file6 = fopen(fname, "r+");
 	char line7[256];
 
-        while(fgets(line7, sizeof(line7), file6) != NULL) {
+        /*while(fgets(line7, sizeof(line7), file6) != NULL) {
                 
                 char include_search[] = "include~ ";
                 char *include = strstr(line7, include_search);
@@ -42,12 +42,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 		char *search_com = strstr(line7, comment);
 		
 		if(include != NULL && search_com == NULL) {
-         		/* WELLANG INCLUDE SYNTAX
-			*
-         		*  include~ relative_file_path.wesm
-         		*  lib~ relative_file_path.a
-         		* 
-			* */
+     
                         char *tild = strchr(line7, '~');
 
 			if(tild != NULL) {
@@ -66,7 +61,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
                         break;
                 }       
                 
-        }  
+        } */ 
 
 	char line8[256];
 	FILE *bits = fopen(fname, "r+");

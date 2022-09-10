@@ -12,6 +12,14 @@
 #include "asm_macros.h"
 #include "lea.h"
 
+struct include_file {
+
+	FILE *wellfile;
+
+	//char FUNC_NAME[];
+
+} include_file;
+
 int include_var_funcs(char line[], FILE *out) {
 
 	string_interp(line, out);
@@ -36,7 +44,7 @@ int include_func_funcs(char line[], FILE *out, int line_num) {
 	cif_interp(out, line);
 	halt_interp(out, line);
 	bits_interp(out, line);
-	run_interp(out, line);
+//	run_interp(out, line);
 	print_asm_interp(out, line);
 	lea_interp(line, out, line_num);
 	return0(out, line);
@@ -46,8 +54,8 @@ int include_func_funcs(char line[], FILE *out, int line_num) {
 }
 
 	/*
-	 *include~ relative_file_path.wesm
-	 *lib~ relative_file_path.a
+	 *include: call~ wellfile.wellfunc
+	 *include_lib: lib~ wellfile.wellfunc
 	 * */
 
 
@@ -59,19 +67,95 @@ const char *get_asm_name(const char *fname, const char *final_name) {
 
 }
 
-int include_comp(const char *fname) {
+int include_comp(FILE *out, char line[]) {
 
-	char line[256];
+	char call[] = "call~ ";
+	char mov[] = "move~ ";
 
-	const char *asm_fname;
-	get_asm_name(fname, asm_fname);
-	char buf[0x100];
-	snprintf(buf, sizeof(buf), "%s.asm", buf);
-	FILE *included_file = fopen(buf, "r+");
+	char *find_call = strstr(line, call);
+	if(find_call != NULL) {
+		char tild[] = "~"; 
+		char *file_and_func = strstr(line, tild); //wellfile.wellfunc
 
-	while(fgets(line, sizeof(line), included_file) != NULL) {
-		break;
-	}	
+		if(file_and_func != NULL) {
+			file_and_func++;
+		}
+
+		//log_info(":%s:", file_and_func);
+		
+		const char delim[] = ".";
+		char *func = strchr(file_and_func, '.');	
+		char *file = strtok(file_and_func, delim);
+		if(func != NULL) {
+			func++;
+		}
+		func[strcspn(func, "\n")] = 0;	
+		if(file != NULL) {
+			file++;
+		}
+
+		log_info(":%s:%s:", func, file);
+		
+		char fname_buf[0x100];
+		snprintf(fname_buf, sizeof(fname_buf), "%s.well", file);
+
+		include_file.wellfile = fopen(fname_buf, "r+");
+		char line0[256];
+
+		if(include_file.wellfile == NULL) {
+		
+			log_error("Invalid call file %s", file);
+			return 1;
+		
+		}
+
+		char func_buf[0x100];
+		snprintf(func_buf, sizeof(func_buf), "~func:%s", func);
+
+		int line_num = 0;
+		while(fgets(line0, sizeof(line0), include_file.wellfile) != NULL) {
+			line_num++;
+			//printf(line0);
+
+			if(line0 == NULL) {
+				break;
+			}
+
+			char *func_find = strstr(line0, func_buf);
+			if(func_find != NULL) {
+				//log_info(line0);
+				int func_line = line_num;
+				char line1[256];
+				while(fgets(line1, sizeof(line1), include_file.wellfile) != NULL) {
+					func_line++;
+
+					if(line1 == NULL) {
+						return 0;
+					}
+					if(func_line >= line_num) {
+						char search[] = "}";
+						char *brack = strstr(line1, search);
+						if(brack != NULL) {
+							break;
+						} else {
+							FILE *out;
+							include_func_funcs(line1, out, func_line);
+						}
+					} else if(func_line < line_num) {
+						continue;
+					}
+				}
+				continue;
+			}
+
+
+		}
+		
+		fclose(include_file.wellfile);
+
+	} else {
+		return 0;
+	}
 
 	return 0;
 }
