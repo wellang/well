@@ -12,6 +12,21 @@
 #include "asm_macros.h"
 #include "lea.h"
 
+#define call_func(file, line)	\
+        char search[] = "call~ ";	\
+        char *call = strstr(line, search);	\
+        if(call != NULL) {	\
+        	call++;	\
+		call++;	\
+		call++;	\
+		call++;	\
+		call++;	\
+		call++;	\
+                out = fopen("a.asm", "a");	\
+                fprintf(out, "\n\tcall %s", call);	\
+                fclose(out);	\
+        }	\
+
 struct include_file {
 
 	FILE *wellfile;
@@ -45,6 +60,8 @@ int include_func_funcs(char line[], FILE *out, int line_num) {
 	halt_interp(out, line);
 	bits_interp(out, line);
 //	run_interp(out, line);
+//	call_interp(out, line);
+	call_func(out, line);
 	print_asm_interp(out, line);
 	lea_interp(line, out, line_num);
 	return0(out, line);

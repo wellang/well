@@ -99,7 +99,29 @@ int call_interp(FILE *out, char line[]) {
 	 *	call asmfunc
 	 */
 
-	include_comp(out, line);
+	char per[] = ".";
+	char *search = strstr(line, per);
+	if(per != NULL) {
+
+		include_comp(out, line);
+
+	} else {
+	        char search[] = "call~ ";
+	        char *call = strstr(line, search);
+	        if(call != NULL) {
+			
+			call++;
+			call++;
+
+			printf(call);
+
+	                out = fopen("a.asm", "a");
+			fprintf(out, "call %s", call);
+	                fclose(out);
+	        } else if(call == NULL) {
+	                return 0;
+		}	
+	}
 
 	return 0;
 
