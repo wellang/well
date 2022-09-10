@@ -180,10 +180,7 @@ int int_interp(char line[], FILE *out) {
 }*/
 
 int char_interp(FILE *out, char line[]) {
-
-	char dot_search[] = "char~ *";
-	char *dot = strstr(line, dot);	
-
+	
 	char search[] = "char~ ";
 	char *char_search = strstr(line, search);
 	if(char_search != NULL) {
