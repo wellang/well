@@ -1,4 +1,4 @@
-C = gcc
+CC = gcc
 CFLAGS = -std=c99 -g
 COMMON_.c = src/asm_interp.c \
 	src/mov_search.c \
@@ -13,6 +13,7 @@ COMMON_.c = src/asm_interp.c \
 	src/lea.c \
 	src/math.c \
 	src/asm_interp_funcs.c \
+	src/libwesm/com.c \
 	src/argparse/argparse.c \
 	src/argparse/extract.c \
 	src/argparse/ap_inter.c #src/asm2obj.c src/asm2obj_elf.c
@@ -29,6 +30,7 @@ COMMONC_.o = asm_interp.o \
 	lea.o \
 	math.o \
 	asm_interp_funcs.o \
+	com.o \
 	argparse.o \
 	extract.o \
 	ap_inter.o #asm2obj.o asm2obj_elf.o
@@ -43,8 +45,8 @@ LIBWESM= src/libwesm
 .SUFFIXES: .c .o
 
 base:
-	$(C) $(CFLAGS) -L src -c $(COMMON_.c)
-	$(C) $(CFLAGS) -o wesm $(COMMONC_.o)
+	$(CC) $(CFLAGS) -L src -c $(COMMON_.c)
+	$(CC) $(CFLAGS) -o wesm $(COMMONC_.o)
 
 install:
 # Windows style

@@ -21,6 +21,7 @@ main:
  	mov rax, 0
 	call printf
 
-	mov rax, 60
+	mov rax, 1
 	mov rdi, 0
+
 	syscall

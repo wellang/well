@@ -35,36 +35,36 @@ struct include_file {
 
 } include_file;
 
-int include_var_funcs(char line[], FILE *out) {
+int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
 	string_interp(line, out);
 	length_interp(line, out);
 	int_interp(line, out);
 
 	char_interp(out, line);
-	print_asm_interp(out, line);
+	print_asm_interp(out, line, line_num, fname);
 	
 	return 0;
 
 }
 
-int include_func_funcs(char line[], FILE *out, int line_num) {
+int include_func_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
-	mov_interp(line, out);
+	mov_interp(line, out, line_num, fname);
 	push_interp(line, out);
 	
 	syscall_interp(line, out);
-	pop_interp(out, line);
+	pop_interp(out, line, line_num, fname);
 	array_run(out, line);
-	cif_interp(out, line);
-	halt_interp(out, line);
-	bits_interp(out, line);
+	cif_interp(out, line, line_num, fname);
+	halt_interp(out, line, line_num, fname);
+	bits_interp(out, line, line_num, fname);
 //	run_interp(out, line);
 //	call_interp(out, line);
 	call_func(out, line);
-	print_asm_interp(out, line);
+	print_asm_interp(out, line, line_num, fname);
 	lea_interp(line, out, line_num);
-	return0(out, line);
+	return0(out, line, line_num, fname);
 
 	return 0;
 
@@ -84,7 +84,7 @@ const char *get_asm_name(const char *fname, const char *final_name) {
 
 }
 
-int include_comp(FILE *out, char line[]) {
+int include_comp(FILE *out, char line[], int line_num, const char *fname) {
 
 	char call[] = "call~ ";
 	char mov[] = "move~ ";
@@ -111,7 +111,7 @@ int include_comp(FILE *out, char line[]) {
 			file++;
 		}
 
-		log_info(":%s:%s:", func, file);
+		wlog_info(fname, line_num, ":%s:%s:", func, file);
 		
 		char fname_buf[0x100];
 		snprintf(fname_buf, sizeof(fname_buf), "%s.well", file);
@@ -121,7 +121,7 @@ int include_comp(FILE *out, char line[]) {
 
 		if(include_file.wellfile == NULL) {
 		
-			log_error("Invalid call file %s", file);
+			wlog_error(fname_buf, line_num, "Invalid call file %s", file);
 			return 1;
 		
 		}
@@ -156,7 +156,7 @@ int include_comp(FILE *out, char line[]) {
 							break;
 						} else {
 							FILE *out;
-							include_func_funcs(line1, out, func_line);
+							include_func_funcs(line1, out, func_line, fname);
 						}
 					} else if(func_line < line_num) {
 						continue;

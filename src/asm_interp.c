@@ -15,11 +15,11 @@
 #include "asm_macros.h"
 #include "include.h"
 #include "lea.h"
-
 #include "rodata.h"
 
-#include "asm_interp_funcs.h"
+#include "libwesm/com.h"
 
+#include "asm_interp_funcs.h"
 #include "argparse/argparse.h"
 
 #include "asm2obj.h"
@@ -66,8 +66,10 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	char line8[256];
 	FILE *bits = fopen(fname, "r+");
 	FILE *bit_out;
+	int lnum = 0;
 	while(fgets(line8, sizeof(line8), bits) != NULL) {
-		bits_interp(bit_out, line8);
+		lnum++;
+		bits_interp(bit_out, line8, lnum, fname);
 		if(line8 == NULL) {
 			break;
 		}
@@ -93,9 +95,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			FILE *out2;
 			FILE *varread = fopen(fname, "r+");
 			char mainlines[256];
-
+			int lnum2 = 0;
 			while(fgets(mainlines, sizeof(mainlines), varread) != NULL) {
-				
+				lnum++;
 				char brack_s[] = "}";
 				char *search_b = strstr(mainlines, brack_s);
 				if(search_b != NULL) {
@@ -106,7 +108,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 					break;
 				} else {
 					//_floa_interp_(mainlines, out2);
-					asm_interp_var_funcs(mainlines, out2);
+					asm_interp_var_funcs(mainlines, out2, lnum2, fname);
 				}
 			}
 
@@ -137,7 +139,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 		char *main = strstr(line4, search_main);
 
 		if(func != NULL && main == NULL) {
-				if(INFO_DEBUG == true){log_info("found function at line: %d", lineline_num);}
+				if(INFO_DEBUG == true){wlog_info(fname, lineline_num, "found function at line: %d", lineline_num);}
 				char *after_func = strchr(line4, ':');
 				if(after_func != NULL) {
 						after_func++;
@@ -169,27 +171,27 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									char *end = strstr(line6, "}");
 									char *main = strstr(line6, "func:main");
 									if(end != NULL) {
-										if(INFO_DEBUG == true){log_info("line:%d is the end of a function\n", line_better);}
+										if(INFO_DEBUG == true){wlog_info(fname, line_better, "line:%d is the end of a function\n", line_better);}
 										break;
 									} else if(main != NULL) {
-										if(INFO_DEBUG == true){log_info("line:%d found main function\n", line_better);}
+										if(INFO_DEBUG == true){log_info(fname, line_better, "line:%d found main function\n", line_better);}
 										break;
 									} else if(end == NULL && main == NULL){
 										FILE *out;
-										asm_interp_func_funcs(line6, out, line_better);
+										asm_interp_func_funcs(line6, out, line_better, fname);
 									}
 								}
 							}	
 						} else if(brack == NULL) {
-							log_warn("sub function brackets not implimented yet\n\n");
+							wlog_warn(fname, lineline_num, "sub function brackets not implimented yet\n\n");
 						}
 
 				} else if(after_func == NULL) {
-						log_error("ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
+						wlog_error(fname, lineline_num, "ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
 						continue;
 				}
 		} else if(func != NULL && main != NULL) {
-			if(INFO_DEBUG == true){log_info("found main fuction at line: %d", lineline_num);}
+			if(INFO_DEBUG == true){wlog_info(fname, lineline_num, "found main fuction at line: %d", lineline_num);}
       			FILE *outputfunc = fopen("a.asm", "a");
 	                fprintf(outputfunc, "\n\nglobal main\n\nmain:\n\t");
  	                fclose(outputfunc);
@@ -225,7 +227,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									break;	
 								} else if(end_of_main == NULL && main_search == NULL) {
 									FILE *out;
-									asm_interp_func_funcs(lineline, out, line_yo);
+									asm_interp_func_funcs(lineline, out, line_yo, fname);
 								}
 
 							}

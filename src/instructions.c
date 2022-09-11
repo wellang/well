@@ -5,7 +5,7 @@
 
 #include "include.h"
 
-int pop_interp(FILE *out, char line[]) {
+int pop_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 	char search[] = "pop~ ";
 	char *pop = strstr(line, search);
@@ -18,7 +18,7 @@ int pop_interp(FILE *out, char line[]) {
 			after_pop++;
 			fprintf(out, "pop %s\n", after_pop);
 		} else if(after_pop == NULL) {
-			log_error("ERROR:: Pop instruction expects item\n\n");
+			wlog_error(fname, line_num, "ERROR:: Pop instruction expects item\n\n");
 			return 0;
 		}
 
@@ -27,7 +27,7 @@ int pop_interp(FILE *out, char line[]) {
 
 }
 
-int cif_interp(FILE *out, char line[]) {
+int cif_interp(FILE *out, char line[], int line_num, const char *fname) {
 	
 	char search[] = "cif";
 	char cli_search[] = "cli";
@@ -39,14 +39,14 @@ int cif_interp(FILE *out, char line[]) {
 		fprintf(out, "\n\tcli\n");
 		fclose(out);
 	} else if(cli_string != NULL) {
-		log_error("cli is not an instruction! Did you mean cif?\n");
+		wlog_error(fname, line_num, "cli is not an instruction! Did you mean cif?\n");
 		return 0;
 	}
 
 	return 0;
 }
 
-int halt_interp(FILE *out, char line[]) {
+int halt_interp(FILE *out, char line[], int line_num, const char *fname) {
 	
 	char search[] = "halt";
 	char hlt_search[] = "hlt";
@@ -58,14 +58,14 @@ int halt_interp(FILE *out, char line[]) {
 		fprintf(out, "\n\thlt\n");
 		fclose(out);
 	} else if(hlt != NULL) {
-		log_error("hlt is not an instruction! Did you mean halt?\n");
+		wlog_error(fname, line_num, "hlt is not an instruction! Did you mean halt?\n");
 		return 0;
 	}
 	
 	return 0;
 }
 
-int bits_interp(FILE *out, char line[]) {
+int bits_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 	char search[] = "bits~ ";
 	char *bits = strstr(line, search);
@@ -90,7 +90,7 @@ int bits_interp(FILE *out, char line[]) {
 
 }*/
 
-int call_interp(FILE *out, char line[]) {
+int call_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 	/*well: 
 	 * 	call~ wellfile.wellfunc 
@@ -103,7 +103,7 @@ int call_interp(FILE *out, char line[]) {
 	char *search = strstr(line, per);
 	if(per != NULL) {
 
-		include_comp(out, line);
+		include_comp(out, line, line_num, fname);
 
 	} else {
 	        char search[] = "call~ ";
@@ -127,7 +127,7 @@ int call_interp(FILE *out, char line[]) {
 
 }
 
-int resb_interp(FILE *out, char line[]) {
+int resb_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 	char search[] = "resb~ ";
 	char *resb = strstr(line, search);
@@ -142,7 +142,7 @@ int resb_interp(FILE *out, char line[]) {
 
 }
 
-int print_asm_interp(FILE *out, char line[]) {
+int print_asm_interp(FILE *out, char line[], int line_num, const char *fname) {
 	
 	char search[] = "asm~ ";
 	char *asm_search = strstr(line, search);
@@ -157,7 +157,7 @@ int print_asm_interp(FILE *out, char line[]) {
 
 }
 
-int ret_interp(FILE *out, char line[]) {
+int ret_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 	char search_ret[] = "ret";
 	char *ret_search = strstr(line, search_ret);
@@ -173,23 +173,48 @@ int ret_interp(FILE *out, char line[]) {
 
 }
 
-int return0(FILE *out, char line[]) {
+int return0(FILE *out, char line[], int line_num, const char *fname) {
 
 /*
  * mov rax, 60
  * mov rdi, 0
  * syscall
  */
-	char search[] = "return 0";
+	char search[] = "return ";
 	char *return_search = strstr(line, search);
 
 	if(return_search != NULL) {
-		out = fopen("a.asm", "a");
-		fprintf(out, "\n\tmov rax, 60\n\tmov rdi, 0\n\tsyscall\n");
-		fclose(out);
-	}
-	
+		char after_ret[] = " ";
+		char *return_num = strstr(line, after_ret);
+		if(return_num != NULL) {
+			return_num++;
+			out = fopen("a.asm", "a");
+		    #ifndef __linux__
+			    fprintf(out, "\n\tmov rax, 60\n\tmov rdi, %s\n\tsyscall\n", return_num);
+		        fclose(out);
+			#else
+				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, %s\n\t\syscall\n", return_num);
+			#endif
 
+		} else {
+			out = fopen("a.asm", "a");
+			#ifndef __linux__
+			    fprintf(out, "\n\tmov rax, 60\n\tmov rdi, 0\n\tsyscall\n");
+			    fclose(out);
+			#elseif _WIN32
+				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, 0\n\tsyscall\n");
+				fclose(out);
+			#elseif __APPLE__
+				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, 0\n\tsyscall\n");
+				fclose(out);
+			#elseif __FreeBSD__
+				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, 0\n\tsyscall\n");
+				fclose(out);
+			#endif
+		}
+	}
+
+	return 0;
 }
 
 /*int return1(FILE *out, char line[]) {

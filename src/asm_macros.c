@@ -24,7 +24,7 @@ int macro_interp(const char *fname) {
 		char *macro = strstr(line, search);
 
 		if(macro != NULL) {
-			log_info("Found macro at line: %d\n", line_num);
+			wlog_info(fname, line_num, "Found macro\n");
 			char *after_macro = strchr(line, ':');
 			if(after_macro != NULL) {
 				after_macro++;
@@ -57,22 +57,22 @@ int macro_interp(const char *fname) {
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
-								log_info("line:%d macro compiler found function\n", line_better);
+								wlog_info(fname, line_better, "macro compiler found function\n");
 								break;
 							} else if(macro_end != NULL) {
-								log_info("line:%d macro compiler found end of vars, macros, or functions\n", line_better);
+								wlog_info(fname, line_better, "macro compiler found end of vars, macros, or functions\n");
 								continue;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
-								mov_interp(line, out);
+								mov_interp(line, out, line_better, fname);
 								push_interp(line, out);
 								syscall_interp(line, out);
-								pop_interp(out, line);
+								pop_interp(out, line, line_better, fname);
 								array_run(out, line);
-								cif_interp(out, line);
-								halt_interp(out, line);
-								bits_interp(out, line);
-								print_asm_interp(out, line);
+								cif_interp(out, line, line_better, fname);
+								halt_interp(out, line, line_better, fname);
+								bits_interp(out, line, line_better, fname);
+								print_asm_interp(out, line, line_better, fname);
 							}
 						}
 					}
@@ -99,22 +99,22 @@ int macro_interp(const char *fname) {
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
-								log_info("line:%d macro compiler found function\n", line_better);
+								wlog_info(fname, line_better, " macro compiler found function\n");
 								break;
 							} else if(macro_end != NULL) {
-								log_info("line:%d macro compiler found end of vars, marcros, or functions\n", line_better);
+								log_info(fname, line_better, "macro compiler found end of vars, marcros, or functions\n");
 								continue;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
-								mov_interp(line, out);
+								mov_interp(line, out, line_better, fname);
 								push_interp(line, out);
 								syscall_interp(line, out);
-								pop_interp(out, line);	
+								pop_interp(out, line, line_better, fname);
 								array_run(out, line);
-								cif_interp(out, line);
-								halt_interp(out, line);
-								bits_interp(out, line);
-								print_asm_interp(out, line);
+								cif_interp(out, line, line_better, fname);
+								halt_interp(out, line, line_better, fname);
+								bits_interp(out, line, line_better, fname);
+								print_asm_interp(out, line, line_better, fname);
 							}
 						}
 
@@ -122,7 +122,7 @@ int macro_interp(const char *fname) {
 
 				}
 			} else {
-				log_error("Macro missing name and/or ':' delimeter!\n");
+				wlog_error(fname, line_num, "Macro missing name and/or ':' delimeter!\n");
 				return 0;
 			}
 	        	FILE *end = fopen("a.asm", "a");
