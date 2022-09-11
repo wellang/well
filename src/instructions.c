@@ -201,13 +201,7 @@ int return0(FILE *out, char line[], int line_num, const char *fname) {
 			#ifndef __linux__
 			    fprintf(out, "\n\tmov rax, 60\n\tmov rdi, 0\n\tsyscall\n");
 			    fclose(out);
-			#elseif _WIN32
-				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, 0\n\tsyscall\n");
-				fclose(out);
-			#elseif __APPLE__
-				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, 0\n\tsyscall\n");
-				fclose(out);
-			#elseif __FreeBSD__
+			#else
 				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, 0\n\tsyscall\n");
 				fclose(out);
 			#endif
