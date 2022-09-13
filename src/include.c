@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "mov_search.h"
 #include "syscall_interp.h"
@@ -51,6 +52,8 @@ int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 int include_func_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
 	mov_interp(line, out, line_num, fname);
+	add_interp(out, line, line_num, fname);
+	sub_interp(out, line, line_num, fname);
 	push_interp(line, out);
 	
 	syscall_interp(line, out);
@@ -84,7 +87,7 @@ const char *get_asm_name(const char *fname, const char *final_name) {
 
 }
 
-int include_comp(FILE *out, char line[], int line_num, const char *fname) {
+int include_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname) {
 
 	char call[] = "call~ ";
 	char mov[] = "move~ ";
@@ -129,6 +132,28 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname) {
 		char func_buf[0x100];
 		snprintf(func_buf, sizeof(func_buf), "~func:%s", func);
 
+		time_t t;
+		srand((unsigned) time(&t));
+		int r = rand() % 9999;
+
+		int rando = r;
+		FILE *out1 = fopen("a.asm", "a");
+		char buff[0x100];
+		/*
+		   call func.1234func
+		   jmp func.123funcfin
+		   .1234func:
+		   mov rdi, rsi
+		   .123funcfin:
+		   rest of code
+		*/
+		snprintf(buff, sizeof(buff), "\n\tcall %s.%d%s\n\tjmp %s.%d%sfin\n\t.%d%s:",
+				funcname, rando, func,
+				funcname, rando, func,
+				 rando, func);
+		fprintf(out1, buff);
+		fclose(out1);
+
 		int line_num = 0;
 		while(fgets(line0, sizeof(line0), include_file.wellfile) != NULL) {
 			line_num++;
@@ -167,6 +192,12 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname) {
 
 
 		}
+		FILE *out2 = fopen("a.asm", "a");
+		char bufff[0x100];
+		snprintf(bufff, sizeof(bufff), "\n\t.%d%sfin:\n", rando, func);
+		fprintf(out2, bufff);
+		fclose(out2);
+
 		
 		fclose(include_file.wellfile);
 

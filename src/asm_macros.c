@@ -8,6 +8,7 @@
 #include "push_search.h"
 #include "types.h"
 #include "instructions.h"
+#include "lea.h"
 #include "log.h"
 
 #include "libwesm/com.h"
@@ -79,6 +80,8 @@ int macro_interp(const char *fname) {
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
 								mov_interp(line, out, line_better, fname);
+								add_interp(out, line, line_num, fname);
+								sub_interp(out, line, line_num, fname);
 								push_interp(line, out);
 								syscall_interp(line, out);
 								pop_interp(out, line, line_better, fname);
@@ -87,6 +90,9 @@ int macro_interp(const char *fname) {
 								halt_interp(out, line, line_better, fname);
 								bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
+								lea_interp(line, out, line_num);
+								call_interp(out, line, line_num, fname, macro_name);
+								return0(out, line, line_num, fname);
 							}
 						}
 					}
@@ -127,6 +133,8 @@ int macro_interp(const char *fname) {
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
 								mov_interp(line, out, line_better, fname);
+								add_interp(out, line, line_better, fname);
+								sub_interp(out, line, line_better, fname);
 								push_interp(line, out);
 								syscall_interp(line, out);
 								pop_interp(out, line, line_better, fname);
@@ -135,6 +143,9 @@ int macro_interp(const char *fname) {
 								halt_interp(out, line, line_better, fname);
 								bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
+								lea_interp(line, out, line_better);
+								call_interp(out, line, line_better, fname, macro_name);
+								return0(out, line, line_better, fname);
 							}
 						}
 

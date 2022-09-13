@@ -202,7 +202,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 										break;
 									} else if(end == NULL && main == NULL){
 										FILE *out;
-										asm_interp_func_funcs(line6, out, line_better, fname);
+										asm_interp_func_funcs(line6, out, line_better, fname, function_name);
 									}
 								}
 							}	
@@ -260,7 +260,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									break;	
 								} else if(end_of_main == NULL && main_search == NULL) {
 									FILE *out;
-									asm_interp_func_funcs(lineline, out, line_yo, fname);
+									asm_interp_func_funcs(lineline, out, line_yo, fname, "main");
 								}
 
 							}

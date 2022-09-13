@@ -27,6 +27,55 @@ int pop_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 }
 
+int add_interp(FILE *out, char line[], int line_num, const char *fname) {
+
+	// move~ x, rdi
+	// move~ y, rsi
+	// add~ x, y
+
+	char add[] = "add~ ";
+	char *search = strstr(line, add);
+	if(search != NULL) {
+
+		out = fopen("a.asm", "a");
+
+		char *after_add = strchr(line, '~');
+		if(after_add != NULL) {
+			after_add++;
+
+			const char delim[] = ",";
+			char *second = strchr(after_add, ',');
+			char *first = strtok(after_add, delim);
+
+			if(second != NULL) {
+				second++;
+				if(first != NULL) {
+					char buf[0x100];
+					snprintf(buf, sizeof(buf), "\n\tadd %s,%s", second, first);
+					fprintf(out, buf);
+					fclose(out);
+				} else {
+					wlog_error(fname, line_num, "Add instruction missing operator. EX: add~ rdi, rsi\n");
+				}
+			} else {
+				wlog_error(fname, line_num, "Add instruction missing operator. EX: add~ rdi, rsi\n");
+				return 0;
+			}
+		} else {
+			wlog_error(fname, line_num, "Add instruction missing operator. EX: add~ rdi, rsi\n");
+			return 0;
+		}
+
+	}
+
+	return 0;
+
+}
+
+int sub_interp(FILE *out, char line[], int line_num, const char *fname) {
+	return 0;
+}
+
 int cif_interp(FILE *out, char line[], int line_num, const char *fname) {
 	
 	char search[] = "cif";
@@ -90,7 +139,7 @@ int bits_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 }*/
 
-int call_interp(FILE *out, char line[], int line_num, const char *fname) {
+int call_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname) {
 
 	/*well: 
 	 * 	call~ wellfile.wellfunc 
@@ -103,7 +152,7 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname) {
 	char *search = strstr(line, per);
 	if(search != NULL) {
 
-		include_comp(out, line, line_num, fname);
+		include_comp(out, line, line_num, fname, funcname);
 
 	} else {
 	        char search[] = "call~ ";
@@ -150,10 +199,15 @@ int print_asm_interp(FILE *out, char line[], int line_num, const char *fname) {
 	char *asm_search = strstr(line, search);
 	if(asm_search != NULL) {
 		char *after_asm = strchr(asm_search, '~');
-		char *res = after_asm + 1;
-		out = fopen("a.asm", "a");
-		fprintf(out, "\n%s\n", res);
-		fclose(out);
+		if(after_asm != NULL) {
+			after_asm++;
+			after_asm++;
+			out = fopen("a.asm", "a");
+			fprintf(out, "\n\t%s", after_asm);
+			fclose(out);
+		} else {
+			wlog_error(fname, line_num, "ASM missing operator. EX: asm~ mov rax, 0\n");
+		}
 	}
 	return 0;
 
@@ -190,7 +244,7 @@ int return0(FILE *out, char line[], int line_num, const char *fname) {
 		char *return_num = strstr(line, after_ret);
 		if(return_num != NULL) {
 			return_num++;
-			log_info(return_num);
+			//log_info(return_num);
 			out = fopen("a.asm", "a");
 
 			char fprint_lin[0x100];

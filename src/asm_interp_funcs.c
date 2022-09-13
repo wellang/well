@@ -24,9 +24,11 @@ int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname
 
 }
 
-int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fname) {
+int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname) {
 
         mov_interp(line, out, line_num, fname);
+        add_interp(out, line, line_num, fname);
+        sub_interp(out, line, line_num, fname);
         push_interp(line, out);
 
         syscall_interp(line, out);
@@ -38,7 +40,7 @@ int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fnam
  //     run_interp(out, line);
         print_asm_interp(out, line, line_num, fname);
         lea_interp(line, out, line_num);
-        call_interp(out, line, line_num, fname);
+        call_interp(out, line, line_num, fname, funcname);
         return0(out, line, line_num, fname);
  
         return 0;

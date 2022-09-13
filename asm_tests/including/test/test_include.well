@@ -2,5 +2,6 @@
 
 	move~ 0, rax
 	call~ printf
+  ret
 
 }
