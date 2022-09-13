@@ -1,0 +1,32 @@
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// NOTE:                                                                             *
+//      Comments can NOT go on the same line as an instruction(not implimented yet)  *
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+~var:main {
+
+          // c com test - - - - move~ call~ asm~ string
+          ; asm com test - - - - move~ call~ asm~ string
+
+          // - - these are the variables - -
+          asm~ str: db '%s', 10, 0
+          string~ hello = 'hello!'
+}
+
+~func:main {
+
+           // c com test - - - - move~ call~ asm~ string
+           ; asm com test - - - - move~ call~ asm~ string
+
+           // - - external functions - -
+           asm~ extern printf
+
+           ; - - main program - -
+           move~ str, rdi
+           move~ hello, rsi
+           move~ 0, rax
+           call~ printf
+
+           return~ 0
+
+}

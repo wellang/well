@@ -24,6 +24,8 @@
 
 #include "asm2obj.h"
 
+bool comment_check;
+
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
 	const char *fname;
@@ -68,6 +70,10 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	FILE *bit_out;
 	int lnum = 0;
 	while(fgets(line8, sizeof(line8), bits) != NULL) {
+		comment_check = __check_com__(line8);
+		if(comment_check == true) {
+			continue;
+		}
 		lnum++;
 		bits_interp(bit_out, line8, lnum, fname);
 		if(line8 == NULL) {
@@ -87,7 +93,12 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	fclose(output);
 
 	while(fgets(line, sizeof(line), file) != NULL) {
-				
+
+		comment_check = __check_com__(line);
+		if(comment_check == true) {
+			  continue;
+		}
+
 		char var_search[] = "~var:main {";
 		char *var = strstr(line, var_search);
 
@@ -97,6 +108,10 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			char mainlines[256];
 			int lnum2 = 0;
 			while(fgets(mainlines, sizeof(mainlines), varread) != NULL) {
+				comment_check = __check_com__(mainlines);
+				if(comment_check == true) {
+					  continue;
+				}
 				lnum++;
 				char brack_s[] = "}";
 				char *search_b = strstr(mainlines, brack_s);
@@ -131,7 +146,12 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	int line_num = 0;
 	int lineline_num = 0;
 	while(fgets(line4, sizeof(line4), file3) != NULL) {
-		
+
+		comment_check = __check_com__(line4);
+		if(comment_check == true) {
+			  continue;
+		}
+
 		lineline_num++;
 		char search[] = "~func:";
 		char *func = strstr(line4, search);
@@ -163,6 +183,10 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 								if(func != NULL) {
 									
 								}*/
+								comment_check = __check_com__(line6);
+								if(comment_check == true) {
+									continue;
+								}
 								if(line_better != line_line) {
 									line_better++;
 								} else if(line_better == line_line) {
@@ -201,6 +225,10 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			int mainline_num = 0;
 			int line_line = line_num;
 			while(fgets(mainline, sizeof(mainline), main_func) != NULL) {
+				comment_check = __check_com__(mainline);
+				if(comment_check == true) {
+					continue;
+				}
 				if(mainline_num != line_line) {
 					mainline_num++;
 				} else if(mainline_num == line_line) {
@@ -213,7 +241,12 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 						FILE *main_run = fopen(fname, "r+");
 						char lineline[256];
 						while(fgets(lineline, sizeof(lineline), main_run) != NULL) {
-							
+
+							comment_check = __check_com__(lineline);
+							if(comment_check == true) {
+								continue;
+							}
+
 							if(line_yo != the_line) {
 								line_yo++;
 								continue;

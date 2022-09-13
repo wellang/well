@@ -4,12 +4,14 @@
 #include <string.h>
 #include "com.h"
 
-bool __check_com__(char line[], bool IS_COM) {
+bool __check_com__(char line[]) {
+
+    bool IS_COM;
 
     COM com;
 
     char com_c[] = "// ";
-    char com_wesm[] = ";; ";
+    char com_wesm[] = "; ";
 
     com.C = strstr(line, com_c);
     com.ASM = strstr(line, com_wesm);

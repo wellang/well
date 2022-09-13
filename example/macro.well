@@ -1,5 +1,5 @@
 ~var:main {
-	
+
 	string~ text = 'hello world'
 	length~ text_length, text
 
@@ -18,6 +18,6 @@
 
 	asm~ print text, text_length
 	
-	return 0
+	return~ 0
 
 }

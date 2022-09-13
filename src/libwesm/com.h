@@ -20,6 +20,6 @@ typedef struct {
     COM com; \
     __log_log__(3, com->fname, com->line_num, (const char *)line)
 
-bool __check_com__(char line[], bool IS_COM);
+bool __check_com__(char line[]);
 
 #endif // COM_H_

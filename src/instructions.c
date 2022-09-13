@@ -101,7 +101,7 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 	char per[] = ".";
 	char *search = strstr(line, per);
-	if(per != NULL) {
+	if(search != NULL) {
 
 		include_comp(out, line, line_num, fname);
 
@@ -109,15 +109,17 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname) {
 	        char search[] = "call~ ";
 	        char *call = strstr(line, search);
 	        if(call != NULL) {
-			
-			call++;
-			call++;
 
-			printf(call);
+				int i = 0;
+				for(i = 0; i < 6; i++) {
+					call++;
+				}
 
-	                out = fopen("a.asm", "a");
-			fprintf(out, "call %s", call);
-	                fclose(out);
+				    //printf(call);
+
+	            out = fopen("a.asm", "a");
+			    fprintf(out, "\n\tcall %s", call);
+	            fclose(out);
 	        } else if(call == NULL) {
 	                return 0;
 		}	
@@ -180,25 +182,32 @@ int return0(FILE *out, char line[], int line_num, const char *fname) {
  * mov rdi, 0
  * syscall
  */
-	char search[] = "return ";
+	char search[] = "return~ ";
 	char *return_search = strstr(line, search);
 
 	if(return_search != NULL) {
-		char after_ret[] = " ";
+		char after_ret[] = "~";
 		char *return_num = strstr(line, after_ret);
 		if(return_num != NULL) {
 			return_num++;
+			log_info(return_num);
 			out = fopen("a.asm", "a");
-		    #ifndef __linux__
-			    fprintf(out, "\n\tmov rax, 60\n\tmov rdi, %s\n\tsyscall\n", return_num);
+
+			char fprint_lin[0x100];
+			char fprint_el[0x100];
+			snprintf(fprint_lin, sizeof(fprint_lin), "\n\tmov rax, 60\n\tmov rdi, %s\n\tsyscall", return_num);
+			snprintf(fprint_el, sizeof(fprint_el), "\n\tmov rax, 1\n\tmov rdi %s\n\tsyscall", return_num);
+
+            #ifndef linux
+			    fprintf(out, fprint_lin);
 		        fclose(out);
 			#else
-				fprintf(out, "\n\tmov rax, 1\n\tmov rdi, %s\n\t\syscall\n", return_num);
+				fprintf(out, fprint_el);
 			#endif
 
 		} else {
 			out = fopen("a.asm", "a");
-			#ifndef __linux__
+			#ifndef linux
 			    fprintf(out, "\n\tmov rax, 60\n\tmov rdi, 0\n\tsyscall\n");
 			    fclose(out);
 			#else

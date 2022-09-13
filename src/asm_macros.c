@@ -10,6 +10,9 @@
 #include "instructions.h"
 #include "log.h"
 
+#include "libwesm/com.h"
+bool comment_check_;
+
 int macro_interp(const char *fname) {
 
 	FILE *file = fopen(fname, "r+");
@@ -17,7 +20,12 @@ int macro_interp(const char *fname) {
 	int line_num = 0;
 
 	while(fgets(line, sizeof(line), file) != NULL) {
-		
+
+		comment_check_ = __check_com__(line);
+		if(comment_check_ == true) {
+			continue;
+		}
+
 		line_num++;
 
 		char search[] = "~macro:";
@@ -49,6 +57,12 @@ int macro_interp(const char *fname) {
 					int line_better = 0;
 
 					while(fgets(line, sizeof(line), read) != NULL) {
+
+						comment_check_ = __check_com__(line);
+						if(comment_check_ == true) {
+							continue;
+						}
+
 						if(line_better != line_line) {
 							line_better++;
 						} else if(line_better == line_line) {
@@ -91,6 +105,12 @@ int macro_interp(const char *fname) {
 					int line_better = 0;
 					int line_line = 0;
 					while(fgets(line, sizeof(line), read) != NULL) {
+
+						comment_check_ = __check_com__(line);
+						if(comment_check_ == true) {
+							continue;
+						}
+
 						if(line_better != line_line) {
 							line_better++;
 						} else if(line_better == line_line) {

@@ -67,7 +67,7 @@ Windows
 	move~ text_length, rdx
 	syscall
 
-	return 0
+	return~ 0
 }
 
 ```

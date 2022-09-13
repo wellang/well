@@ -10,6 +10,6 @@
 	move~ str, rdi 
 	move~ test, rsi
 	call~ test_include.print
-	return 0
+	return~ 0
 
 }

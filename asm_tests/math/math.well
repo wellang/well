@@ -11,5 +11,5 @@
 	move~ 0, rax
 	asm~ call printf
 	
-	return 0
+	return~ 0
 }
