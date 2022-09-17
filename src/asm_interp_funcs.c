@@ -1,15 +1,16 @@
  #include <stdio.h>
  #include <stdlib.h>
- #include <string.h>
+#include <string.h>
   
- #include "mov_search.h"
- #include "syscall_interp.h"
- #include "push_search.h"
- #include "types.h"
- #include "log.h"
- #include "instructions.h"
- #include "asm_macros.h"
- #include "lea.h"
+#include "mov_search.h"
+#include "syscall_interp.h"
+#include "push_search.h"
+#include "types.h"
+#include "log.h"
+#include "instructions.h"
+#include "asm_macros.h"
+#include "lea.h"
+#include "if.h"
 
 int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
  
@@ -25,6 +26,9 @@ int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname
 }
 
 int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname) {
+
+        if_interp(out, line, line_num, fname, funcname);
+        if_end_interp(out, line, line_num, fname, funcname);
 
         mov_interp(line, out, line_num, fname);
         add_interp(out, line, line_num, fname);

@@ -1,38 +1,31 @@
 section .data
-	 x: dw 1
-	 y: dw 1
+;           string~ test = 'test'
+ 
+	 test : db 'test'
+	 tl: equ $- test
 section .text
 
-test2:
-
-	mov rax, 60
-	mov rdi, 0
-	syscall
-test1:
-
-	mov rax, 60
-	mov rdi, 0
-	syscall
 
 
 global main
 
 main:
-	
- extern printf
+	;     move~ 1, rbp
+ 	mov rbp, 1;     move~ 1, rsp
+ 	mov rsp, 1
+	cmp rbp, rsp
+	je main.8839rbprspeq
+	jne main.8839fin
+	.8839rbprspeq:;         move~ 1, rax
+ 	mov rax, 1;         move~ 1, rdi
+ 	mov rdi, 1;         move~ test, rsi
+ 	mov rsi, test;         move~ tl, rdx
+ 	mov rdx, tl;         syscall
 
-; 	move~ x, rdi
- 	mov rdi, x; 	move~ y, rsi
- 	mov rsi, y
- cmp rdi, rsi
-
-
- jnz test1
-
-
- jmp test2
-
-
+	syscall
+	jmp main.8839fin
+	.8839fin:
 	mov rax, 60
-	mov rdi, 0
+	mov rdi,  0
+
 	syscall

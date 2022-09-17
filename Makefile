@@ -13,6 +13,7 @@ COMMON_.c = src/asm_interp.c \
 	src/lea.c \
 	src/math.c \
 	src/asm_interp_funcs.c \
+	src/if.c \
 	src/libwesm/com.c \
 	src/argparse/argparse.c \
 	src/argparse/extract.c \
@@ -30,6 +31,7 @@ COMMONC_.o = asm_interp.o \
 	lea.o \
 	math.o \
 	asm_interp_funcs.o \
+	if.o \
 	com.o \
 	argparse.o \
 	extract.o \

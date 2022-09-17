@@ -16,6 +16,7 @@
 #include "include.h"
 #include "lea.h"
 #include "rodata.h"
+#include "if.h"
 
 #include "libwesm/com.h"
 
@@ -25,6 +26,8 @@
 #include "asm2obj.h"
 
 bool comment_check;
+
+const char *ifscope;
 
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
@@ -242,6 +245,14 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 						char lineline[256];
 						while(fgets(lineline, sizeof(lineline), main_run) != NULL) {
 
+							/*if(ifscope == there) {
+								char *b = strstr(lineline, "end");
+								if(b != NULL) {
+									ifscope = NULL;
+								}
+								continue;
+							}*/
+
 							comment_check = __check_com__(lineline);
 							if(comment_check == true) {
 								continue;
@@ -256,6 +267,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
 								char *main_search = strstr(lineline, "func:main");
 								char *end_of_main = strstr(lineline, "}");
+
 								if(end_of_main != NULL && main_search == NULL) {
 									break;	
 								} else if(end_of_main == NULL && main_search == NULL) {

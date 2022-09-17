@@ -19,14 +19,15 @@ Wellang is in an extremely early state, with pending syntax changes, and the dev
 	
 ### This is a project originally started by Tristan Wellman. This is a high level compiled assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to NASM, See below for compilation and simple documentation.
 
-contact me at:
+NEED HELP?
 
+``
 email: wellangcode@gmail.com
+``
 
-discord: ``__Oblivion__#3258``
-
+``
 wellang discord server: https://discord.gg/K4ufunGxJv
-
+``
 # Compile Wellang
 
 Linux
