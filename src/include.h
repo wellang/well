@@ -4,7 +4,7 @@
 #define INCLUDE_H
 
 int include_var_funcs(char line[], FILE *out, int line_num, const char *fname);
-int include_func_funcs(char line[], FILE *out, int line_num, const char *fname);
+int include_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname, int ifnum);
 
 const char *get_asm_name(const char *fname, const char *final_name);
 

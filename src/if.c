@@ -10,13 +10,9 @@
 
 #include "asm_interp_funcs.h"
 
-char *opp2;
-char *opp1;
-int randd;
-
 #define if_error "if statement error! EX: ~if(x == y) start\n"
 
-int if_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname) {
+int if_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int ifnum) {
 
     out = fopen("a.asm", "a");
 
@@ -39,9 +35,6 @@ int if_interp(FILE *out, char line[], int line_num, const char *fname, const cha
 
         if(in_bracs != NULL) {
 
-            srand(time(NULL));
-            int r = rand() % 9999;
-            randd = r;
             char eq[] = "==";
             char neq[] = "!=";
             char gre[] = ">";
@@ -62,7 +55,7 @@ int if_interp(FILE *out, char line[], int line_num, const char *fname, const cha
                gre_or_eq_ == NULL &&
                les_or_eq_ == NULL
             ) {
-                int rando = r;
+
                 const char delim[] = "==";
                 char *op2 = strstr(in_bracs, "==");
                 if(op2 != NULL) {op2++;op2++;op2++;}
@@ -71,11 +64,11 @@ int if_interp(FILE *out, char line[], int line_num, const char *fname, const cha
                 char opb[0x100];
                 snprintf(opb, sizeof(opb), "%s,%s", op1, op2);
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tje %s.%d%s%seq\n\tjne %s.%dfin\n\t.%d%s%seq:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tje %s._%d%s%s_eq\n\tjne %s._%d_fin\n\t._%d%s%s_eq:",
                          op1, op2,
-                         funcname, rando, op1, op2,
-                         funcname, rando,
-                         rando, op1, op2);
+                         funcname, ifnum, op1, op2,
+                         funcname, ifnum,
+                         ifnum, op1, op2);
                 fprintf(out, buf);
 
                 //asm_interp_func_funcs(line, out, line_num, fname, funcname);
@@ -86,20 +79,63 @@ int if_interp(FILE *out, char line[], int line_num, const char *fname, const cha
                         gre_or_eq_ == NULL &&
                         les_or_eq_ == NULL) {
 
-                int rando = r;
                 const char delim[] = "!=";
                 char *op2 = strstr(in_bracs, "!=");
                 if(op2 != NULL) {op2++;op2++;op2++;}
                 char *op1 = strtok(in_bracs, delim);
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjne %s.%d%s%sneq\n\tje %s.%dfin\n\t.%d%s%sneq",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjne %s._%d%s%s_neq\n\tje %s._%d_fin\n\t._%d%s%s_neq:",
                          op1, op2,
-                         funcname, rando, op1, op2,
-                         funcname, rando,
-                         rando, op1, op2);
+                         funcname, ifnum, op1, op2,
+                         funcname, ifnum,
+                         ifnum, op1, op2);
                 fprintf(out, buf);
 
+            } else if(eq_ == NULL &&
+                      neq_ == NULL &&
+                      gre_ != NULL &&
+                      les_ == NULL &&
+                      gre_or_eq_ == NULL &&
+                      les_or_eq_ == NULL) {
+
+                const char delim[] = ">";
+                char *op2 = strstr(in_bracs, ">");
+                if(op2 != NULL) {op2++;op2++;} else {
+                    wlog_error(fname, line_num, if_error);
+                }
+                char *op1 = strtok(in_bracs, delim);
+                if (op1 == NULL) {wlog_error(fname, line_num, if_error);}
+                op1[strlen(op1)-1] = '\0';
+                char buf[0x100];
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjg %s._%d%s%s_gre\n\tjng %s._%d_fin\n\t._%d%s%s_gre:",
+                         op1, op2,
+                         funcname, ifnum, op1, op2,
+                         funcname, ifnum,
+                         ifnum, op1, op2);
+                fprintf(out, buf);
+            } else if(eq_ == NULL &&
+                      neq_ == NULL &&
+                      gre_ == NULL &&
+                      les_ != NULL &&
+                      gre_or_eq_ == NULL &&
+                      les_or_eq_ == NULL) {
+
+                const char delim[] = "<";
+                char *op2 = strstr(in_bracs, "<");
+                if(op2 != NULL) {op2++;op2++;} else {
+                    wlog_error(fname, line_num, if_error);
+                }
+                char *op1 = strtok(in_bracs, delim);
+                if(op1 == NULL) {wlog_error(fname, line_num, if_error);}
+                op1[strlen(op1)-1] = '\0';
+                char buf[0x100];
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjl %s._%d%s%s_les\n\tjnl %s._%d_fin\n\t._%d%s%s_les:",
+                         op1, op2,
+                         funcname, ifnum, op1, op2,
+                         funcname, ifnum,
+                         ifnum, op1, op2);
+                fprintf(out, buf);
             }
         }
     }
@@ -107,7 +143,7 @@ int if_interp(FILE *out, char line[], int line_num, const char *fname, const cha
     return 0;
 }
 
-int if_end_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname) {
+int if_end_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int ifnum) {
 
     char *end = strstr(line, "end");
     out = fopen("a.asm", "a");
@@ -116,9 +152,9 @@ int if_end_interp(FILE *out, char line[], int line_num, const char *fname, const
         wlog_info(fname, line_num, "Found 'END' in if statement\n");
 
         char buff[0x100];
-        snprintf(buff, sizeof(buff), "\n\tjmp %s.%dfin\n\t.%dfin:",
-        funcname, randd,
-        randd);
+        snprintf(buff, sizeof(buff), "\n\tjmp %s._%d_fin\n\t._%d_fin:",
+        funcname, ifnum,
+        ifnum);
         fprintf(out, buff);
         fclose(out);
     }

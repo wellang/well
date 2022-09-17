@@ -180,6 +180,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 							char line6[256];
 							int line_better = 0;
 							int line_line = lineline_num;
+
+							int ifnum = 0;
+
 							while(fgets(line6, sizeof(line6), read) != NULL) {
 								/*char search_for_func[] = function_name;
 								char func = strstr(line6, search_for_func);
@@ -205,7 +208,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 										break;
 									} else if(end == NULL && main == NULL){
 										FILE *out;
-										asm_interp_func_funcs(line6, out, line_better, fname, function_name);
+										char *iffind = strstr(line6, "~if");
+										if(iffind != NULL) {ifnum++;}
+										asm_interp_func_funcs(line6, out, line_better, fname, function_name, ifnum);
 									}
 								}
 							}	
@@ -243,6 +248,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 						int line_yo = 0;
 						FILE *main_run = fopen(fname, "r+");
 						char lineline[256];
+
+						int ifnum = 0;
+
 						while(fgets(lineline, sizeof(lineline), main_run) != NULL) {
 
 							/*if(ifscope == there) {
@@ -272,7 +280,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									break;	
 								} else if(end_of_main == NULL && main_search == NULL) {
 									FILE *out;
-									asm_interp_func_funcs(lineline, out, line_yo, fname, "main");
+									char *iffind = strstr(lineline, "~if");
+									if(iffind != NULL) {ifnum++;}
+									asm_interp_func_funcs(lineline, out, line_yo, fname, "main", ifnum);
 								}
 
 							}

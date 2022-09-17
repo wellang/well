@@ -12,6 +12,7 @@
 #include "instructions.h"
 #include "asm_macros.h"
 #include "lea.h"
+#include "if.h"
 
 #define call_func(file, line)	\
         char search[] = "call~ ";	\
@@ -49,7 +50,10 @@ int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
 }
 
-int include_func_funcs(char line[], FILE *out, int line_num, const char *fname) {
+int include_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname, int ifnum) {
+
+	if_interp(out, line, line_num, fname, funcname, ifnum);
+	if_end_interp(out, line, line_num, fname, funcname, ifnum);
 
 	mov_interp(line, out, line_num, fname);
 	add_interp(out, line, line_num, fname);
@@ -147,7 +151,7 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 		   .123funcfin:
 		   rest of code
 		*/
-		snprintf(buff, sizeof(buff), "\n\tcall %s.%d%s\n\tjmp %s.%d%sfin\n\t.%d%s:",
+		snprintf(buff, sizeof(buff), "\n\tjmp %s.%d%s\n\tjmp %s.%d%sfin\n\t.%d%s:",
 				funcname, rando, func,
 				funcname, rando, func,
 				 rando, func);
@@ -168,6 +172,9 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 				//log_info(line0);
 				int func_line = line_num;
 				char line1[256];
+
+				int ifnum = 9999;
+
 				while(fgets(line1, sizeof(line1), include_file.wellfile) != NULL) {
 					func_line++;
 
@@ -181,7 +188,9 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 							break;
 						} else {
 							FILE *out;
-							include_func_funcs(line1, out, func_line, fname);
+							char *iffind = strstr(line1, "~if");
+							if(iffind != NULL) {ifnum++;}
+							include_func_funcs(line1, out, func_line, fname, funcname, ifnum);
 						}
 					} else if(func_line < line_num) {
 						continue;

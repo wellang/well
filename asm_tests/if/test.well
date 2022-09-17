@@ -5,18 +5,53 @@
 
 ~func:main {
 
-    move~ 1, rbp
-    move~ 1, rsp
+           move~ 1, rbp
+           move~ 1, rsp
 
-    ~if(rbp == rsp)
+           move~ 5, r8
+           move~ 4, r9
 
-        move~ 1, rax
-        move~ 1, rdi
-        move~ test, rsi
-        move~ tl, rdx
-        syscall
+           ~if(rbp == rsp)
+
+                   move~ 1, rax
+                   move~ 1, rdi
+                   move~ test, rsi
+                   move~ tl, rdx
+                   syscall
       
-    end
+            end
 
-    return~ 0
+            ~if(r8 != r9)
+    
+                    move~ 1, rax
+	                move~ 1, rdi
+	                move~ test, rsi
+	                move~ tl, rdx
+	                syscall
+
+            end
+
+            ~if(r8 > r9)
+    
+                    move~ 1, rax
+	                move~ 1, rdi
+	                move~ test, rsi
+	                move~ tl, rdx
+	                syscall
+
+            end
+
+            ~if(r9 < r8)
+
+                    move~ 1, rax
+                    move~ 1, rdi
+                    move~ test, rsi
+                    move~ tl, rdx
+                    syscall
+
+            end
+
+            call~ test_include.if_test
+
+            return~ 0
 }
