@@ -57,6 +57,8 @@ int macro_interp(const char *fname) {
 					int line_line = 0;
 					int line_better = 0;
 
+					int callnum = 0;
+
 					while(fgets(line, sizeof(line), read) != NULL) {
 
 						comment_check_ = __check_com__(line);
@@ -79,6 +81,8 @@ int macro_interp(const char *fname) {
 								continue;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
+								char *callfind = strstr(line, "call~");
+								if(callfind != NULL) {callnum++;}
 								mov_interp(line, out, line_better, fname);
 								add_interp(out, line, line_num, fname);
 								sub_interp(out, line, line_num, fname);
@@ -91,7 +95,7 @@ int macro_interp(const char *fname) {
 								bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
 								lea_interp(line, out, line_num);
-								call_interp(out, line, line_num, fname, macro_name);
+								call_interp(out, line, line_num, fname, macro_name, callnum);
 								return0(out, line, line_num, fname);
 							}
 						}
@@ -110,6 +114,9 @@ int macro_interp(const char *fname) {
 					char line[256];
 					int line_better = 0;
 					int line_line = 0;
+
+					int callnum = 0;
+
 					while(fgets(line, sizeof(line), read) != NULL) {
 
 						comment_check_ = __check_com__(line);
@@ -132,6 +139,8 @@ int macro_interp(const char *fname) {
 								continue;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
+								char *callfind = strstr(line, "call~");
+								if(callfind != NULL) {callnum++;}
 								mov_interp(line, out, line_better, fname);
 								add_interp(out, line, line_better, fname);
 								sub_interp(out, line, line_better, fname);
@@ -144,7 +153,7 @@ int macro_interp(const char *fname) {
 								bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
 								lea_interp(line, out, line_better);
-								call_interp(out, line, line_better, fname, macro_name);
+								call_interp(out, line, line_better, fname, macro_name, callnum);
 								return0(out, line, line_better, fname);
 							}
 						}

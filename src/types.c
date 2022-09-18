@@ -47,7 +47,8 @@ int string_interp(char line[], FILE *out) {
 				fclose(out2);
 
 			*/
-			fprintf(out2, "%s: db%s\n", string_name, after_name);
+			string_name[strlen(string_name)-1] = '\0';
+			fprintf(out2, "%s: db%s, 0\n", string_name, after_name);
 			fclose(out2);
 		} else {
 			log_error("ERROR:: string missing '~' (string~ foo = 'bar')\n");

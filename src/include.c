@@ -91,7 +91,7 @@ const char *get_asm_name(const char *fname, const char *final_name) {
 
 }
 
-int include_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname) {
+int include_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum) {
 
 	char call[] = "call~ ";
 	char mov[] = "move~ ";
@@ -151,10 +151,10 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 		   .123funcfin:
 		   rest of code
 		*/
-		snprintf(buff, sizeof(buff), "\n\tjmp %s.%d%s\n\tjmp %s.%d%sfin\n\t.%d%s:",
-				funcname, rando, func,
-				funcname, rando, func,
-				 rando, func);
+		snprintf(buff, sizeof(buff), "\n\tjmp %s._%d%s_\n\tjmp %s._%d%s_fin\n\t._%d%s_:",
+				funcname, callnum, func,
+				funcname, callnum, func,
+				 callnum, func);
 		fprintf(out1, buff);
 		fclose(out1);
 
@@ -203,7 +203,7 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 		}
 		FILE *out2 = fopen("a.asm", "a");
 		char bufff[0x100];
-		snprintf(bufff, sizeof(bufff), "\n\t.%d%sfin:\n", rando, func);
+		snprintf(bufff, sizeof(bufff), "\n\t._%d%s_fin:\n", callnum, func);
 		fprintf(out2, bufff);
 		fclose(out2);
 

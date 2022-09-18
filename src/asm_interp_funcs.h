@@ -4,6 +4,6 @@
 #define ASM_INTERP_FUNCS_H
 
 int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname);
-int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname, int ifnum);
+int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname, int ifnum, int callnum);
 
 #endif

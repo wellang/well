@@ -182,6 +182,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 							int line_line = lineline_num;
 
 							int ifnum = 0;
+							int callnum = 0;
 
 							while(fgets(line6, sizeof(line6), read) != NULL) {
 								/*char search_for_func[] = function_name;
@@ -210,7 +211,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 										FILE *out;
 										char *iffind = strstr(line6, "~if");
 										if(iffind != NULL) {ifnum++;}
-										asm_interp_func_funcs(line6, out, line_better, fname, function_name, ifnum);
+										char *callfind = strstr(line6, "call~");
+										if(callfind != NULL) {callnum++;}
+										asm_interp_func_funcs(line6, out, line_better, fname, function_name, ifnum, callnum);
 									}
 								}
 							}	
@@ -250,6 +253,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 						char lineline[256];
 
 						int ifnum = 0;
+						int callnum = 0;
 
 						while(fgets(lineline, sizeof(lineline), main_run) != NULL) {
 
@@ -282,7 +286,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									FILE *out;
 									char *iffind = strstr(lineline, "~if");
 									if(iffind != NULL) {ifnum++;}
-									asm_interp_func_funcs(lineline, out, line_yo, fname, "main", ifnum);
+									char *callfind = strstr(lineline, "call~");
+									if(callfind != NULL) {callnum++;}
+									asm_interp_func_funcs(lineline, out, line_yo, fname, "main", ifnum, callnum);
 								}
 
 							}

@@ -51,7 +51,7 @@ int add_interp(FILE *out, char line[], int line_num, const char *fname) {
 				second++;
 				if(first != NULL) {
 					char buf[0x100];
-					snprintf(buf, sizeof(buf), "\n\tadd %s,%s", second, first);
+					snprintf(buf, sizeof(buf), "\n\tadd %s,%s", first, second);
 					fprintf(out, buf);
 					fclose(out);
 				} else {
@@ -139,7 +139,7 @@ int bits_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 }*/
 
-int call_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname) {
+int call_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum) {
 
 	/*well: 
 	 * 	call~ wellfile.wellfunc 
@@ -152,7 +152,7 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname, const c
 	char *search = strstr(line, per);
 	if(search != NULL) {
 
-		include_comp(out, line, line_num, fname, funcname);
+		include_comp(out, line, line_num, fname, funcname, callnum);
 
 	} else {
 	        char search[] = "call~ ";
