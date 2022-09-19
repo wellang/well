@@ -1,0 +1,7 @@
+~func:main {
+
+	libcall~ blah.blah
+
+	return~ 0;
+
+}

@@ -152,7 +152,19 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname, const c
 	char *search = strstr(line, per);
 	if(search != NULL) {
 
-		include_comp(out, line, line_num, fname, funcname, callnum);
+		char call[] = "call~ ";
+		char lcall[] = "libcall~ ";
+		char *call_s = strstr(line, call);
+		char *lcall_s = strstr(line, lcall);
+		if(call_s != NULL && lcall_s == NULL) {
+
+			include_comp(out, line, line_num, fname, funcname, callnum);
+
+		} else {
+
+			lib_comp(out, line, line_num, fname, funcname, callnum);
+
+		}
 
 	} else {
 	        char search[] = "call~ ";

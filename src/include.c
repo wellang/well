@@ -217,9 +217,120 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 	return 0;
 }
 
-int lib_comp(const char *fname) {
+int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum) {
 	
-	
+	char lcall[] = "libcall~ ";
+	char *lcall_s = strstr(line, lcall);
+
+	if(lcall_s != NULL) {
+		char tild[] = "~";
+		char *file_and_func = strstr(line, tild);
+
+		if(file_and_func != NULL) {file_and_func++;} else {
+			wlog_error(fname, line_num, "MISSING lib file &/or function!\n");
+			return -1;
+		}
+
+		const char delim[] = ".";
+		char *func = strchr(file_and_func, '.');
+		char *file = strtok(file_and_func, delim);
+		if(func != NULL) {func++;} else {
+			wlog_error(fname, line_num, "MISSING lib function after file name!\n");
+			return -1;
+		}
+		if(file != NULL) {file++;} else {
+			wlog_error(fname, line_num, "MISSING lib file name before function!\n");
+			return -1;
+		}
+		func[strlen(func)-1] = '\0';
+
+		char fname_buf[0x100];
+		#ifndef _WIN32
+
+		     wlog_warn(fname, line_num, "Support for windows libcalls are unfinished!\n");
+		     snprintf(fname_buf, sizeof(fname_buf), "%s.well", file);
+
+        #else
+			 snprintf(fname_buf, sizeof(fname_buf), "/usr/include/wellang/%s.well", file);
+	    #endif
+
+		include_file.wellfile = fopen(fname_buf, "r+");
+		char line0[0x256];
+
+		if(include_file.wellfile == NULL) {
+			wlog_error(fname, line_num, "INVALID libcall file &/or you are on windows!\n");
+			return -1;
+		}
+
+		char func_buf[0x100];
+		snprintf(func_buf, sizeof(func_buf), "~func:%s", func);
+
+		FILE *out1 = fopen("a.asm", "a");
+
+		char buff[0x100];
+		snprintf(buff, sizeof(buff), "\n\tjmp %s._%d%s_\n\tjmp %s._%d%s_fin\n\t._%d%s_:",
+				 funcname, callnum, func,
+				 funcname, callnum, func,
+				 callnum, func);
+
+		fprintf(out1, buff);
+		fclose(out1);
+
+		int line_num = 0;
+		while(fgets(line0, sizeof(line0), include_file.wellfile) != NULL) {
+
+			line_num++;
+
+			if(line0 == NULL) {
+				break;
+			}
+
+			char *func_find = strstr(line0, func_buf);
+			if(func_find != NULL) {
+
+				int func_line = line_num;
+				char line1[256];
+
+				int ifnum = 1999;
+
+				while(fgets(line1, sizeof(line1), include_file.wellfile) != NULL) {
+
+					func_line++;
+
+					if(line1 == NULL) {
+						return 0;
+					}
+
+					if(func_line >= line_num) {
+
+						char search[] = "}";
+						char *brack = strstr(line1, search);
+
+						if(brack != NULL) {
+							break;
+						} else {
+							FILE *out;
+							char *iffind = strstr(line1, "~if");
+							if(iffind != NULL) {ifnum++;}
+							include_func_funcs(line1, out, func_line, fname, funcname, ifnum);
+						}
+					} else if(func_line < line_num) {
+						continue;
+					}
+				}
+				continue;
+			}
+		}
+
+		FILE *out2 = fopen("a.asm", "a");
+		char bufff[0x100];
+		snprintf(bufff, sizeof(bufff), "\n\t._%d%s_fun:\n", callnum, func);
+		fprintf(out2, bufff);
+		fclose(out2);
+
+	} else {
+			return 0;
+	}
 
 	return 0;
 }
