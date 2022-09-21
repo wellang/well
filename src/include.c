@@ -91,6 +91,21 @@ const char *get_asm_name(const char *fname, const char *final_name) {
 
 }
 
+int file_include_comp(bool vars_or_funcs) {
+
+	switch(vars_or_funcs) {
+
+		case true:
+		case false:
+
+	}
+
+}
+
+int file_lib_include_comp(bool vars_or_funcs) {
+
+}
+
 int include_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum) {
 
 	char call[] = "call~ ";
@@ -203,7 +218,9 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 		}
 		FILE *out2 = fopen("a.asm", "a");
 		char bufff[0x100];
-		snprintf(bufff, sizeof(bufff), "\n\t._%d%s_fin:\n", callnum, func);
+		snprintf(bufff, sizeof(bufff), "\n\tjmp %s._%d%s_fin\n\t._%d%s_fin:\n", 
+				funcname, callnum, func,
+				callnum, func);
 		fprintf(out2, bufff);
 		fclose(out2);
 
@@ -245,14 +262,16 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 		func[strlen(func)-1] = '\0';
 
 		char fname_buf[0x100];
-		#ifndef _WIN32
+		/*#ifndef _WIN32
 
 		     wlog_warn(fname, line_num, "Support for windows libcalls are unfinished!\n");
 		     snprintf(fname_buf, sizeof(fname_buf), "%s.well", file);
 
-        #else
-			 snprintf(fname_buf, sizeof(fname_buf), "/usr/include/wellang/%s.well", file);
-	    #endif
+        #else*/
+
+		printf("%s\n%s", file, func);
+		snprintf(fname_buf, sizeof(fname_buf), "/usr/include/wellang/libwesm/%s.well", file);
+	    //#endif
 
 		include_file.wellfile = fopen(fname_buf, "r+");
 		char line0[0x256];
