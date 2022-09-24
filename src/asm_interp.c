@@ -173,7 +173,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 							char *function_name = strtok(after_func, "{");
 							FILE *func = fopen("a.asm", "a");
 							function_name[strlen(function_name)-1] = '\0';
-							fprintf(func, "%s:\n", function_name);
+							fprintf(func, "\n%s:\n", function_name);
 							fclose(func);
 
 							FILE *read = fopen(fname, "r+");
