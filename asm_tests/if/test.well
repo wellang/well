@@ -51,6 +51,19 @@
 
             end
 
+           ~if(rbp == rsp)
+
+                    ~if(r8 > r9)
+                            move~ 1, rax
+                            move~ 1, rdi
+                            move~ test, rsi
+                            move~ tl, rdx
+                            syscall
+                    endi
+           
+            end
+
+
             call~ test_include.if_test
 
             return~ 0

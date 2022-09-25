@@ -25,10 +25,12 @@ int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname
 
 }
 
-int asm_interp_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname, int ifnum, int callnum) {
+int asm_interp_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
+                          const char *fname, const char *funcname, int ifnum,
+                          int callnum, bool is_in_if) {
 
-        if_interp(out, line, line_num, fname, funcname, ifnum);
-        if_end_interp(out, line, line_num, fname, funcname, ifnum);
+        if_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum, is_in_if);
+        if_end_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum);
 
         mov_interp(line, out, line_num, fname);
         add_interp(out, line, line_num, fname);

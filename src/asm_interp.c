@@ -182,6 +182,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 							int line_line = lineline_num;
 
 							int ifnum = 0;
+							bool is_in_if = false;
+							int ifnum_ln = 0;
+
 							int callnum = 0;
 
 							while(fgets(line6, sizeof(line6), read) != NULL) {
@@ -210,10 +213,23 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 									} else if(end == NULL && main == NULL){
 										FILE *out;
 										char *iffind = strstr(line6, "~if");
-										if(iffind != NULL) {ifnum++;}
+										if(iffind != NULL) {
+											ifnum++;
+											ifnum_ln = line_better;
+											FILE *if_ = fopen(fname, "r+");
+											is_in_if = IS_IN_IF(if_, line_better, fname);
+										}
 										char *callfind = strstr(line6, "call~");
 										if(callfind != NULL) {callnum++;}
-										asm_interp_func_funcs(line6, out, line_better, fname, function_name, ifnum, callnum);
+										asm_interp_func_funcs(line6,
+															  out,
+															  line_better,
+															  ifnum_ln,
+															  fname,
+															  function_name,
+															  ifnum,
+															  callnum,
+															  is_in_if);
 									}
 								}
 							}	
@@ -253,6 +269,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 						char lineline[256];
 
 						int ifnum = 0;
+						bool is_in_if = false;
+						int ifnum_ln = 0;
+
 						int callnum = 0;
 
 						while(fgets(lineline, sizeof(lineline), main_run) != NULL) {
@@ -285,10 +304,23 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 								} else if(end_of_main == NULL && main_search == NULL) {
 									FILE *out;
 									char *iffind = strstr(lineline, "~if");
-									if(iffind != NULL) {ifnum++;}
+									if(iffind != NULL) {
+										ifnum++;
+										ifnum_ln = line_yo;
+										FILE *if_ = fopen(fname, "r+");
+										is_in_if = IS_IN_IF(if_, line_yo, fname);
+									}
 									char *callfind = strstr(lineline, "call~");
 									if(callfind != NULL) {callnum++;}
-									asm_interp_func_funcs(lineline, out, line_yo, fname, "main", ifnum, callnum);
+									asm_interp_func_funcs(lineline,
+														  out,
+														  line_yo,
+														  ifnum_ln,
+														  fname,
+														  "main",
+														  ifnum,
+														  callnum,
+														  is_in_if);
 								}
 
 							}

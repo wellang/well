@@ -50,10 +50,11 @@ int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
 }
 
-int include_func_funcs(char line[], FILE *out, int line_num, const char *fname, const char *funcname, int ifnum) {
+int include_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
+					   const char *fname, const char *funcname, int ifnum, bool is_in_if) {
 
-	if_interp(out, line, line_num, fname, funcname, ifnum);
-	if_end_interp(out, line, line_num, fname, funcname, ifnum);
+	if_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum, is_in_if);
+	if_end_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum);
 
 	mov_interp(line, out, line_num, fname);
 	add_interp(out, line, line_num, fname);
@@ -106,7 +107,8 @@ int file_lib_include_comp(bool vars_or_funcs) {
 
 }
 
-int include_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum) {
+int include_comp(FILE *out, char line[], int line_num, const char *fname,
+				 const char *funcname, int callnum) {
 
 	char call[] = "call~ ";
 	char mov[] = "move~ ";
@@ -189,6 +191,8 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 				char line1[256];
 
 				int ifnum = 9999;
+				bool is_in_if = false;
+				int ifnum_ln = 0;
 
 				while(fgets(line1, sizeof(line1), include_file.wellfile) != NULL) {
 					func_line++;
@@ -204,8 +208,20 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname, const 
 						} else {
 							FILE *out;
 							char *iffind = strstr(line1, "~if");
-							if(iffind != NULL) {ifnum++;}
-							include_func_funcs(line1, out, func_line, fname, funcname, ifnum);
+							if(iffind != NULL) {
+								ifnum_ln = func_line;
+								ifnum++;
+								FILE *if_ = fopen(fname, "r+");
+								is_in_if = IS_IN_IF(if_, func_line, fname);
+							}
+							include_func_funcs(line1,
+											   out,
+											   func_line,
+											   ifnum_ln,
+											   fname,
+											   funcname,
+											   ifnum,
+											   is_in_if);
 						}
 					} else if(func_line < line_num) {
 						continue;
@@ -311,6 +327,8 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 				char line1[256];
 
 				int ifnum = 1999;
+				bool is_in_if = false;
+				int ifnum_ln = 0;
 
 				while(fgets(line1, sizeof(line1), include_file.wellfile) != NULL) {
 
@@ -330,8 +348,20 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 						} else {
 							FILE *out;
 							char *iffind = strstr(line1, "~if");
-							if(iffind != NULL) {ifnum++;}
-							include_func_funcs(line1, out, func_line, fname, funcname, ifnum);
+							if(iffind != NULL) {
+								ifnum++;
+								ifnum_ln = func_line;
+								FILE *if_ = fopen(fname, "r+");
+								is_in_if = IS_IN_IF(if_, func_line, fname);
+							}
+							include_func_funcs(line1,
+											   out,
+											   func_line,
+											   ifnum_ln,
+											   fname,
+											   funcname,
+											   ifnum,
+											   is_in_if);
 						}
 					} else if(func_line < line_num) {
 						continue;
