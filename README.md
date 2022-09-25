@@ -34,7 +34,7 @@ Linux
 
 ```
 $ git clone https://github.com/wellang/well.git
-$ cd well``
+$ cd well
 $ make base install
 ```
 
@@ -56,7 +56,6 @@ Windows
 ~var:main {
 
 	string~ text = 'Hello World!'
-	length~ text_length, text
 
 }
 
@@ -65,7 +64,7 @@ Windows
 	move~ 1, rax
 	move~ 1, rdi
 	move~ text, rsi
-	move~ text_length, rdx
+	move~ text.len, rdx
 	syscall
 
 	return~ 0
@@ -77,9 +76,9 @@ Windows
 to compile your well program you can run ``wesm`` in your terminal:
 ```
 ❯ wesm helloworld.well -o helloworld
-20:14:46 INFO  src/asm_interp.c:393: Compile time:: 0.000451 seconds
+14:17:06 INFO  src/asm_interp.c:502: Compile time:: 0.000740 seconds
 ❯ ./helloworld
-Hello World
+Hello World!
 
 ```
 

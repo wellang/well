@@ -1,6 +1,7 @@
 ~var:main {
+
           string~ test = 'test'
-          length~ tl, test
+
 }
 
 ~func:main {
@@ -13,7 +14,7 @@
         move~ 1, rax
         move~ 1, rdi
         move~ test, rsi
-        move~ tl, rdx
+        move~ test.len, rdx
         syscall
       
     end

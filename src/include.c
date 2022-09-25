@@ -40,7 +40,7 @@ struct include_file {
 int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
 	string_interp(line, out);
-	length_interp(line, out);
+	//length_interp(line, out);
 	int_interp(line, out);
 
 	char_interp(out, line);

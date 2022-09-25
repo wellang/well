@@ -1,20 +1,17 @@
-var:main {
+~var:main {
 
-string~ text = 'test'
-length~ text_length, text
+  string~ test = 'test'
 
 }
 
-r:func:main {
+~func:main {
 
-move~ 1, rax
-move~ 1, rdi
-move~ text, rsi
-move~ text_length, rdx
-return
+  move~ 1, rax
+  move~ 1, rdi
+  move~ test, rsi
+  move~ test.len, rdx
+  syscall
 
-move~ 60, rax
-move~ 0, rdi 
-return
+  return~ 0
 
 }

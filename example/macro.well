@@ -1,22 +1,21 @@
 ~var:main {
 
 	string~ text = 'hello world'
-	length~ text_length, text
 
 }
 
-~macro:print[2] {
+~macro:print[1] {
 
 	move~ 1, rax
 	move~ 1, rdi
 	move~ %%1, rsi
-	move~ %%2, rdx
+	move~ %%1.len, rdx
 	syscall
 }
 
 ~func:main {
 
-	asm~ print text, text_length
+	asm~ print text
 	
 	return~ 0
 

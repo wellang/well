@@ -138,7 +138,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	}
 	
 	FILE *out3 = fopen("a.asm", "a");
-	fprintf(out3, "section .text\n\n");
+	fprintf(out3, "\nsection .text\n\n");
 	fclose(out3);
 
 	/*macro compiler*/

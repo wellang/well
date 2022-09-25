@@ -48,7 +48,9 @@ int string_interp(char line[], FILE *out) {
 
 			*/
 			string_name[strlen(string_name)-1] = '\0';
-			fprintf(out2, "%s: db%s, 0\n", string_name, after_name);
+			fprintf(out2, "%s: db%s, 0\n\t.len: equ $-%s",
+					string_name, after_name,
+					string_name);
 			fclose(out2);
 		} else {
 			log_error("ERROR:: string missing '~' (string~ foo = 'bar')\n");
@@ -63,7 +65,7 @@ int string_interp(char line[], FILE *out) {
 
 }
 
-int length_interp(char line[], FILE *out) {
+/*int length_interp(char line[], FILE *out) {
 	
 	char search[] = "length~ ";
 	char *string = strstr(line, search);
@@ -96,7 +98,7 @@ int length_interp(char line[], FILE *out) {
 	}
 
 	return 0;
-}
+}*/
 
 
 int int_interp(char line[], FILE *out) {
