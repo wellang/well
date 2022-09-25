@@ -261,7 +261,7 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 
 		if(file_and_func != NULL) {file_and_func++;} else {
 			wlog_error(fname, line_num, "MISSING lib file &/or function!\n");
-			return -1;
+			return 1;
 		}
 
 		const char delim[] = ".";
@@ -289,12 +289,12 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 		snprintf(fname_buf, sizeof(fname_buf), "/usr/include/wellang/libwesm/%s.well", file);
 	    //#endif
 
-		include_file.wellfile = fopen(fname_buf, "r+");
+		include_file.wellfile = fopen(fname_buf, "r");
 		char line0[0x256];
 
 		if(include_file.wellfile == NULL) {
 			wlog_error(fname, line_num, "INVALID libcall file &/or you are on windows!\n");
-			return -1;
+			return 1;
 		}
 
 		char func_buf[0x100];
@@ -373,7 +373,7 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 
 		FILE *out2 = fopen("a.asm", "a");
 		char bufff[0x100];
-		snprintf(bufff, sizeof(bufff), "\n\t._%d%s_fun:\n", callnum, func);
+		snprintf(bufff, sizeof(bufff), "\n\t._%d%s_fin:\n", callnum, func);
 		fprintf(out2, bufff);
 		fclose(out2);
 

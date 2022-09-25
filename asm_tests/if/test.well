@@ -59,7 +59,7 @@
                             move~ test, rsi
                             move~ tl, rdx
                             syscall
-                    endi
+                    end
            
             end
 
