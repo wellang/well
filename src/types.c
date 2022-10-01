@@ -126,7 +126,7 @@ int int_interp(char line[], FILE *out) {
 			after_name[strlen(after_name)-1] = '\0';
 			var_name[strlen(var_name)-1] = '\0';
 			out = fopen("a.asm", "a");
-			fprintf(out, "\t%s: dw%s\n", var_name, after_name);
+			fprintf(out, "\n\t%s: dw%s", var_name, after_name);
 			fclose(out);
 
 		} else {
