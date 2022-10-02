@@ -67,11 +67,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 char opb[0x100];
                 snprintf(opb, sizeof(opb), "%s,%s", op1, op2);
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tje %s._%d%s%s_eq\n\tjne %s._%d_%d_fin\n\t._%d%s%s_eq:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tje %s._%d_%d%s%s_eq\n\tjne %s._%d_%d_fin\n\t._%d_%d%s%s_eq:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
 
                 //asm_interp_func_funcs(line, out, line_num, fname, funcname);
@@ -88,11 +88,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 char *op1 = strtok(in_bracs, delim);
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjne %s._%d%s%s_neq\n\tje %s._%d_%d_fin\n\t._%d%s%s_neq:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjne %s._%d_%d%s%s_neq\n\tje %s._%d_%d_fin\n\t._%d_%d%s%s_neq:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
 
             } else if(eq_ == NULL &&
@@ -111,11 +111,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 if (op1 == NULL) {wlog_error(fname, line_num, if_error);}
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjg %s._%d%s%s_gre\n\tjng %s._%d_%d_fin\n\t._%d%s%s_gre:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjg %s._%d_%d%s%s_gre\n\tjng %s._%d_%d_fin\n\t._%d_%d%s%s_gre:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
             } else if(eq_ == NULL &&
                       neq_ == NULL &&
@@ -133,11 +133,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 if(op1 == NULL) {wlog_error(fname, line_num, if_error);}
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjl %s._%d%s%s_les\n\tjnl %s._%d_%d_fin\n\t._%d%s%s_les:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjl %s._%d_%d%s%s_les\n\tjnl %s._%d_%d_fin\n\t._%d_%d%s%s_les:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
             }
         }
@@ -191,11 +191,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 char opb[0x100];
                 snprintf(opb, sizeof(opb), "%s,%s", op1, op2);
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tje %s._%d%s%s_eq\n\tjne %s._i_%d_%d_fin\n\t._%d%s%s_eq:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tje %s._%d_%d%s%s_eq\n\tjne %s._i_%d_%d_fin\n\t._%d_%d%s%s_eq:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
 
                 //asm_interp_func_funcs(line, out, line_num, fname, funcname);
@@ -212,11 +212,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 char *op1 = strtok(in_bracs, delim);
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjne %s._%d%s%s_neq\n\tje %s._i_%d_%d_fin\n\t._%d%s%s_neq:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjne %s._%d_%d%s%s_neq\n\tje %s._i_%d_%d_fin\n\t._%d_%d%s%s_neq:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
 
             } else if(eq_ == NULL &&
@@ -235,11 +235,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 if (op1 == NULL) {wlog_error(fname, line_num, if_error);}
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjg %s._%d%s%s_gre\n\tjng %s._i_%d_%d_fin\n\t._%d%s%s_gre:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjg %s._%d_%d%s%s_gre\n\tjng %s._i_%d_%d_fin\n\t._%d_%d%s%s_gre:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
             } else if(eq_ == NULL &&
                       neq_ == NULL &&
@@ -257,11 +257,11 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                 if(op1 == NULL) {wlog_error(fname, line_num, if_error);}
                 op1[strlen(op1)-1] = '\0';
                 char buf[0x100];
-                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjl %s._%d%s%s_les\n\tjnl %s._i_%d_%d_fin\n\t._%d%s%s_les:",
+                snprintf(buf, sizeof(buf), "\n\tcmp %s, %s\n\tjl %s._%d_%d%s%s_les\n\tjnl %s._i_%d_%d_fin\n\t._%d_%d%s%s_les:",
                          op1, op2,
-                         funcname, ifnum, op1, op2,
+                         funcname, ifnum_ln, ifnum, op1, op2,
                          funcname, ifnum_ln, ifnum,
-                         ifnum, op1, op2);
+                         ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
             }
         }
