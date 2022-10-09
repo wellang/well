@@ -35,6 +35,8 @@ Linux
 ```
 $ git clone https://github.com/wellang/well.git
 $ cd well
+$ make && make install
+or
 $ make base install
 ```
 
@@ -44,6 +46,8 @@ FreeBSD
 $ git clone https://github.com/wellang/well.git
 $ cd well
 $ gmake base install
+or
+$ gmake && gmake install
 ```
 
 Windows

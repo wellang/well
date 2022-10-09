@@ -15,7 +15,7 @@
 
 ~func:main {
 
-	asm~ print text
+	print~ text
 	
 	return~ 0
 

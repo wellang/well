@@ -14,6 +14,76 @@
 #include "libwesm/com.h"
 bool comment_check_;
 
+int macro_call_interp(char line[], const char *fname, int line_num) {
+
+	// the ultimate replacement for all instruction functions
+
+	/*
+	*
+	*  ~macro:move[2] {
+	*    asm~ mov %%2, %%1
+	*  }
+    *
+	*  ~func:main {
+	*     move~ 1, rax
+	*  }
+	*
+	 */
+
+	char string[0x100];
+
+	char *tild = strstr(line, "~");
+
+	if(tild != NULL) {
+
+		const char delim[] = "~";
+		char *aftertild = strchr(line, '~');
+		char *before = strtok(line, delim);
+
+		if(aftertild != NULL) {
+			aftertild++;
+		} else {
+			wlog_error(fname, line_num, "Unfinished macro call\n");
+			return 1;
+		}
+
+		if(before != NULL && aftertild != NULL) {
+
+			char macro[0x100];
+			snprintf(macro, sizeof(macro), "%macro %s", before);
+			wlog_info(fname, line_num, macro);
+
+			FILE *file = fopen("a.asm", "r+");
+			char linee[256];
+
+			while(fgets(linee, sizeof(linee), file) != NULL) {
+
+				if(linee == NULL) {
+					wlog_error(fname, line, "Undefined reference to %s", before);
+					return 1;
+				}
+
+				char *findmac = strstr(linee, macro);
+				if(findmac != NULL) {
+
+					snprintf(string, sizeof(string), "%s %s", before, aftertild);
+					FILE *aasm = fopen("a.asm", "a");
+					fprintf(aasm, string);
+					fclose(aasm);
+					break;
+
+				}
+			}
+			return 0;
+		}
+
+	} else {
+		return 0;
+	}
+
+	return 0;
+}
+
 int macro_interp(const char *fname) {
 
 	FILE *file = fopen(fname, "r+");

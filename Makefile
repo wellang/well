@@ -46,6 +46,8 @@ LIBWESM= src/libwesm
 
 .SUFFIXES: .c .o
 
+all: base
+
 base:
 	$(CC) $(CFLAGS) -L src -c $(COMMON_.c)
 	$(CC) $(CFLAGS) -o wesm $(COMMONC_.o)

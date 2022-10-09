@@ -12,6 +12,8 @@
 #include "lea.h"
 #include "if.h"
 
+#include "asm_macros.h"
+
 int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
  
         string_interp(line, out);
@@ -31,6 +33,8 @@ int asm_interp_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
 
         if_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum, is_in_if);
         if_end_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum);
+
+        macro_call_interp(line, fname, line_num);
 
         mov_interp(line, out, line_num, fname);
         add_interp(out, line, line_num, fname);
