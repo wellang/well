@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "mov_search.h"
 #include "syscall_interp.h"
 #include "push_search.h"
@@ -49,17 +50,34 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 		if(before != NULL && aftertild != NULL) {
 
+			while(isspace(*before)) {
+				before++;
+			}
+
 			char macro[0x100];
-			snprintf(macro, sizeof(macro), "%macro %s", before);
+			snprintf(macro, sizeof(macro), "%%macro %s", before);
 			wlog_info(fname, line_num, macro);
+
+			FILE *fil = fopen("a.asm", "r+");
+			char lineee[256];
+			int linenum = 0;
+
+			while(fgets(lineee, sizeof(lineee), fil)) {
+
+				if(lineee == NULL) { break; } else { linenum++; }
+
+			}
 
 			FILE *file = fopen("a.asm", "r+");
 			char linee[256];
+			int lnum = 0;
 
 			while(fgets(linee, sizeof(linee), file) != NULL) {
 
-				if(linee == NULL) {
-					wlog_error(fname, line, "Undefined reference to %s", before);
+				lnum++;
+
+				if(lnum == linenum) {
+					wlog_error(fname, line_num, "Undefined reference to %s", before);
 					return 1;
 				}
 
