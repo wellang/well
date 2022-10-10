@@ -40,9 +40,9 @@ int asm_interp_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
         add_interp(out, line, line_num, fname);
         sub_interp(out, line, line_num, fname);
         push_interp(line, out);
-
+        */
         syscall_interp(line, out);
-        pop_interp(out, line, line_num, fname);
+        /*pop_interp(out, line, line_num, fname);
         array_run(out, line);
         cif_interp(out, line, line_num, fname);
         halt_interp(out, line, line_num, fname);

@@ -11,7 +11,10 @@ int include_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
 
 const char *get_asm_name(const char *fname, const char *final_name);
 
-int include_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum);
-int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum);
+int file_lib_include_comp(const char *fname);
+int include_comp(FILE *out, char line[], int line_num, const char *fname,
+                 const char *funcname, int callnum);
+int lib_comp(FILE *out, char line[], int line_num, const char *fname,
+             const char *funcname, int callnum);
 
 #endif

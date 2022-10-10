@@ -1,3 +1,5 @@
+~include <std.well>
+
 ~var:main {
 
 	string~ text = 'hello world'
@@ -5,7 +7,6 @@
 }
 
 ~macro:print[1] {
-
 	move~ 1, rax
 	move~ 1, rdi
 	move~ %%1, rsi

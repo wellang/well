@@ -54,9 +54,13 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 				before++;
 			}
 
+			if(before[0] == NULL || before[0] == ' ') {
+				return 0;
+			}
+
 			char macro[0x100];
 			snprintf(macro, sizeof(macro), "%%macro %s", before);
-			wlog_info(fname, line_num, macro);
+			//wlog_info(fname, line_num, macro);
 
 			FILE *fil = fopen("a.asm", "r+");
 			char lineee[256];
@@ -77,14 +81,17 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 				lnum++;
 
 				if(lnum == linenum) {
-					wlog_error(fname, line_num, "Undefined reference to %s", before);
+				//	wlog_error(fname, line_num, "Undefined reference to %s", before);
+					// need to fix this error!
+
 					return 1;
 				}
 
 				char *findmac = strstr(linee, macro);
 				if(findmac != NULL) {
 
-					snprintf(string, sizeof(string), "%s %s", before, aftertild);
+					snprintf(string, sizeof(string), "\n\t%s %s", before, aftertild);
+					string[strlen(string)-1] = '\0';
 					FILE *aasm = fopen("a.asm", "a");
 					fprintf(aasm, string);
 					fclose(aasm);
@@ -92,6 +99,8 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 				}
 			}
+			return 0;
+		} else {
 			return 0;
 		}
 
@@ -104,9 +113,10 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 int macro_interp(const char *fname) {
 
-	FILE *file = fopen(fname, "r+");
+	FILE *file = fopen(fname, "r");
 	char line[256];
 	int line_num = 0;
+	int lineline_num = 0;
 
 	while(fgets(line, sizeof(line), file) != NULL) {
 
@@ -115,7 +125,7 @@ int macro_interp(const char *fname) {
 			continue;
 		}
 
-		line_num++;
+		lineline_num++;
 
 		char search[] = "~macro:";
 		char *macro = strstr(line, search);
@@ -140,9 +150,9 @@ int macro_interp(const char *fname) {
 					fprintf(mac, "%%macro %s %s\n", macro_name, arg_num);
 					fclose(mac);
 
-					FILE *read = fopen(fname, "r+");
+					FILE *read = fopen(fname, "r");
 					char line[256];
-					int line_line = 0;
+					int line_line = lineline_num;
 					int line_better = 0;
 
 					int callnum = 0;
@@ -157,8 +167,8 @@ int macro_interp(const char *fname) {
 						if(line_better != line_line) {
 							line_better++;
 						} else if(line_better == line_line) {
-							line_line++;
 							line_better++;
+							line_line++;
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
@@ -166,25 +176,26 @@ int macro_interp(const char *fname) {
 								break;
 							} else if(macro_end != NULL) {
 								wlog_info(fname, line_better, "macro compiler found end of vars, macros, or functions\n");
-								continue;
+								break;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
 								char *callfind = strstr(line, "call~");
 								if(callfind != NULL) {callnum++;}
-								mov_interp(line, out, line_better, fname);
-								add_interp(out, line, line_num, fname);
-								sub_interp(out, line, line_num, fname);
-								push_interp(line, out);
+								//mov_interp(line, out, line_better, fname);
+								//add_interp(out, line, line_num, fname);
+								//sub_interp(out, line, line_num, fname);
+								//push_interp(line, out);
 								syscall_interp(line, out);
-								pop_interp(out, line, line_better, fname);
-								array_run(out, line);
-								cif_interp(out, line, line_better, fname);
-								halt_interp(out, line, line_better, fname);
-								bits_interp(out, line, line_better, fname);
+								//pop_interp(out, line, line_better, fname);
+								//array_run(out, line);
+								//cif_interp(out, line, line_better, fname);
+								//halt_interp(out, line, line_better, fname);
+								//bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
-								lea_interp(line, out, line_num);
+								//lea_interp(line, out, line_num);
 								call_interp(out, line, line_num, fname, macro_name, callnum);
-								return0(out, line, line_num, fname);
+								macro_call_interp(line, fname, line_better);
+								//return0(out, line, line_num, fname);
 							}
 						}
 					}
@@ -198,7 +209,7 @@ int macro_interp(const char *fname) {
 					fprintf(mac, "%%macro %s\n", macro_name);
 					fclose(mac);
 
-					FILE *read = fopen(fname, "r+");
+					FILE *read = fopen(fname, "r");
 					char line[256];
 					int line_better = 0;
 					int line_line = 0;
@@ -224,25 +235,26 @@ int macro_interp(const char *fname) {
 								break;
 							} else if(macro_end != NULL) {
 								log_info(fname, line_better, "macro compiler found end of vars, marcros, or functions\n");
-								continue;
+								break;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
 								char *callfind = strstr(line, "call~");
 								if(callfind != NULL) {callnum++;}
-								mov_interp(line, out, line_better, fname);
-								add_interp(out, line, line_better, fname);
-								sub_interp(out, line, line_better, fname);
-								push_interp(line, out);
+								//mov_interp(line, out, line_better, fname);
+								//add_interp(out, line, line_better, fname);
+								//sub_interp(out, line, line_better, fname);
+								//push_interp(line, out);
 								syscall_interp(line, out);
-								pop_interp(out, line, line_better, fname);
-								array_run(out, line);
-								cif_interp(out, line, line_better, fname);
-								halt_interp(out, line, line_better, fname);
-								bits_interp(out, line, line_better, fname);
+								//pop_interp(out, line, line_better, fname);
+								//array_run(out, line);
+								//cif_interp(out, line, line_better, fname);
+								//halt_interp(out, line, line_better, fname);
+								//bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
-								lea_interp(line, out, line_better);
+								//lea_interp(line, out, line_better);
 								call_interp(out, line, line_better, fname, macro_name, callnum);
-								return0(out, line, line_better, fname);
+								macro_call_interp(line, fname, line_better);
+								//return0(out, line, line_better, fname);
 							}
 						}
 
@@ -257,6 +269,8 @@ int macro_interp(const char *fname) {
 	        	fprintf(end, "\n%%endmacro\n");
         		fclose(end);
 		} 
+
+		line_num++;
 
 	}
 	

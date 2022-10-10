@@ -13,6 +13,9 @@
 #include "asm_macros.h"
 #include "lea.h"
 #include "if.h"
+#include "include.h"
+
+#include "libwesm/com.h"
 
 #define call_func(file, line)	\
         char search[] = "call~ ";	\
@@ -80,30 +83,115 @@ int include_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
 
 	/*
 	 *include: call~ wellfile.wellfunc
-	 *include_lib: lib~ wellfile.wellfunc
+	 *include_lib: libcall~ wellfile.wellfunc
 	 * */
 
+void file_lib_include_vars_and_macros_comp(const char *fname) {
 
-const char *get_asm_name(const char *fname, const char *final_name) {
+	FILE *file = fopen(fname, "r");
+	char line[256];
 
-	
+	bool comment_check;
 
-	return final_name;
+	while(fgets(line, sizeof(line), file) != NULL) {
 
-}
+		comment_check = __check_com__(line);
+		if(comment_check == true) {
+			continue;
+		}
 
-int file_include_comp(bool vars_or_funcs) {
+		char var_search[] = "~var:main {";
+		char *var = strstr(line, var_search);
 
-	switch(vars_or_funcs) {
+		if(var != NULL) {
+			FILE *out2;
+			FILE *varread = fopen(fname, "r");
+			char mainlines[256];
+			int lnum = 0;
+			while(fgets(mainlines, sizeof(mainlines), varread) != NULL) {
 
-		case true:
-		case false:
+				comment_check = __check_com__(mainlines);
+				if(comment_check == true) {
+					continue;
+				}
+
+				lnum++;
+				char *search_b = strstr(mainlines, "}");
+				if(search_b != NULL) {
+					break;
+				}
+				if(mainlines == NULL) {
+					break;
+				} else {
+					include_var_funcs(mainlines, out2, lnum, fname);
+				}
+
+			}
+		}
 
 	}
 
+	file_lib_include_comp(fname);
+
+	FILE *out3 = fopen("a.asm", "a");
+	fprintf(out3, "\nsection .text\n\n");
+	fclose(out3);
+
+	macro_interp(fname);
+
 }
 
-int file_lib_include_comp(bool vars_or_funcs) {
+int file_lib_include_comp(const char *fname) {
+
+	/*
+	  NOTE: This function is meant to be used before functions are compiled & after vars
+	  */
+
+	int retval = 0;
+
+	FILE *file = fopen(fname, "r");
+	char line[256];
+	int line_num = 0;
+
+	while(fgets(line, sizeof(line), file) != NULL) {
+
+		line_num++;
+
+		char *include_ = strstr(line, "~include <");
+		if(include_ != NULL) {
+
+			retval = 1;
+
+			include_++;
+
+			char *afterc = strstr(include_, "<");
+			if(afterc != NULL) {
+				afterc++;
+				const char delim[] = ">";
+				char *filename = strtok(afterc, delim);
+				if(file != NULL) {
+
+					  char buf[0x100];
+					  snprintf(buf, sizeof(buf), "/usr/include/wellang/libwesm/%s", filename);
+
+					  file_lib_include_vars_and_macros_comp(buf);
+
+				} else {
+					wlog_error(fname, line_num, "include missing file");
+					return 1;
+				}
+			} else {
+				wlog_error(fname, line_num, "include missing file");
+				return 1;
+			}
+
+		} else {
+			continue;
+		}
+
+	}
+
+	return retval;
 
 }
 

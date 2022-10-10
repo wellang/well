@@ -115,7 +115,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 				if(comment_check == true) {
 					  continue;
 				}
-				lnum++;
+				lnum2++;
 				char brack_s[] = "}";
 				char *search_b = strstr(mainlines, brack_s);
 				if(search_b != NULL) {
@@ -136,11 +136,14 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			break;
 		}
 	}
-	
-	FILE *out3 = fopen("a.asm", "a");
-	fprintf(out3, "\nsection .text\n\n");
-	fclose(out3);
 
+	int includecomp = file_lib_include_comp(fname);
+
+	if(includecomp == 0) {
+		FILE *out3 = fopen("a.asm", "a");
+		fprintf(out3, "\nsection .text\n\n");
+		fclose(out3);
+	}
 	/*macro compiler*/
 	macro_interp(fname);
 
@@ -238,11 +241,11 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 						}
 
 				} else if(after_func == NULL) {
-						wlog_error(fname, lineline_num, "ERROR:: Line.%d - Function does not have delimiter ':'\n", line_num);
+						wlog_error(fname, lineline_num, "Function does not have delimiter ':'\n");
 						continue;
 				}
 		} else if(func != NULL && main != NULL) {
-			if(INFO_DEBUG == true){wlog_info(fname, lineline_num, "found main fuction at line: %d", lineline_num);}
+			if(INFO_DEBUG == true){wlog_info(fname, lineline_num, "found main fuction");}
       			FILE *outputfunc = fopen("a.asm", "a");
 	                fprintf(outputfunc, "\n\nglobal main\n\nmain:\n\t");
  	                fclose(outputfunc);
@@ -358,7 +361,7 @@ void compile(int argc, char *argv[]) {
 
 	struct ArgparseParser parser = argparse_init("wesm", argc, argv);
 
-	argparse_add_option(&parser, "--object", "-o", ARGPARSE_FLAG);
+	argparse_add_option(&parser, "--output", "-o", ARGPARSE_FLAG);
 	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG); // keeps the tmp assembly file
    	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG); // ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main
 	argparse_add_option(&parser, "--info", "-i", ARGPARSE_FLAG);
@@ -396,8 +399,6 @@ void compile(int argc, char *argv[]) {
     	}
 	if(argparse_option_exists(parser, "--assembly") != ARGPARSE_NOT_FOUND ||
 			argparse_option_exists(parser, "-a" != ARGPARSE_NOT_FOUND)) {
-	
-
 
 		int i = 1;
 		for(i = 1; i < 256; i++) {

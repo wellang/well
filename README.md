@@ -57,6 +57,8 @@ Windows
 ## Hello World program (using linux x86_x64 syscall table)
 
 ```
+~include <std.well>
+
 ~var:main {
 
 	string~ text = 'Hello World!'

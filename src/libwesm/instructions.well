@@ -1,0 +1,36 @@
+~macro:move[2] {
+               asm~ mov %2, %1
+}
+
+~macro:pop[1] {
+              asm~ pop %1
+}
+
+~macro:add[2] {
+              asm~ add %2, %1
+}
+
+~macro:sub[2] {
+              asm~ sub %2, %1
+}
+
+~macro:xor[2] {
+              asm~ xor %2, %1
+}
+
+
+// still need to fix no arg macros in comp
+//
+// ~macro:cli {
+//            asm~ cli
+// }
+
+// ~macro:ret {
+//            asm~ ret
+// }
+
+~macro:return[1] {
+               move~ 60, rax
+               move~ %%1, rdi
+               syscall
+}

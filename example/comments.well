@@ -1,3 +1,5 @@
+~include <std.well>
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // NOTE:                                                                             *
 //      Comments can NOT go on the same line as an instruction(not implimented yet)  *
