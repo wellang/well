@@ -131,7 +131,7 @@ int macro_interp(const char *fname) {
 		char *macro = strstr(line, search);
 
 		if(macro != NULL) {
-			wlog_info(fname, line_num, "Found macro\n");
+			//wlog_info(fname, line_num, "Found macro\n");
 			char *after_macro = strchr(line, ':');
 			if(after_macro != NULL) {
 				after_macro++;
@@ -172,10 +172,10 @@ int macro_interp(const char *fname) {
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
-								wlog_info(fname, line_better, "macro compiler found function\n");
+								//wlog_info(fname, line_better, "macro compiler found function\n");
 								break;
 							} else if(macro_end != NULL) {
-								wlog_info(fname, line_better, "macro compiler found end of vars, macros, or functions\n");
+							//	wlog_info(fname, line_better, "macro compiler found end of vars, macros, or functions\n");
 								break;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
@@ -231,10 +231,10 @@ int macro_interp(const char *fname) {
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
-								wlog_info(fname, line_better, " macro compiler found function\n");
+								//wlog_info(fname, line_better, " macro compiler found function\n");
 								break;
 							} else if(macro_end != NULL) {
-								log_info(fname, line_better, "macro compiler found end of vars, marcros, or functions\n");
+								//log_info(fname, line_better, "macro compiler found end of vars, marcros, or functions\n");
 								break;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
