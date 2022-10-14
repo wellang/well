@@ -372,8 +372,13 @@ void compile(int argc, char *argv[]) {
 
 	const char *gcc_options;
 
-	const char *start = "nasm -f elf64 a.asm -o a.o";
-	const char *linker = "gcc a.o -no-pie";
+	#ifndef __VMS
+	        const char *start = "nasm -f elf64 a.asm -o a.o";
+			const char *linker = "cc a.o -no-pie";
+	#else
+	        const char *start = "nasm -f elf64 a.asm -o a.o";
+	        const char *linker = "gcc a.o -no-pie";
+	#endif
 
 	char out_buf[0x100];
 	char gcc_buf[0x100];

@@ -11,6 +11,7 @@
 #include "instructions.h"
 #include "lea.h"
 #include "log.h"
+#include "if.h"
 
 #include "libwesm/com.h"
 bool comment_check_;
@@ -155,6 +156,10 @@ int macro_interp(const char *fname) {
 					int line_line = lineline_num;
 					int line_better = 0;
 
+					int ifnum = 1010101;
+					bool is_in_if = false;
+					int ifnum_ln = 0;
+
 					int callnum = 0;
 
 					while(fgets(line, sizeof(line), read) != NULL) {
@@ -180,6 +185,15 @@ int macro_interp(const char *fname) {
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
 								char *callfind = strstr(line, "call~");
+
+								char *iffind = strstr(line, "~if");
+								if(iffind != NULL) {
+									ifnum++;
+									ifnum_ln = line_better;
+									FILE *if_ = fopen(fname, "r");
+									is_in_if = IS_IN_IF(if_, line_better, fname);
+								}
+
 								if(callfind != NULL) {callnum++;}
 								//mov_interp(line, out, line_better, fname);
 								//add_interp(out, line, line_num, fname);
