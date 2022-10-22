@@ -12,4 +12,4 @@ int if_end_interp(FILE *out, char line[], int line_num, int ifnum_ln,
 
 bool IS_IN_IF(FILE *file, int lnum, const char *fname);
 
-#endif // IF_H_
+#endif

@@ -63,8 +63,8 @@ char *math(char line[], char final_buf[]) {
 					char *before_brack = strtok(math_prob, delimlim);
 					char *math_probob = math_problem;
 					char *after_brack = strchr(math_probob, '}');
-					// before = 32+
-					// after = *(-5)
+					/* before = 32+
+					 after = *(-5)*/
 
 					const char delim_zer[] = "[";
 					char *first_math = math_problem;
@@ -73,8 +73,8 @@ char *math(char line[], char final_buf[]) {
 						after_bracket++;
 					}
 					char *before_bracket = strtok(first_math, delim_zer);
-					// before = 5*
-					// after = +56
+					/* before = 5*
+					 after = +56*/
 
 					const char delim_one[] = "]";
 					char *after_brackets = strchr(math_problem, '[');
@@ -82,12 +82,12 @@ char *math(char line[], char final_buf[]) {
 						after_brackets++;
 					}
 					char *before_brackets = strtok(after_brackets, delim_one);
-					// before_brackets = [49*3*(-4-9)]
+					/* before_brackets = [49*3*(-4-9)]*/
 					
 					const char delimlimlimlim[] = ")";
 					char *after_per = strstr(before_brackets, "(");
 					char *math_probb = strtok(after_per, delimlimlimlim);
-					// math_probb = -4-9
+					/* math_probb = -4-9*/
 					
 					char *PLU = strstr(math_probb, plus);
 					if(PLU != NULL) {
@@ -125,6 +125,6 @@ char *math(char line[], char final_buf[]) {
 		return final_buf;
 	}
 
-	return final_buf; // should be move~ 47335, rax
+	return final_buf; /* should be move~ 47335, rax*/
 
 }

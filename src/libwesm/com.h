@@ -22,4 +22,4 @@ typedef struct {
 
 bool __check_com__(char line[]);
 
-#endif // COM_H_
+#endif

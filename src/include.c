@@ -36,14 +36,12 @@ struct include_file {
 
 	FILE *wellfile;
 
-	//char FUNC_NAME[];
 
 } include_file;
 
 int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
 	string_interp(line, out);
-	//length_interp(line, out);
 	int_interp(line, out);
 
 	char_interp(out, line);
@@ -70,8 +68,6 @@ int include_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
 	cif_interp(out, line, line_num, fname);
 	halt_interp(out, line, line_num, fname);
 	bits_interp(out, line, line_num, fname);
-//	run_interp(out, line);
-//	call_interp(out, line);
 	call_func(out, line);
 	print_asm_interp(out, line, line_num, fname);
 	lea_interp(line, out, line_num);
@@ -204,14 +200,12 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 	char *find_call = strstr(line, call);
 	if(find_call != NULL) {
 		char tild[] = "~"; 
-		char *file_and_func = strstr(line, tild); //wellfile.wellfunc
+		char *file_and_func = strstr(line, tild);
 
 		if(file_and_func != NULL) {
 			file_and_func++;
 		}
 
-		//log_info(":%s:", file_and_func);
-		
 		const char delim[] = ".";
 		char *func = strchr(file_and_func, '.');	
 		char *file = strtok(file_and_func, delim);
@@ -266,7 +260,6 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 		int line_num = 0;
 		while(fgets(line0, sizeof(line0), include_file.wellfile) != NULL) {
 			line_num++;
-			//printf(line0);
 
 			if(line0 == NULL) {
 				break;
@@ -274,7 +267,6 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 
 			char *func_find = strstr(line0, func_buf);
 			if(func_find != NULL) {
-				//log_info(line0);
 				int func_line = line_num;
 				char line1[256];
 
@@ -375,7 +367,6 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 
 		printf("%s\n%s", file, func);
 		snprintf(fname_buf, sizeof(fname_buf), "/usr/include/wellang/libwesm/%s.well", file);
-	    //#endif
 
 		include_file.wellfile = fopen(fname_buf, "r");
 		char line0[0x256];

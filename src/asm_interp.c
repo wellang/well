@@ -23,7 +23,7 @@
 #include "asm_interp_funcs.h"
 #include "argparse/argparse.h"
 
-#include "asm2obj.h"
+/*#include "asm2obj.h"*/
 
 bool comment_check;
 
@@ -125,7 +125,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 				if(mainlines == NULL) {
 					break;
 				} else {
-					//_floa_interp_(mainlines, out2);
+					/*_floa_interp_(mainlines, out2);*/
 					asm_interp_var_funcs(mainlines, out2, lnum2, fname);
 				}
 			}
@@ -349,8 +349,6 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	}
 
 
-	//rodata_to_asm();
-
 	/*fclose(file);*/
 	/*fclose(output);*/
 	return 0;
@@ -362,8 +360,8 @@ void compile(int argc, char *argv[]) {
 	struct ArgparseParser parser = argparse_init("wesm", argc, argv);
 
 	argparse_add_option(&parser, "--output", "-o", ARGPARSE_FLAG);
-	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG); // keeps the tmp assembly file
-   	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG); // ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main
+	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG); /* keeps the tmp assembly file*/
+   	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG); /* ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main*/
 	argparse_add_option(&parser, "--info", "-i", ARGPARSE_FLAG);
 
 
@@ -434,8 +432,6 @@ void compile(int argc, char *argv[]) {
 				char *tmp = strstr(gcc_options, "::");
 				if(tmp != NULL) {
 					tmp++;
-					//const char delim[] = "\"";
-					//char *gcc = strtok(tmp, delim);
 				} else {
 					log_error("ERROR:: Bad gcc options: %s\n (ex: wesm main.well -cc ::-lpthread -lcurl -g::)\n", gcc_options);
 				}
@@ -522,11 +518,11 @@ void compile(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
 
-	// [ TEST ] //
-	//asm2obj("./test/test.asm", "~win", "~x32");
-	//parser("./test/test.asm", "./test/test.o");
-	//return 0;
-	// [ END TEST ] //
+	/* [ TEST ] 
+	asm2obj("./test/test.asm", "~win", "~x32");
+	parser("./test/test.asm", "./test/test.o");
+	return 0;
+	 [ END TEST ] */
 
 	if(argv[1] == NULL) {
 		log_error("\n:: Invalid file name, ex: wesm (.well file) -o (.o file) (executable name)\n > wesm test.well -o test.o test\n\n");

@@ -18,9 +18,7 @@ bool comment_check_;
 
 int macro_call_interp(char line[], const char *fname, int line_num) {
 
-	// the ultimate replacement for all instruction functions
-
-	/*
+	/*the ultimate replacement for all instruction functions
 	*
 	*  ~macro:move[2] {
 	*    asm~ mov %%2, %%1
@@ -61,7 +59,6 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 			char macro[0x100];
 			snprintf(macro, sizeof(macro), "%%macro %s", before);
-			//wlog_info(fname, line_num, macro);
 
 			FILE *fil = fopen("a.asm", "r+");
 			char lineee[256];
@@ -82,8 +79,8 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 				lnum++;
 
 				if(lnum == linenum) {
-				//	wlog_error(fname, line_num, "Undefined reference to %s", before);
-					// need to fix this error!
+				/*	wlog_error(fname, line_num, "Undefined reference to %s", before);
+					 need to fix this error!*/
 
 					return 1;
 				}
@@ -132,7 +129,7 @@ int macro_interp(const char *fname) {
 		char *macro = strstr(line, search);
 
 		if(macro != NULL) {
-			//wlog_info(fname, line_num, "Found macro\n");
+			/*wlog_info(fname, line_num, "Found macro\n");*/
 			char *after_macro = strchr(line, ':');
 			if(after_macro != NULL) {
 				after_macro++;
@@ -146,7 +143,7 @@ int macro_interp(const char *fname) {
 					char *arg_bracks = strchr(after_macro, '[');
 					char *arg_num = strtok(arg_bracks, "]");
 
-					//macro_name[strlen(macro_name)-1] = '\0';
+					/*macro_name[strlen(macro_name)-1] = '\0';*/
 					FILE *mac = fopen("a.asm", "a");
 					fprintf(mac, "%%macro %s %s\n", macro_name, arg_num);
 					fclose(mac);
@@ -177,10 +174,8 @@ int macro_interp(const char *fname) {
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
-								//wlog_info(fname, line_better, "macro compiler found function\n");
 								break;
 							} else if(macro_end != NULL) {
-							//	wlog_info(fname, line_better, "macro compiler found end of vars, macros, or functions\n");
 								break;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
@@ -195,21 +190,10 @@ int macro_interp(const char *fname) {
 								}
 
 								if(callfind != NULL) {callnum++;}
-								//mov_interp(line, out, line_better, fname);
-								//add_interp(out, line, line_num, fname);
-								//sub_interp(out, line, line_num, fname);
-								//push_interp(line, out);
 								syscall_interp(line, out);
-								//pop_interp(out, line, line_better, fname);
-								//array_run(out, line);
-								//cif_interp(out, line, line_better, fname);
-								//halt_interp(out, line, line_better, fname);
-								//bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
-								//lea_interp(line, out, line_num);
 								call_interp(out, line, line_num, fname, macro_name, callnum);
 								macro_call_interp(line, fname, line_better);
-								//return0(out, line, line_num, fname);
 							}
 						}
 					}
@@ -219,7 +203,6 @@ int macro_interp(const char *fname) {
 					char *macro_name = strtok(after_macro, "{");
 					FILE *mac = fopen("a.asm", "a");
 
-					//macro_name[strlen(macro_name)-1] = '\0';
 					fprintf(mac, "%%macro %s\n", macro_name);
 					fclose(mac);
 
@@ -245,30 +228,17 @@ int macro_interp(const char *fname) {
 							char *macro_end = strstr(line, "}");
 							char *func = strstr(line, "~func:");
 							if(func != NULL) {
-								//wlog_info(fname, line_better, " macro compiler found function\n");
 								break;
 							} else if(macro_end != NULL) {
-								//log_info(fname, line_better, "macro compiler found end of vars, marcros, or functions\n");
 								break;
 							} else if(func == NULL && macro_end == NULL) {
 								FILE *out;
 								char *callfind = strstr(line, "call~");
 								if(callfind != NULL) {callnum++;}
-								//mov_interp(line, out, line_better, fname);
-								//add_interp(out, line, line_better, fname);
-								//sub_interp(out, line, line_better, fname);
-								//push_interp(line, out);
 								syscall_interp(line, out);
-								//pop_interp(out, line, line_better, fname);
-								//array_run(out, line);
-								//cif_interp(out, line, line_better, fname);
-								//halt_interp(out, line, line_better, fname);
-								//bits_interp(out, line, line_better, fname);
 								print_asm_interp(out, line, line_better, fname);
-								//lea_interp(line, out, line_better);
 								call_interp(out, line, line_better, fname, macro_name, callnum);
 								macro_call_interp(line, fname, line_better);
-								//return0(out, line, line_better, fname);
 							}
 						}
 

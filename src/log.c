@@ -113,11 +113,13 @@ void log_set_quiet(bool enable) {
 
 
 int log_add_callback(log_LogFn fn, void *udata, int level) {
-  for (int i = 0; i < MAX_CALLBACKS; i++) {
+  int i = 0;
+  while(i < MAX_CALLBACKS) {
     if (!L.callbacks[i].fn) {
       L.callbacks[i] = (Callback) { fn, udata, level };
       return 0;
     }
+    i++;
   }
   return -1;
 }
@@ -154,7 +156,8 @@ void log_log(int level, const char *file, int line, const char *fmt, ...) {
     va_end(ev.ap);
   }
 
-  for (int i = 0; i < MAX_CALLBACKS && L.callbacks[i].fn; i++) {
+  int i = 0;
+  while(i < MAX_CALLBACKS  && i < L.callbacks[i].fn) {
     Callback *cb = &L.callbacks[i];
     if (level >= cb->level) {
       init_event(&ev, cb->udata);
@@ -162,6 +165,7 @@ void log_log(int level, const char *file, int line, const char *fmt, ...) {
       cb->fn(&ev);
       va_end(ev.ap);
     }
+    i++;
   }
 
   unlock();

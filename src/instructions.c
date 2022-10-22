@@ -29,10 +29,11 @@ int pop_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 int add_interp(FILE *out, char line[], int line_num, const char *fname) {
 
-	// move~ x, rdi
-	// move~ y, rsi
-	// add~ x, y
-
+	/*
+	 move~ x, rdi
+	 move~ y, rsi
+	 add~ x, y
+	*/
 	char add[] = "add~ ";
 	char *search = strstr(line, add);
 	if(search != NULL) {
@@ -132,8 +133,8 @@ int bits_interp(FILE *out, char line[], int line_num, const char *fname) {
 }
 
 
-// replaced with call_interp
-/*int run_interp(FILE *out, char line[]) {
+/* replaced with call_interp
+   int run_interp(FILE *out, char line[]) {
 
 	return 0;
 
@@ -176,7 +177,7 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname, const c
 					call++;
 				}
 
-				    //printf(call);
+				    /*printf(call);*/
 
 	            out = fopen("a.asm", "a");
 			    fprintf(out, "\n\tcall %s", call);
@@ -256,7 +257,7 @@ int return0(FILE *out, char line[], int line_num, const char *fname) {
 		char *return_num = strstr(line, after_ret);
 		if(return_num != NULL) {
 			return_num++;
-			//log_info(return_num);
+			/*log_info(return_num);*/
 			out = fopen("a.asm", "a");
 
 			char fprint_lin[0x100];

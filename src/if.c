@@ -24,17 +24,17 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
     if(search_if != NULL) {
 
         const char delim[] = ")";
-        //const char delim2[] = "}";
+        /*const char delim2[] = "}";*/
         char *first = strchr(line, '(');
         char *start = strstr(line, "start");
-        //char *sec = strchr(line, '{');
+        /*char *sec = strchr(line, '{');*/
 
         if(first != NULL) {
             first++;
         }
         char *in_bracs = strtok(first, delim);
 
-        //log_info(in_bracs);
+        /*log_info(in_bracs);*/
 
         if(in_bracs != NULL) {
 
@@ -74,7 +74,7 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                          ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
 
-                //asm_interp_func_funcs(line, out, line_num, fname, funcname);
+                /*asm_interp_func_funcs(line, out, line_num, fname, funcname);*/
              } else if (eq_ == NULL &&
                         neq_ != NULL &&
                         gre_ == NULL &&
@@ -148,17 +148,15 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
     if(search_if != NULL) {
 
         const char delim[] = ")";
-        //const char delim2[] = "}";
+        /*const char delim2[] = "}";*/
         char *first = strchr(line, '(');
         char *start = strstr(line, "start");
-        //char *sec = strchr(line, '{');
+        /*char *sec = strchr(line, '{');*/
 
         if(first != NULL) {
             first++;
         }
         char *in_bracs = strtok(first, delim);
-
-        //log_info(in_bracs);
 
         if(in_bracs != NULL) {
 
@@ -198,7 +196,6 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                          ifnum_ln, ifnum, op1, op2);
                 fprintf(out, buf);
 
-                //asm_interp_func_funcs(line, out, line_num, fname, funcname);
              } else if (eq_ == NULL &&
                         neq_ != NULL &&
                         gre_ == NULL &&
