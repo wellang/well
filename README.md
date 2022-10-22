@@ -13,21 +13,18 @@
 
 # NOTE
 
-Wellang is in an extremely early state, with pending syntax changes, and the development of the compiler. MAKE SURE you keep wellang up to date in these early stages.
+Wellang is in an extremely early state with pending syntax changes and the development of the compiler. MAKE SURE you keep wellang up to date in these early stages.
 
 # About
 	
-### This is a project originally started by Tristan Wellman. This is a high level compiled assembly language, you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to NASM, See below for compilation and simple documentation.
+### This is a project originally started by Tristan Wellman. This is a high level compiled assembly language; you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to NASM. See below for compilation and simple documentation.
 
 NEED HELP?
 
-``
 email: wellangcode@gmail.com
-``
 
-``
 wellang discord server: https://discord.gg/K4ufunGxJv
-``
+
 # Compile Wellang
 
 Linux
@@ -82,36 +79,19 @@ Windows
 to compile your well program you can run ``wesm`` in your terminal:
 ```
 ❯ wesm helloworld.well -o helloworld
-14:17:06 INFO  src/asm_interp.c:502: Compile time:: 0.000740 seconds
+18:12:00 INFO  src/asm_interp.c:522: Compile time:: 0.001229 seconds
 ❯ ./helloworld
 Hello World!
 
 ```
 
 ## Vim syntax highlighting
-to install wellang syntax highlighting for vim all you have to do is
 ```
 make vim
 ```
 
-if it says you don't have ``~/.vim/syntax/`` or ``~/.vim/ftdetect/`` then you can do
-```
-cd ~/.vim
-mkdir syntax && mkdir ftdetect
-```
-
 ### Credits
 ![Contributors](https://contrib.rocks/image?repo=wellang/well)
-
-# New Features!
-
-8/21/22: wesm arg overhaul
-
-6/18/22: You can now make use of macros in wellang!
-
-6/9/22: added char type. Added halt, cif, bits, resb, and print to assembly instructions
-
-5/10/22: Added support for vim syntax highlighting with wellang
 
 ## Stargazers over time
 
