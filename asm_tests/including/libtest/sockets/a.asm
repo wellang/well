@@ -7,8 +7,7 @@ section .text
 global main
 
 main:
-	;            move~ 6, r8
- 	mov r8, 6
+	
 	jmp main._1sock_init_
 	jmp main._1sock_init_fin
 	._1sock_init_:
@@ -107,8 +106,3 @@ main:
 
 	syscall
 	._3sock_listen_fin:
-
-	mov rax, 60
-	mov rdi,  0
-
-	syscall

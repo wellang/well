@@ -1,3 +1,5 @@
+~include <std.well>
+
 ~var:main {
 
   string~ test = 'test'

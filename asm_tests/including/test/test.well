@@ -1,3 +1,5 @@
+~include <std.well>
+
 ~var:main {
 	asm~ str: db '%s', 10, 0
 	string~ test = 'test'

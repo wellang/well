@@ -3,7 +3,43 @@ section .data
 	str: db '%s', 10, 0
 ; 	string~ test = 'test'
  
-	 test : db 'test'
+	 test: db 'test', 0
+	.len: equ $- test
+section .text
+
+%macro move 2
+
+	mov %2, %1
+
+%endmacro
+%macro pop 1
+
+	pop %1
+
+%endmacro
+%macro add 2
+
+	add %2, %1
+
+%endmacro
+%macro sub 2
+
+	sub %2, %1
+
+%endmacro
+%macro xor 2
+
+	xor %2, %1
+
+%endmacro
+%macro return 1
+
+	move  60, rax
+	move  %1, rdi;                syscall
+
+	syscall
+%endmacro
+
 section .text
 
 
@@ -13,18 +49,18 @@ global main
 main:
 	
 	extern printf
-; 	move~ str, rdi 
- 	mov rdi , str; 	move~ test, rsi
- 	mov rsi, test
-	call main.4892print
-	jmp main.4892printfin
-	.4892print:; 	move~ 0, rax
+
+	move  str, rdi 
+	move  test, rsi
+	jmp main._1print_
+	jmp main._1print_fin
+	._1print_:; 	move~ 0, rax
  	mov rax, 0
 	call printf
 
-	.4892printfin:
+	ret
 
-	mov rax, 60
-	mov rdi,  0
+	jmp main._1print_fin
+	._1print_fin:
 
-	syscall
+	return  0

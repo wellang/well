@@ -28,7 +28,7 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 	*     move~ 1, rax
 	*  }
 	*
-	 */
+	*/
 
 	char string[0x100];
 

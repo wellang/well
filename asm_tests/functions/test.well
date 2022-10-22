@@ -1,14 +1,13 @@
-var:main {
+~include <std.well>
 
+~var:main {
 	string~ test = 'test'
-	length~ test_length, test
-
 }
 
 ~func:run {
 
 	move~ 34, rax
-	return
+	return~ 0
 
 }
 
@@ -17,12 +16,14 @@ var:main {
 	move~ 1, rax
 	move~ 1, rdi
 	move~ test, rsi
-	move~ test_length, rdx
-	return
+	move~ test.len, rdx
+	syscall
 
 	move~ 60, rax
 	move~ 0, rdi
-	return	
+	syscall
+
+	call~ run	
 
 }
 

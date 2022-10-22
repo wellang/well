@@ -1,22 +1,24 @@
-var:main {
+~include <std.well>
+
+~var:main {
 
 	string~ string = 'string!'
-	length~ string_length, string
-	int~ number = 256
-	length~ num_length, number
+	int~ number = 25
 
 }
 
-func:main {
+~func:main {
 
 	move~ 1, rax
 	move~ 1, rdi
 	move~ string, rsi
-	move~ string_length, rdx
-	return
+	move~ string.len, rdx
+	syscall
 	
 	move~ 60, rax
 	move~ 0, rdi
-	return
+	syscall
+	
+	return~ 0
 
 }

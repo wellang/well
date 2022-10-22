@@ -1,30 +1,60 @@
-section .data ;variables & data not implimented yet
-
+section .data
 ; 	string~ string = 'string!'
  
-	 string : db 'string!', 10
-	 string_length: equ $- string
-	 number: dw 256
-	 num_length: equ $- number
+	 string: db 'string!', 0
+	.len: equ $- string
+	 number: dw 25
 section .text
 
-global _start
+%macro move 2
 
-_start:
-	; 	move~ 1, rax
- 	mov rax, 1; 	move~ 1, rdi
- 	mov rdi, 1; 	move~ string, rsi
- 	mov rsi, string; 	move~ string_length, rdx
- 	mov rdx, string_length; 	return
+	mov %2, %1
 
-	syscall; 	move~ 1, rax
- 	mov rax, 1; 	move~ 1, rdi
- 	mov rdi, 1; 	move~ number, rsi
- 	mov rsi, number; 	move~ num_length, rdx
- 	mov rdx, num_length; 	return
+%endmacro
+%macro pop 1
 
-	syscall; 	move~ 60, rax
- 	mov rax, 60; 	move~ 0, rdi
- 	mov rdi, 0; 	return
+	pop %1
+
+%endmacro
+%macro add 2
+
+	add %2, %1
+
+%endmacro
+%macro sub 2
+
+	sub %2, %1
+
+%endmacro
+%macro xor 2
+
+	xor %2, %1
+
+%endmacro
+%macro return 1
+
+	move  60, rax
+	move  %1, rdi;                syscall
 
 	syscall
+%endmacro
+
+section .text
+
+
+
+global main
+
+main:
+	
+	move  1, rax
+	move  1, rdi
+	move  string, rsi
+	move  string.len, rdx; 	syscall
+
+	syscall
+	move  60, rax
+	move  0, rdi; 	syscall
+
+	syscall
+	return  0

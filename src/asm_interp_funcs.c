@@ -33,8 +33,6 @@ int asm_interp_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
         if_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum, is_in_if);
         if_end_interp(out, line, line_num, ifnum_ln, fname, funcname, ifnum);
 
-        macro_call_interp(line, fname, line_num);
-
         /*mov_interp(line, out, line_num, fname);
         add_interp(out, line, line_num, fname);
         sub_interp(out, line, line_num, fname);
@@ -49,6 +47,8 @@ int asm_interp_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
         */
         print_asm_interp(out, line, line_num, fname);
         call_interp(out, line, line_num, fname, funcname, callnum);
+        macro_call_interp(line, fname, line_num);
+
 
         return 0;
 

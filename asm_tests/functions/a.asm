@@ -1,5 +1,5 @@
 section .data
-;   string~ test = 'test'
+; 	string~ test = 'test'
  
 	 test: db 'test', 0
 	.len: equ $- test
@@ -41,6 +41,10 @@ section .text
 section .text
 
 
+run:
+
+	move  34, rax
+	return  0
 
 global main
 
@@ -49,7 +53,10 @@ main:
 	move  1, rax
 	move  1, rdi
 	move  test, rsi
-	move  test.len, rdx;   syscall
+	move  test.len, rdx; 	syscall
 
 	syscall
-	return  0
+	move  60, rax
+	move  0, rdi; 	syscall
+
+	syscall
