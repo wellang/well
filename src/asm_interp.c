@@ -420,6 +420,9 @@ void compile(int argc, char *argv[]) {
 	} else {
 		keep_asm = false;
 	}
+
+	/*-cc is meant to be the last arg used*/
+
 	if(argparse_option_exists(parser, "--gcc") != ARGPARSE_NOT_FOUND ||
 			argparse_option_exists(parser, "-cc") != ARGPARSE_NOT_FOUND) {
 		int i = 1;
@@ -428,16 +431,27 @@ void compile(int argc, char *argv[]) {
 				break;
 			}
 			if(!strcmp(argv[i], "-gcc") || !strcmp(argv[i], "-cc")) {
-				gcc_options = argv[i + 1];
-				char *tmp = strstr(gcc_options, "::");
-				if(tmp != NULL) {
-					tmp++;
-				} else {
-					log_error("ERROR:: Bad gcc options: %s\n (ex: wesm main.well -cc ::-lpthread -lcurl -g::)\n", gcc_options);
+				/*gcc_options = argv[i + 1];
+				char *tmp = strstr(gcc_options, "::");*/
+				char buf[0x100];
+				int j;
+				for(j = i+1; j >= i+1; j++) {
+					if(argv[j] == NULL) {
+						break;
+					}
+
+					char *outarg = strstr(argv[j], "-o");
+					char *outarg_full = strstr(argv[j], "--output");
+					if(outarg != NULL || outarg_full != NULL) {
+						continue;
+					}
+					char *wellfile = strstr(argv[j], ".well");
+					if(wellfile != NULL) {
+						continue;
+					}
+					snprintf(buf, sizeof(buf), "%s %s", buf, argv[j]);
 				}
-				const char delim[] = "::";
-				char *gcc = strtok(tmp, delim);
-				snprintf(gcc_buf, sizeof(gcc_buf), "%s", gcc);
+				snprintf(gcc_buf, sizeof(gcc_buf), "%s", buf);
 				break;
 			}
 		}
@@ -472,7 +486,11 @@ void compile(int argc, char *argv[]) {
 
 	asm_interp(argc, argv, INFO_DEBUG);
 
-	snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
+	if(gcc_buf != NULL) {
+		snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
+	} else {
+		snprintf(final_buf, sizeof(final_buf), "%s && %s %s", start, linker, out_buf);
+	}
 	system(final_buf);
 	if(INFO_DEBUG == true){log_info(final_buf);}
 	if(keep_asm == false) {
