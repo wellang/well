@@ -98,11 +98,13 @@ p {
 .line {
 	color: grey;
 	font-size: 0.8em
+	line-height: 1.0;
 }
 .line-i {
 	color:grey;
 	font-size: 0.8em;
 	margin-left: 40px;
+	line-height: 1.0;
 }
 .logo {
 	width: 100%;
