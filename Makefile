@@ -15,6 +15,7 @@ COMMON_.c = src/asm_interp.c \
 	src/asm_interp_funcs.c \
 	src/if.c \
 	src/libwesm/com.c \
+	src/libwesm/log_parse.c \
 	src/argparse/argparse.c \
 	src/argparse/extract.c \
 	src/argparse/ap_inter.c
@@ -33,10 +34,12 @@ COMMONC_.o = asm_interp.o \
 	asm_interp_funcs.o \
 	if.o \
 	com.o \
+	log_parse.o \
 	argparse.o \
 	extract.o \
 	ap_inter.o
 USR = usr
+LOCAL = ~/.config/wellang/
 INCLUDELOC = /$(USR)/include/
 LOC = /$(USR)/bin/
 
@@ -58,10 +61,13 @@ ifeq ($(OS), Windows_NT)
 # Replace for '\' directory separator of windows, '.\' current directory
 	mkdir .$(subst /,\,$(INCLUDELOC))wellang
 	mkdir .$(subst /,\,$(LOC))
+	mkdir .$(subst /,\,$(LOCAL))
+	mkdir .$(subst /,\,$(LOCAL))logs
 	copy $(LIBWESM) .$(subst /,\,$(INCLUDELOC))wellang
 	copy wesm.exe .$(subst /,\,$(LOC))
 else
-	sudo mkdir $(INCLUDELOC)wellang
+	sudo mkdir $(INCLUDELOC)wellang && mkdir $(LOCAL)
+	mkdir $(LOCAL)logs
 	sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
 	sudo cp wesm $(LOC)
 endif
@@ -80,8 +86,10 @@ ifeq ($(OS), Windows_NT)
 	del /f $(COMMONC_.o)
 	del /f .\wesm.exe
 	rmdir /s /q .\$(USR)
+	rmdir /s /q .\$(LOCAL)
 else
 	rm -f $(COMMONC_.o)
+	rm -R $(LOCAL)
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)wesm
 endif

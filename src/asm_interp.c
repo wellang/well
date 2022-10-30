@@ -19,6 +19,7 @@
 #include "if.h"
 
 #include "libwesm/com.h"
+#include "libwesm/log_parse.h"
 
 #include "asm_interp_funcs.h"
 #include "argparse/argparse.h"
@@ -31,14 +32,18 @@ const char *ifscope;
 
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
+	struct LOG_DATA log;
+
 	const char *fname;
-
 	fname = argv[1];
+	char tfile[0x100];
+	char *logfile = logparse_set_log_file(fname, tfile);
+	log = LOGPARSE_SET_FILE(fname);
 
-	FILE *file6 = fopen(fname, "r+");
+	/*FILE *file6 = fopen(fname, "r+");
 	char line7[256];
 
-        /*while(fgets(line7, sizeof(line7), file6) != NULL) {
+        while(fgets(line7, sizeof(line7), file6) != NULL) {
                 
                 char include_search[] = "include~ ";
                 char *include = strstr(line7, include_search);
@@ -347,7 +352,6 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 		}
 
 	}
-
 
 	/*fclose(file);*/
 	/*fclose(output);*/
