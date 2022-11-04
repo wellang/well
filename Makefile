@@ -39,7 +39,8 @@ COMMONC_.o = asm_interp.o \
 	extract.o \
 	ap_inter.o
 USR = usr
-LOCAL = ~/.config/wellang/
+CONFIG = .~
+LOCAL = /$(CONFIG)/.config/wellang/
 INCLUDELOC = /$(USR)/include/
 LOC = /$(USR)/bin/
 
@@ -61,7 +62,6 @@ ifeq ($(OS), Windows_NT)
 # Replace for '\' directory separator of windows, '.\' current directory
 	mkdir .$(subst /,\,$(INCLUDELOC))wellang
 	mkdir .$(subst /,\,$(LOC))
-	mkdir .$(subst /,\,$(LOCAL))
 	mkdir .$(subst /,\,$(LOCAL))logs
 	copy $(LIBWESM) .$(subst /,\,$(INCLUDELOC))wellang
 	copy wesm.exe .$(subst /,\,$(LOC))
@@ -86,7 +86,7 @@ ifeq ($(OS), Windows_NT)
 	del /f $(COMMONC_.o)
 	del /f .\wesm.exe
 	rmdir /s /q .\$(USR)
-	rmdir /s /q .\$(LOCAL)
+	rmdir /s /q .\$(CONFIG)
 else
 	rm -f $(COMMONC_.o)
 	rm -R $(LOCAL)

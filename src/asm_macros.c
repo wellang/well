@@ -53,7 +53,7 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 				before++;
 			}
 
-			if(before[0] == NULL || before[0] == ' ') {
+			if(before[0] == ' ') {
 				return 0;
 			}
 

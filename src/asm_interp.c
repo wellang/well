@@ -374,9 +374,9 @@ void compile(int argc, char *argv[]) {
 
 	const char *gcc_options;
 
-	#ifndef __VMS
-	        const char *start = "nasm -f elf64 a.asm -o a.o";
-			const char *linker = "cc a.o -no-pie";
+	#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+	        const char *start = "nasm -f win64 a.asm -o a.o";
+			    const char *linker = "gcc a.o -no-pie";
 	#else
 	        const char *start = "nasm -f elf64 a.asm -o a.o";
 	        const char *linker = "gcc a.o -no-pie";
@@ -517,10 +517,19 @@ void compile(int argc, char *argv[]) {
 				continue;
 			}
 		}*/
-		system("rm -f a.asm a.o");
+#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+    system("del a.asm");
+    system("del a.o");
+#else
+    system("rm -f a.asm a.o");
+#endif
 	} else {
+#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+    system("del a.o");
+#else
 		system("rm -f a.o");
-	}
+#endif
+  }
 
 	time_end = clock();
 	log_info("Compile time:: %f seconds\n", ((double)(time_end - time_start) / CLOCKS_PER_SEC));
