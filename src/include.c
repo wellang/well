@@ -168,8 +168,12 @@ int file_lib_include_comp(const char *fname) {
 				if(file != NULL) {
 
 					  char buf[0x100];
+#if defined __WIN32 | defined __WIN64 | defined __WIN32__
+            snprintf(buf, sizeof(buf), "C:\\wesm\\libwesm\\%s", filename);
+            printf("\n%s\n", buf);
+#else
 					  snprintf(buf, sizeof(buf), "/usr/include/wellang/libwesm/%s", filename);
-
+#endif
 					  file_lib_include_vars_and_macros_comp(buf);
 
 				} else {

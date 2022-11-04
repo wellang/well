@@ -1,4 +1,4 @@
-~include <std.well>
+~include <instructions.well>
 
 ~var:main {
 

@@ -63,7 +63,8 @@ ifeq ($(OS), Windows_NT)
 	mkdir .$(subst /,\,$(INCLUDELOC))wellang
 	mkdir .$(subst /,\,$(LOC))
 	mkdir .$(subst /,\,$(LOCAL))logs
-	copy $(LIBWESM) .$(subst /,\,$(INCLUDELOC))wellang
+	mkdir C:\wesm\libwesm
+	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
 	copy wesm.exe .$(subst /,\,$(LOC))
 else
 	sudo mkdir $(INCLUDELOC)wellang && mkdir $(LOCAL)
@@ -84,9 +85,10 @@ clean_vim:
 clean:
 ifeq ($(OS), Windows_NT)
 	del /f $(COMMONC_.o)
-	del /f .\wesm.exe
+#	del /f .\wesm.exe
 	rmdir /s /q .\$(USR)
 	rmdir /s /q .\$(CONFIG)
+	rmdir /s /q C:\wesm
 else
 	rm -f $(COMMONC_.o)
 	rm -R $(LOCAL)
