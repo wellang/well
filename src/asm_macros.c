@@ -33,6 +33,8 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 	char string[0x100];
 
 	char *tild = strstr(line, "~");
+  char *if_ = strstr(line, "~if");
+  if(if_ != NULL) { return 0; }
 
 	if(tild != NULL) {
 
@@ -51,10 +53,7 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 			while(isspace(*before)) {
 				before++;
-        if(before[0] = '~') {
-          return 0;
-        }
-			}
+      }
 
 			if(before[0] == ' ') {
 				return 0;
