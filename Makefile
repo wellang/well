@@ -67,8 +67,8 @@ ifeq ($(OS), Windows_NT)
 	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
 	copy wesm.exe .$(subst /,\,$(LOC))
 else
-	sudo mkdir $(INCLUDELOC)wellang && mkdir $(LOCAL)
-	mkdir $(LOCAL)logs
+	sudo mkdir $(INCLUDELOC)wellang
+	@ # mkdir $(LOCAL)logs
 	sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
 	sudo cp wesm $(LOC)
 endif
@@ -91,7 +91,6 @@ ifeq ($(OS), Windows_NT)
 	rmdir /s /q C:\wesm
 else
 	rm -f $(COMMONC_.o)
-	rm -R $(LOCAL)
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)wesm
 endif
