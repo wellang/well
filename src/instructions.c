@@ -149,7 +149,7 @@ int call_interp(FILE *out, char line[], int line_num, const char *fname, const c
 	 *	call asmfunc
 	 */
 
-	char per[] = ".";
+	char per[] = ":";
 	char *search = strstr(line, per);
 	if(search != NULL) {
 

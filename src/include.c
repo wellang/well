@@ -36,7 +36,6 @@ struct include_file {
 
 	FILE *wellfile;
 
-
 } include_file;
 
 int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
@@ -210,8 +209,8 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 			file_and_func++;
 		}
 
-		const char delim[] = ".";
-		char *func = strchr(file_and_func, '.');	
+		const char delim[] = ":";
+		char *func = strchr(file_and_func, ':');	
 		char *file = strtok(file_and_func, delim);
 		if(func != NULL) {
 			func++;
@@ -221,7 +220,7 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 			file++;
 		}
 
-		wlog_info(fname, line_num, ":%s:%s:", func, file);
+		/*wlog_info(fname, line_num, ":%s:%s:", func, file);*/
 		
 		char fname_buf[0x100];
 		snprintf(fname_buf, sizeof(fname_buf), "%s.well", file);
@@ -348,8 +347,8 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 			return 1;
 		}
 
-		const char delim[] = ".";
-		char *func = strchr(file_and_func, '.');
+		const char delim[] = ":";
+		char *func = strchr(file_and_func, ':');
 		char *file = strtok(file_and_func, delim);
 		if(func != NULL) {func++;} else {
 			wlog_error(fname, line_num, "MISSING lib function after file name!\n");
