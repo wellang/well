@@ -1,4 +1,4 @@
-~include <stdwell>
+~include <std.well>
 
 ~var:main {
 
