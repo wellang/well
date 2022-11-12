@@ -128,9 +128,10 @@ void file_lib_include_vars_and_macros_comp(const char *fname) {
 
 	file_lib_include_comp(fname);
 
-	FILE *out3 = fopen("a.asm", "a");
+	/*FILE *out3 = fopen("a.asm", "a");
 	fprintf(out3, "\nsection .text\n\n");
 	fclose(out3);
+  */
 
 	macro_interp(fname);
 

@@ -48,7 +48,7 @@ int string_interp(char line[], FILE *out) {
 
 			*/
 			string_name[strlen(string_name)-1] = '\0';
-			fprintf(out2, "%s: db%s, 0\n\t.len: equ $-%s",
+			fprintf(out2, "%s: db%s, 0\n\t.len: equ $-%s\n",
 					string_name, after_name,
 					string_name);
 			fclose(out2);

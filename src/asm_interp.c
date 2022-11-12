@@ -144,11 +144,11 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
 	int includecomp = file_lib_include_comp(fname);
 
-	if(includecomp == 0) {
+	/*if(includecomp == 0) {*/
 		FILE *out3 = fopen("a.asm", "a");
 		fprintf(out3, "\nsection .text\n\n");
 		fclose(out3);
-	}
+	/*}*/
 	/*macro compiler*/
 	macro_interp(fname);
 
