@@ -71,9 +71,9 @@ Windows
 ## compile program
 to compile your well program you can run ``wesm`` in your terminal:
 ```
-❯ wesm helloworld.well -o helloworld
-18:12:00 INFO  src/asm_interp.c:522: Compile time:: 0.001229 seconds
-❯ ./helloworld
+ ╰─λ wesm helloworld.well
+16:48:37 INFO  src/asm_interp.c:572: Compile time:: 0.010380 seconds
+ ╰─λ ./helloworld
 Hello World!
 ```
 

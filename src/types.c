@@ -8,6 +8,7 @@
 #include "array_interp.h"
 
 #include "rodata.h"
+#include "types.h"
 
 int string_interp(char line[], FILE *out) {
 
@@ -63,6 +64,77 @@ int string_interp(char line[], FILE *out) {
 
 	return 0;
 
+}
+
+const char *mut_interp(char line[], int line_num) {
+
+  /*well:
+    ~var:main {
+      string~ test = 'test'
+      mut~ test = resb 1
+    }
+
+    nasm:
+    section .text
+      test: db 'test', 0
+      .len: equ $-test
+    section .bss:
+      mtest: resb 1
+   */
+  
+  struct mut_data data;
+
+  const char *muttypes[5] = {
+    "resb",
+    "resw",
+    "resq",
+    "resy",
+    "resz"
+  };
+  
+  char *string = strstr(line, "mut");
+  if(string != NULL) {
+
+    char *tild = strchr(line, '~');
+    if(tild != NULL) {
+      tild++;
+      char *eq = strchr(line, '=');
+      if(eq != NULL) {
+	
+	char *resb = strstr(line, muttypes[0]);
+	char *resw = strstr(line, muttypes[1]);
+	char *resq = strstr(line, muttypes[2]);
+	char *resy = strstr(line, muttypes[3]);
+	char *resz = strstr(line, muttypes[4]);
+	if(resb != NULL || resw != NULL ||
+	   resq != NULL || resy != NULL || resz != NULL) {
+
+	  const char delim[] = "=";
+	  char *after_name = strchr(tild, '=');
+	  char *mut_name = strtok(tild, delim);
+
+	  if(after_name != NULL) {
+	    after_name++;
+	  }
+	  after_name[strlen(after_name)-1] = '\0';
+	  mut_name[strlen(mut_name)-1] = '\0';
+	  char buf[0x100];
+	  snprintf(buf, sizeof(buf), "%s: %s\n",
+		   mut_name, after_name);
+	  data.muts[line_num] = buf;
+	  FILE *bss = fopen("a.asm", "a");
+	  fprintf(bss, buf);
+	  fclose(bss);
+	} else { log_error("Mutable variable missing reserve type (ex: mut~ test = resb 1)\n"); }
+	
+      } else { log_error("Mutable variable missing '=' (ex: mut~ test = resb 1)\n"); }
+      
+    } else { log_error("Mutable variable missing '~' (ex: mut~ test = resb 1)\n"); }
+    
+  }
+
+  return data.muts[line_num];
+  
 }
 
 /*int length_interp(char line[], FILE *out) {

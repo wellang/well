@@ -33,6 +33,7 @@ const char *ifscope;
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
 	struct LOG_DATA log;
+	struct mut_data mut_data;
 
 	const char *fname;
 	fname = argv[1];
@@ -107,12 +108,12 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			  continue;
 		}
 
-		char var_search[] = "~var:main {";
+		char var_search[] = "~var:main";
 		char *var = strstr(line, var_search);
 
 		if(var != NULL) {
 			FILE *out2;
-			FILE *varread = fopen(fname, "r+");
+			FILE *varread = fopen(fname, "r");
 			char mainlines[256];
 			int lnum2 = 0;
 			while(fgets(mainlines, sizeof(mainlines), varread) != NULL) {
@@ -120,8 +121,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 				if(comment_check == true) {
 					  continue;
 				}
-				lnum2++;
-				char brack_s[] = "}";
+			        char brack_s[] = "}";
 				char *search_b = strstr(mainlines, brack_s);
 				if(search_b != NULL) {
 					break;
@@ -132,7 +132,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 				} else {
 					/*_floa_interp_(mainlines, out2);*/
 					asm_interp_var_funcs(mainlines, out2, lnum2, fname);
+					/*mut_data.muts[lnum2] = mut_interp(mainlines, lnum2);*/
 				}
+				lnum2++;
 			}
 
 		}
@@ -141,7 +143,42 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			break;
 		}
 	}
+	
+	FILE *bss = fopen("a.asm", "a");
+	fprintf(bss, "section .bss\n");
+	fclose(bss);
 
+	FILE *bss_comp = fopen(fname, "r");
+	char lines2[256];
+	while(fgets(lines2, sizeof(lines2), bss_comp) != NULL) {
+
+	  comment_check = __check_com__(lines2);
+	  if(comment_check == true) {
+	    continue;
+	  }
+
+	  char var_search[] = "~var:main";
+	  char *var = strstr(lines2, var_search);
+
+	  if(var != NULL) {
+	    FILE *varread = fopen(fname, "r");
+	    char mainlines2[256];
+	    int lnum22 = 0;
+	    while(fgets(mainlines2, sizeof(mainlines2), varread) != NULL) {
+	      comment_check = __check_com__(mainlines2);
+	      if(comment_check == true) {
+		continue;
+	      }
+	      char *brack_s = strstr(mainlines2, "}");
+	      if(brack_s != NULL) {break;}
+	      if(mainlines2 == NULL) {break;}
+	      mut_data.muts[lnum22] = mut_interp(mainlines2, lnum22);
+	      lnum22++;
+	    }
+	  }
+	  
+	}
+	
 	int includecomp = file_lib_include_comp(fname);
 
 	/*if(includecomp == 0) {*/
