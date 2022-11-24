@@ -61,10 +61,9 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 			char macro[0x100];
 			snprintf(macro, sizeof(macro), "%%macro %s", before);
-      /*
+      
 			FILE *fil = fopen("a.asm", "r");
-			char lineee_[256];
-      char *lineee = malloc(strlen(lineee_) + 1);
+			char lineee[256];
 			int linenum = 0;
 
 			while(fgets(lineee, sizeof(lineee), fil)) {
@@ -72,7 +71,6 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 				if(lineee == NULL) { break; } else { linenum++; }
 
 			}
-      free(lineee);*/
 			FILE *file = fopen("a.asm", "r");
 			char linee[256];
 			int lnum = 0;
@@ -81,12 +79,12 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 				lnum++;
 
-				/*if(lnum == linenum) {
-					wlog_error(fname, line_num, "Undefined reference to %s", before);
+				if(lnum == linenum) {
+				/*	wlog_error(fname, line_num, "Undefined reference to %s", before);
 					 need to fix this error!
-
+*/
 					return 1;
-				}*/
+				}
 
 				char *findmac = strstr(linee, macro);
 				if(findmac != NULL) {

@@ -410,14 +410,25 @@ void compile(int argc, char *argv[]) {
 	argparse_add_option(&parser, "--info", "-i", ARGPARSE_FLAG);
 
 
+	/*extra options*/
+	/*use gnu linking software: ld*/
+	argparse_add_option(&parser, "--use-gnuld", "-use-ld", ARGPARSE_FLAG);
+	argparse_add_option(&parser, "--ldflags", "-ldflags", ARGPARSE_FLAG); /*-use-ld -ldflags '-m elf_i386'*/
+	/*use other nasm output format: nasm -f elf32*/
+	argparse_add_option(&parser, "--custom-out", "-co", ARGPARSE_FLAG);
+	/*use yasm instead of nasm assembler(not recommended)*/
+	argparse_add_option(&parser, "--use-yasm", "-yasm", ARGPARSE_FLAG);
+	bool use_yasm_asm;
+	bool use_gnu_ld;
+
 	const char *out;
 	bool keep_asm;
 
 	const char *gcc_options;
 
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
-	const char *start = "nasm -f win64 a.asm -o a.o";
-	const char *linker = "gcc a.o -no-pie";
+  const char *start = "nasm -f win64 a.asm -o a.o";
+  const char *linker = "gcc a.o -no-pie";
 #else
 #if defined __APPLE__
   const char *start = "nasm -f macho64 a.asm -o a.o";
@@ -474,6 +485,40 @@ void compile(int argc, char *argv[]) {
 	
 	} else {
 		keep_asm = false;
+	}
+
+	if(argparse_option_exists(parser, "--use-gnuld") != ARGPARSE_NOT_FOUND ||
+			argparse_option_exists(parser, "-use-ld") != ARGPARSE_NOT_FOUND) {
+		int i = 1;
+		for(i = 1; i < 256; i++) {
+			if(argv[i] == NULL) {
+				use_gnu_ld = false;
+				break;
+			}
+			if(!strcmp(argv[i], "--use-gnuld") || !strcmp(argv[i], "-use-ld")) {
+				use_gnu_ld = true;
+				break;
+			} else {
+				continue;
+			}
+		}
+	}
+
+	if(argparse_option_exists(parser, "--use-yasm") != ARGPARSE_NOT_FOUND ||
+			argparse_option_exists(parser, "-yasm") != ARGPARSE_NOT_FOUND) {
+		int i = 1;
+		for(i = 1; i < 256; i++) {
+			if(argv[i] == NULL) {
+				use_yasm_asm = false;
+				break;
+			}
+			if(!strcmp(argv[i], "--use-yasm") || !strcmp(argv[i], "-yasm")) {
+				use_yasm_asm = true;
+				break;
+			} else {
+				continue;
+			}
+		}
 	}
 
 	/*-cc is meant to be the last arg used*/
@@ -541,6 +586,52 @@ void compile(int argc, char *argv[]) {
 
 	asm_interp(argc, argv, INFO_DEBUG);
 
+	if(use_yasm_asm == true) {
+		/*start*/
+		char *after_nasm = strstr(start, "nasm");
+		after_nasm++;
+		char buf[0x100];
+		snprintf(buf, sizeof(buf), "yasm %s", after_nasm);
+		start = buf;
+	}
+	if(use_gnu_ld == true) {
+#if defined __APPLE__
+	linker = "ld a.o -o a.out -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib -lSystem";
+#else
+	linker = "ld a.o -o a.out";
+#endif
+
+	if(argparse_option_exists(parser, "--ldflags") != ARGPARSE_NOT_FOUND ||
+			argparse_option_exists(parser, "-ldflags") != ARGPARSE_NOT_FOUND) {
+		int i = 1;
+		for(i = 1; i < 256; i++) {
+			if(argv[i] == NULL) {
+				break;
+			}
+			if(!strcmp(argv[i], "--ldflags") || !strcmp(argv[i], "-ldflags")) {
+				char buf[0x100];
+				int j;
+				for(j = i+1; j >= i+1; j++) {
+					if(argv[j] == NULL) {
+						break;
+					}
+					char *outarg = strstr(argv[j], "-o");
+					char *outarg_full = strstr(argv[j], "--output");
+					if(outarg != NULL || outarg_full != NULL) {
+						continue;
+					}
+					char *wellfile = strstr(argv[j], ".well");
+					if(wellfile != NULL) {
+						continue;
+					}
+					snprintf(buf, sizeof(buf), "%s %s", buf, argv[j]);
+				}
+				snprintf(gcc_buf, sizeof(gcc_buf), "%s", buf);
+			}
+		}
+	}
+
+	}
 	if(gcc_buf != NULL) {
 		snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
 	} else {

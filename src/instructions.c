@@ -208,12 +208,10 @@ int resb_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 int print_asm_interp(FILE *out, char line[], int line_num, const char *fname) {
 
-  char *line_m = malloc(strlen(line) + 1);
 	char search[] = "asm~ ";
-	char *asm_search = strstr(line_m, search);
+	char *asm_search = strstr(line, search);
 	if(asm_search != NULL) {
-		char *after_asm_ = strchr(asm_search, '~');
-    char *after_asm = malloc(strlen(after_asm_) + 1);
+		char *after_asm = strchr(asm_search, '~');
 		if(after_asm != NULL) {
 			after_asm++;
 			after_asm++;
@@ -223,9 +221,7 @@ int print_asm_interp(FILE *out, char line[], int line_num, const char *fname) {
 		} else {
 			wlog_error(fname, line_num, "ASM missing operator. EX: asm~ mov rax, 0\n");
 		}
-    free(after_asm);
 	}
-  free(line_m);
 	return 0;
 
 }
