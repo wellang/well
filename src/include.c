@@ -17,6 +17,8 @@
 
 #include "libwesm/com.h"
 
+#define OSX_INCLUDELOC "/Library/Developer/CommandLineTools/usr/include/wellang/include/libwesm"
+
 #define call_func(file, line)	\
         char search[] = "call~ ";	\
         char *call = strstr(line, search);	\
@@ -168,10 +170,14 @@ int file_lib_include_comp(const char *fname) {
 				if(file != NULL) {
 
 					  char buf[0x100];
-#if defined __WIN32 | defined __WIN64 | defined __WIN32__
+#if defined __WIN32 || defined __WIN64 || defined __WIN32__
             snprintf(buf, sizeof(buf), "C:\\wesm\\libwesm\\%s", filename);
             printf("\n%s\n", buf);
-#else
+#endif
+#if defined __APPLE__
+	    snprintf(buf, sizeof(buf), "%s/%s", OSX_INCLUDELOC, filename);
+#endif
+#if defined __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__ || defined __gnu_linux__ || defined __linux__ || defined linux 
 					  snprintf(buf, sizeof(buf), "/usr/include/wellang/libwesm/%s", filename);
 #endif
 					  file_lib_include_vars_and_macros_comp(buf);

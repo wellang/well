@@ -46,6 +46,12 @@ LOC = /$(USR)/bin/
 
 LIBWESM= src/libwesm
 
+PREFIX_OSX = /Library/Developer/CommandLineTools/usr/include/wellang
+INCLUDELOC_OSX = $(PREFIX_OSX)/include
+LOC_OSX = $(PREFIX_OSX)/bin
+
+UNAME = $(shell uname)
+
 .PHONY: base install vim clean_vim clean purge
 
 .SUFFIXES: .c .o
@@ -67,10 +73,19 @@ ifeq ($(OS), Windows_NT)
 	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
 	copy wesm.exe .$(subst /,\,$(LOC))
 else
-	sudo mkdir $(INCLUDELOC)wellang
-	@ # mkdir $(LOCAL)logs
-	sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
-	sudo cp wesm $(LOC)
+ifeq ($(UNAME), Darwin)
+		sudo mkdir $(PREFIX_OSX)
+		sudo mkdir $(INCLUDELOC_OSX)
+		sudo mkdir $(LOC_OSX)
+		sudo cp -r $(LIBWESM) $(INCLUDELOC_OSX)
+		sudo cp wesm $(LOC_OSX)
+endif
+ifeq ($(UNAME), LINUX)
+		sudo mkdir $(INCLUDELOC)wellang
+		@ # mkdir $(LOCAL)logs
+		sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
+		sudo cp wesm $(LOC)
+endif
 endif
 
 vim:
@@ -90,9 +105,15 @@ ifeq ($(OS), Windows_NT)
 	rmdir /s /q .\$(CONFIG)
 	rmdir /s /q C:\wesm
 else
+ifeq ($(UNAME), Darwin)
+		rm -f $(COMMONC_.o)
+		sudo rm -R $(PREFIX_OSX)
+endif
+ifeq ($(UNAME), Linux)
 	rm -f $(COMMONC_.o)
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)wesm
+endif
 endif
 
 purge:

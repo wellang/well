@@ -289,9 +289,13 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 		} else if(func != NULL && main != NULL) {
 			if(INFO_DEBUG == true){wlog_info(fname, lineline_num, "found main fuction");}
       			FILE *outputfunc = fopen("a.asm", "a");
+#if defined __APPLE__
+                  fprintf(outputfunc, "\n\nglobal _main\n\n_main:\n\t");
+                  fclose(outputfunc);
+#else
 	                fprintf(outputfunc, "\n\nglobal main\n\nmain:\n\t");
  	                fclose(outputfunc);
-
+#endif
 			FILE *main_func = fopen(fname, "r+");
 			char mainline[256];
 			int mainline_num = 0;
@@ -411,13 +415,23 @@ void compile(int argc, char *argv[]) {
 
 	const char *gcc_options;
 
-	#if defined _WIN32 | defined _WIN64 | defined __WIN32__
-	        const char *start = "nasm -f win64 a.asm -o a.o";
-			    const char *linker = "gcc a.o -no-pie";
-	#else
-	        const char *start = "nasm -f elf64 a.asm -o a.o";
-	        const char *linker = "gcc a.o -no-pie";
-	#endif
+#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+	const char *start = "nasm -f win64 a.asm -o a.o";
+	const char *linker = "gcc a.o -no-pie";
+#else
+#if defined __APPLE__
+  const char *start = "nasm -f macho64 a.asm -o a.o";
+  const char *linker = "gcc a.o -no-pie";
+#endif
+#if defined __gnu_linux__ || defined __linux__ || defined linux
+	const char *start = "nasm -f elf64 a.asm -o a.o";
+	const char *linker = "gcc a.o -no-pie";
+#endif
+#if defined __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__
+  const char *start = "nasm -f aoutb a.asm -o a.o";
+  const char *linker = "gcc a.o -no-pie";
+#endif
+#endif
 
 	char out_buf[0x100];
 	char gcc_buf[0x100];
