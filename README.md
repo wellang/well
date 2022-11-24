@@ -32,9 +32,9 @@ Linux
 ```
 $ git clone https://github.com/wellang/well.git
 $ cd well
-$ make && make install
+$ make && make install-unix
 or
-$ make base install
+$ make base install-unix
 ```
 
 FreeBSD
@@ -42,9 +42,19 @@ FreeBSD
 ```
 $ git clone https://github.com/wellang/well.git
 $ cd well
-$ gmake base install
+$ gmake base install-unix
 or
-$ gmake && gmake install
+$ gmake && gmake install-unix
+```
+
+MacOS
+
+```
+$ git clone https://github.com/wellang/well.git
+$ cd well
+$ make base install-osx
+or
+$ make && make install-osx
 ```
 
 Windows
@@ -71,7 +81,7 @@ Windows
 ## compile program
 to compile your well program you can run ``wesm`` in your terminal:
 ```
- ╰─λ wesm helloworld.well
+ ╰─λ wesm helloworld.well -o helloworld
 16:48:37 INFO  src/asm_interp.c:572: Compile time:: 0.010380 seconds
  ╰─λ ./helloworld
 Hello World!

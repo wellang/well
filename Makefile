@@ -62,9 +62,8 @@ base:
 	$(CC) $(CFLAGS) -L src -c $(COMMON_.c)
 	$(CC) $(CFLAGS) -o wesm $(COMMONC_.o)
 
-install:
+install-win:
 # Windows style
-ifeq ($(OS), Windows_NT)
 # Replace for '\' directory separator of windows, '.\' current directory
 	mkdir .$(subst /,\,$(INCLUDELOC))wellang
 	mkdir .$(subst /,\,$(LOC))
@@ -72,21 +71,19 @@ ifeq ($(OS), Windows_NT)
 	mkdir C:\wesm\libwesm
 	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
 	copy wesm.exe .$(subst /,\,$(LOC))
-else
-ifeq ($(UNAME), Darwin)
-		sudo mkdir $(PREFIX_OSX)
-		sudo mkdir $(INCLUDELOC_OSX)
-		sudo mkdir $(LOC_OSX)
-		sudo cp -r $(LIBWESM) $(INCLUDELOC_OSX)
-		sudo cp wesm $(LOC_OSX)
-endif
-ifeq ($(UNAME), LINUX)
-		sudo mkdir $(INCLUDELOC)wellang
-		@ # mkdir $(LOCAL)logs
-		sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
-		sudo cp wesm $(LOC)
-endif
-endif
+
+install-osx:
+	sudo mkdir $(PREFIX_OSX)
+	sudo mkdir $(INCLUDELOC_OSX)
+	sudo mkdir $(LOC_OSX)
+	sudo cp -r $(LIBWESM) $(INCLUDELOC_OSX)
+	sudo cp wesm $(LOC_OSX)
+
+install-unix:
+	sudo mkdir $(INCLUDELOC)wellang
+	@ # mkdir $(LOCAL)logs
+	sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
+	sudo cp wesm $(LOC)
 
 vim:
 	mkdir -p ~/.vim/syntax
@@ -97,26 +94,23 @@ clean_vim:
 	rm -f ~/.vim/syntax/well.vim
 	rm -f ~/.vim/ftdetect/well.vim
 
-clean:
-ifeq ($(OS), Windows_NT)
+clean-win:
 	del /f $(COMMONC_.o)
 #	del /f .\wesm.exe
 	rmdir /s /q .\$(USR)
 	rmdir /s /q .\$(CONFIG)
 	rmdir /s /q C:\wesm
-else
-ifeq ($(UNAME), Darwin)
+
+clean-osx:
 		rm -f $(COMMONC_.o)
 		sudo rm -R $(PREFIX_OSX)
-endif
-ifeq ($(UNAME), Linux)
+
+clean-unix:
 	rm -f $(COMMONC_.o)
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)wesm
-endif
-endif
 
-purge:
+clean-all-unix:
 	rm -f $(COMMONC_.o)
 	rm -f ~/.vim/syntax/well.vim
 	rm -f ~/.vim/ftdetect/well.vim
