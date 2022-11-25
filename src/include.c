@@ -260,10 +260,10 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 		   .123funcfin:
 		   rest of code
 		*/
-		snprintf(buff, sizeof(buff), "\n\tjmp %s._%d%s_\n\tjmp %s._%d%s_fin\n\t._%d%s_:",
+		snprintf(buff, sizeof(buff), "\n\tjmp %s_%d%s_\n\tjmp %s_%d%s_fin\n\t%s_%d%s_:",
 				funcname, callnum, func,
 				funcname, callnum, func,
-				 callnum, func);
+				funcname, callnum, func);
 		fprintf(out1, buff);
 		fclose(out1);
 
@@ -324,9 +324,9 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 		}
 		FILE *out2 = fopen("a.asm", "a");
 		char bufff[0x100];
-		snprintf(bufff, sizeof(bufff), "\n\tjmp %s._%d%s_fin\n\t._%d%s_fin:\n", 
+		snprintf(bufff, sizeof(bufff), "\n\tjmp %s_%d%s_fin\n\t%s_%d%s_fin:\n", 
 				funcname, callnum, func,
-				callnum, func);
+				funcname, callnum, func);
 		fprintf(out2, bufff);
 		fclose(out2);
 
@@ -392,10 +392,10 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 		FILE *out1 = fopen("a.asm", "a");
 
 		char buff[0x100];
-		snprintf(buff, sizeof(buff), "\n\tjmp %s._%d%s_\n\tjmp %s._%d%s_fin\n\t._%d%s_:",
+		snprintf(buff, sizeof(buff), "\n\tjmp %s_%d%s_\n\tjmp %s_%d%s_fin\n\t%s_%d%s_:",
 				 funcname, callnum, func,
 				 funcname, callnum, func,
-				 callnum, func);
+				 funcname, callnum, func);
 
 		fprintf(out1, buff);
 		fclose(out1);
@@ -462,7 +462,7 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 
 		FILE *out2 = fopen("a.asm", "a");
 		char bufff[0x100];
-		snprintf(bufff, sizeof(bufff), "\n\t._%d%s_fin:\n", callnum, func);
+		snprintf(bufff, sizeof(bufff), "\n\t%s_%d%s_fin:\n", funcname, callnum, func);
 		fprintf(out2, bufff);
 		fclose(out2);
 

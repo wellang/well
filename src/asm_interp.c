@@ -596,9 +596,9 @@ void compile(int argc, char *argv[]) {
 	}
 	if(use_gnu_ld == true) {
 #if defined __APPLE__
-	linker = "ld a.o -o a.out -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib -lSystem";
+	linker = "ld a.o -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib -lSystem";
 #else
-	linker = "ld a.o -o a.out";
+	linker = "ld a.o";
 #endif
 
 	if(argparse_option_exists(parser, "--ldflags") != ARGPARSE_NOT_FOUND ||

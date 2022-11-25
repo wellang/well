@@ -3,5 +3,5 @@
 ~macro:return[1] {
 	move~ 60, rax
 	move~ %%1, rdi
-	
+	syscall	
 }
