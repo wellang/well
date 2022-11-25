@@ -415,13 +415,16 @@ void compile(int argc, char *argv[]) {
 	argparse_add_option(&parser, "--use-gnuld", "-use-ld", ARGPARSE_FLAG);
 	argparse_add_option(&parser, "--ldflags", "-ldflags", ARGPARSE_FLAG); /*-use-ld -ldflags '-m elf_i386'*/
 	/*use other nasm output format: nasm -f elf32*/
-	argparse_add_option(&parser, "--custom-out", "-co", ARGPARSE_FLAG);
+	argparse_add_option(&parser, "--custom-format", "-cf", ARGPARSE_FLAG);
 	/*use yasm instead of nasm assembler(not recommended)*/
 	argparse_add_option(&parser, "--use-yasm", "-yasm", ARGPARSE_FLAG);
+
 	bool use_yasm_asm;
 	bool use_gnu_ld;
 
 	const char *out;
+	const char *custom_format;
+	bool custom_format_used;
 	bool keep_asm;
 
 	const char *gcc_options;
@@ -445,6 +448,8 @@ void compile(int argc, char *argv[]) {
 #endif
 
 	char out_buf[0x100];
+	char format_buf[0x100];
+	char format_buf_yasm[0x100];
 	char gcc_buf[0x100];
 	char final_buf[0x100];
 
@@ -466,8 +471,27 @@ void compile(int argc, char *argv[]) {
 			}
 		}
     	}
+	if(argparse_option_exists(parser, "--custom-format") != ARGPARSE_NOT_FOUND ||
+	   argparse_option_exists(parser, "-cf") != ARGPARSE_NOT_FOUND) {
+
+	  int i = 1;
+	  for(i = 1; i < 256; i++) {
+	    if(argv[i] == NULL) {
+	      custom_format_used = false;
+	      break;
+	    }
+	    if(!strcmp(argv[i], "--custom-format") || !strcmp(argv[i], "-cf")) {
+	      custom_format_used = true;
+	      custom_format = argv[i + 1];
+	      snprintf(format_buf, sizeof(format_buf), "nasm -f %s a.asm -o a.o", custom_format);
+	      snprintf(format_buf_yasm, sizeof(format_buf_yasm), "yasm -f %s a.asm -o a.o", custom_format);
+	      start = format_buf;
+	    }
+	  }
+	  
+	}
 	if(argparse_option_exists(parser, "--assembly") != ARGPARSE_NOT_FOUND ||
-			argparse_option_exists(parser, "-a" != ARGPARSE_NOT_FOUND)) {
+	   argparse_option_exists(parser, "-a") != ARGPARSE_NOT_FOUND) {
 
 		int i = 1;
 		for(i = 1; i < 256; i++) {
@@ -590,9 +614,13 @@ void compile(int argc, char *argv[]) {
 		/*start*/
 		char *after_nasm = strstr(start, "nasm");
 		after_nasm++;
-		char buf[0x100];
-		snprintf(buf, sizeof(buf), "yasm %s", after_nasm);
-		start = buf;
+		if(custom_format_used == true) {
+		  start = format_buf_yasm;
+		} else {
+		  char buf[0x100];
+		  snprintf(buf, sizeof(buf), "yasm %s", after_nasm);
+		  start = buf;
+		}
 	}
 	if(use_gnu_ld == true) {
 #if defined __APPLE__
