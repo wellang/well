@@ -2,6 +2,5 @@
 
 	move~ 0, rax
 	call~ printf
-  	asm~ ret
 
 }

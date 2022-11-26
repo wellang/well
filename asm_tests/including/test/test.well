@@ -11,7 +11,7 @@
 	
 	move~ str, rdi 
 	move~ test, rsi
-	call~ test_include.print
+	call~ test_include:print
 	return~ 0
 
 }

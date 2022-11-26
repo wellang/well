@@ -2,26 +2,34 @@
 
 ~var:main {
 	string~ test = 'test'
+	string~ run_test = 'run test'
+}
+
+~func:print {
+
+	move~ 1, rax
+	move~ 1, rdi
+	move~ r8, rsi
+	move~ r9, rdx
+	syscall
+
+	asm~ ret
+
 }
 
 ~func:run {
 
-	move~ 34, rax
+	move~ run_test, r8
+	move~ run_test.len, r9
 	return~ 0
 
 }
 
 ~func:main {
 
-	move~ 1, rax
-	move~ 1, rdi
-	move~ test, rsi
-	move~ test.len, rdx
-	syscall
-
-	move~ 60, rax
-	move~ 0, rdi
-	syscall
+	move~ test, r8
+	move~ test.len, r9
+	call~ print
 
 	call~ run	
 

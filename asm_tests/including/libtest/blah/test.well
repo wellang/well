@@ -2,7 +2,7 @@
 
 ~func:main {
 
-	libcall~ blah.blah
+	libcall~ blah:blah
 
 	return~ 0;
 

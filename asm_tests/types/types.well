@@ -4,6 +4,7 @@
 
 	string~ string = 'string!'
 	int~ number = 25
+	mut~ test = resq 256
 
 }
 
@@ -18,6 +19,9 @@
 	move~ 60, rax
 	move~ 0, rdi
 	syscall
+
+	move~ number, rdi
+	move~ rdi, [rel test]
 	
 	return~ 0
 

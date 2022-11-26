@@ -52,7 +52,7 @@
 
             end
 
-            call~ test_include.if_test
+            call~ test_include:if_test
 
             return~ 0
 }

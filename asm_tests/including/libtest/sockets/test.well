@@ -1,3 +1,5 @@
+~include <std.well>
+
 ~var:main {
 
 }
@@ -5,9 +7,9 @@
 ~func:main {
 
            move~ 6, r8
-           libcall~ socket.sock_init
-           libcall~ socket.sock_bind
-           libcall~ socket.sock_listen
+           libcall~ socket:sock_init
+           libcall~ socket:sock_bind
+           libcall~ socket:sock_listen
            return~ 0
 
 }

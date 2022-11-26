@@ -145,7 +145,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	}
 	
 	FILE *bss = fopen("a.asm", "a");
-	fprintf(bss, "section .bss\n");
+	fprintf(bss, "\nsection .bss\n");
 	fclose(bss);
 
 	FILE *bss_comp = fopen(fname, "r");
