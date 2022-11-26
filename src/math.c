@@ -104,7 +104,7 @@ char *math(char line[], char final_buf[]) {
 					char buf[0x100];
 					snprintf(buf, sizeof(buf), "%s%s;true", before, AFTER_PROB);
 					final_buf = buf;
-					return buf;
+					return final_buf;
 				}
 			}
 
@@ -125,6 +125,6 @@ char *math(char line[], char final_buf[]) {
 		return final_buf;
 	}
 
-	return final_buf; /* should be move~ 47335, rax*/
-
+	return final_buf;  /*should be move~ 47335, rax*/
+	
 }
