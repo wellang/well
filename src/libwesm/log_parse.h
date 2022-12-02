@@ -34,7 +34,7 @@ struct LOG_DATA {
   const char *VAR_NAMES[sizeof(int)];
 };
 
-char *logparse_set_log_file(const char *fname, char *buf);
-struct LOG_DATA LOGPARSE_SET_FILE(const char *wellfname);
+char *logparse_set_log_file(const char *fname);
+struct LOG_DATA LOGPARSE_INIT_FILE(const char *wellfname);
 
 #endif /* LOG_PARSE_H_ */

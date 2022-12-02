@@ -140,7 +140,8 @@ int bits_interp(FILE *out, char line[], int line_num, const char *fname) {
 
 }*/
 
-int call_interp(FILE *out, char line[], int line_num, const char *fname, const char *funcname, int callnum) {
+int call_interp(FILE *out, char line[], int line_num, const char *fname, 
+    const char *funcname, int callnum) {
 
 	/*well: 
 	 * 	call~ wellfile.wellfunc 

@@ -1,4 +1,4 @@
-/*Copyright (c) 2022 Tristan Wellman*/
+/*Copyright (c) 2022 TristanWellman*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,14 +32,12 @@ const char *ifscope;
 
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
-	struct LOG_DATA log;
-	struct mut_data mut_data;
+        struct mut_data mut_data;
 
 	const char *fname;
 	fname = argv[1];
-	char tfile[0x100];
-	char *logfile = logparse_set_log_file(fname, tfile);
-	log = LOGPARSE_SET_FILE(fname);
+	char *logfile = logparse_set_log_file(fname);
+	struct LOG_DATA log = LOGPARSE_INIT_FILE(fname);
 
 	/*FILE *file6 = fopen(fname, "r+");
 	char line7[256];

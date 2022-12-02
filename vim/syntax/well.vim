@@ -2,8 +2,8 @@ if exists("b:current_syntax")
 	finish
 endif
 
-syntax keyword welldatatypes string length int mut resb resw resq resy resz 
-syntax keyword wellins push move lea call lib asm jump movef xor return extern syscall 
+syntax keyword welldatatypes string long int mut resb resw resq resy resz 
+syntax keyword wellins push move lea call lib asm jump push pop add sub aaa aas aad aam adc and movef nor xor return extern syscall 
 syntax keyword wellfunc func
 syntax keyword wellvar var
 

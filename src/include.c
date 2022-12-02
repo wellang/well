@@ -69,8 +69,9 @@ int include_func_funcs(char line[], FILE *out, int line_num, int ifnum_ln,
 	cif_interp(out, line, line_num, fname);
 	halt_interp(out, line, line_num, fname);
 	bits_interp(out, line, line_num, fname);
-	call_func(out, line);
-	print_asm_interp(out, line, line_num, fname);
+	/*call_func(out, line);*/
+	call_interp(out, line, line_num, fname, funcname, line_num);
+  print_asm_interp(out, line, line_num, fname);
 	lea_interp(line, out, line_num);
 	return0(out, line, line_num, fname);
 
@@ -331,7 +332,7 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 		fclose(out2);
 
 		
-		fclose(include_file.wellfile);
+		/*fclose(include_file.wellfile);*/
 
 	} else {
 		return 0;

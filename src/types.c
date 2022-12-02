@@ -175,6 +175,10 @@ const char *mut_interp(char line[], int line_num) {
 
 int int_interp(char line[], FILE *out) {
 
+  const char *var_type;
+  char *long_ = strstr(line, "long");
+  if(long_ != NULL) {var_type = "dq";} else {var_type = "dd";}
+
 	char search[] = "int~ ";
 	char *string = strstr(line, search);
 	if(string != NULL) {
@@ -198,7 +202,7 @@ int int_interp(char line[], FILE *out) {
 			after_name[strlen(after_name)-1] = '\0';
 			var_name[strlen(var_name)-1] = '\0';
 			out = fopen("a.asm", "a");
-			fprintf(out, "\n\t%s: dw%s", var_name, after_name);
+			fprintf(out, "\n\t%s: %s%s", var_name, var_type, after_name);
 			fclose(out);
 
 		} else {
