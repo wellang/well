@@ -148,11 +148,8 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
     if(search_if != NULL) {
 
         const char delim[] = ")";
-        /*const char delim2[] = "}";*/
         char *first = strchr(line, '(');
         char *start = strstr(line, "start");
-        /*char *sec = strchr(line, '{');*/
-
         if(first != NULL) {
             first++;
         }
@@ -271,7 +268,7 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
 int if_end_interp(FILE *out, char line[], int line_num, int ifnum_ln,
                   const char *fname, const char *funcname, int ifnum) {
 
-    char *end = strstr(line, "end");
+    char *end = strstr(line, "~end");
     out = fopen("a.asm", "a");
     if(end != NULL) {
 
@@ -283,7 +280,7 @@ int if_end_interp(FILE *out, char line[], int line_num, int ifnum_ln,
         funcname, ifnum_ln, ifnum);
         fprintf(out, buff);
         fclose(out);
-    } else if(strstr(line, "endi") != NULL) {
+    } else if(strstr(line, "~endi") != NULL) {
 
         wlog_info(fname, line_num, "Found 'ENDI' in if statement\n");
 
