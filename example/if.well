@@ -19,7 +19,7 @@
         move~ test.len, rdx
         syscall
       
-    end
+    ~end
 
     return~ 0
 }

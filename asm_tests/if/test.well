@@ -20,7 +20,7 @@
                    move~ test.len, rdx
                    syscall
       
-            end
+            ~end
 
             ~if(r8 != r9)
     
@@ -30,7 +30,7 @@
 	                move~ test.len, rdx
 	                syscall
 
-            end
+            ~end
 
             ~if(r8 > r9)
     
@@ -40,7 +40,7 @@
 	                move~ test.len, rdx
 	                syscall
 
-            end
+            ~end
 
             ~if(r9 < r8)
 
@@ -50,7 +50,7 @@
                     move~ test.len, rdx
                     syscall
 
-            end
+            ~end
 
             call~ test_include:if_test
 
