@@ -34,7 +34,9 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 
 	char *tild = strstr(line, "~");
   char *if_ = strstr(line, "~if");
+  char *if_end_ = strstr(line, "~end");
   if(if_ != NULL) { return 0; }
+  if(if_end_ != NULL) { return 0; }
 
 	if(tild != NULL) {
 
