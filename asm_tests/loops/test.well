@@ -1,0 +1,37 @@
+~include <std.well>
+
+~var:main {
+    string~ test = 'test!'
+}
+
+~func:main {
+
+    move~ 100, r8
+    ~while(r8 >= 1)
+        
+        move~ 1, rax
+        move~ 1, rdi
+        move~ test, rdi
+        move~ test.len, rdx
+        syscall
+
+        sub~ r8, 1
+    
+    ~end
+
+    xor~ r8, r8
+    move~ 1, r8
+    move~ 5, r9
+    ~for(r8 < r9:add~ 1, r8)
+        
+        move~ 1, rax
+        move~ 1, rdi
+        move~ test, rdi
+        move~ test.len, rdx
+        syscall
+
+    ~end
+
+    return~ 0
+
+}
