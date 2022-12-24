@@ -488,9 +488,9 @@ main:
 	jmp main_15_1_fin
 	main_15_1_fin:
 	 cmp r8, r9
-	jne main_25_2r8r9_eq
+	jne main_25_2r8r9_neq
 	je main_25_2_fin
-	main_25_2r8r9_eq:
+	main_25_2r8r9_neq:
 	move  1, rax
 	move  1, rdi
 	move  test, rsi
@@ -500,9 +500,9 @@ main:
 	jmp main_25_2_fin
 	main_25_2_fin:
 	 cmp r8, r9
-	jg main_35_3r8r9_eq
+	jg main_35_3r8r9_gre
 	jng main_35_3_fin
-	main_35_3r8r9_eq:
+	main_35_3r8r9_gre:
 	move  1, rax
 	move  1, rdi
 	move  test, rsi
@@ -512,9 +512,9 @@ main:
 	jmp main_35_3_fin
 	main_35_3_fin:
 	 cmp r9, r8
-	jl main_45_4r9r8_eq
+	jl main_45_4r9r8_les
 	jnl main_45_4_fin
-	main_45_4r9r8_eq:
+	main_45_4r9r8_les:
 	move  1, rax
 	move  1, rdi
 	move  test, rsi
@@ -529,9 +529,9 @@ main:
  	mov eax, 1;               move~ 2, ebx
  	mov ebx, 2
 	 cmp eax, ebx
-	jne main_6_10000eaxebx_eq
+	jne main_6_10000eaxebx_neq
 	je main_6_10000_fin
-	main_6_10000eaxebx_eq:;                     move~ 1, rax
+	main_6_10000eaxebx_neq:;                     move~ 1, rax
  	mov rax, 1;                     move~ 1, rdi
  	mov rdi, 1;                     move~ test, rsi
  	mov rsi, test;                     move~ test.len, rdx

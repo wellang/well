@@ -28,7 +28,6 @@ char *statement_buf;
 char *statement_to_asm(char *string, bool is_if, bool is_while,
 		       const char *funcname, int ifnum_ln, int ifnum) {
   if(is_if == true) {
-    printf("%s\n", string);
     char buf[0x100];
     char *eq_ = strstr(string, "=="), *neq_ = strstr(string, "!=");
     char *gre_ = strstr(string, ">"), *les_ = strstr(string, "<");
@@ -55,9 +54,9 @@ char *statement_to_asm(char *string, bool is_if, bool is_while,
       op1[strlen(op1)-1] = '\0';
       op2++;op2++;op2++;
       snprintf(buf, sizeof(buf), "\n\t cmp %s, %s\n\t"
-	       "jne %s_%d_%d%s%s_eq\n\t"
+	       "jne %s_%d_%d%s%s_neq\n\t"
 	       "je %s_%d_%d_fin\n\t"
-	       "%s_%d_%d%s%s_eq:",
+	       "%s_%d_%d%s%s_neq:",
 	       op1, op2,
 	       funcname, ifnum_ln, ifnum, op1, op2,
 	       funcname, ifnum_ln, ifnum,
@@ -71,9 +70,9 @@ char *statement_to_asm(char *string, bool is_if, bool is_while,
       op1[strlen(op1)-1] = '\0';
       op2++;op2++;  
       snprintf(buf, sizeof(buf), "\n\t cmp %s, %s\n\t"
-	       "jg %s_%d_%d%s%s_eq\n\t"
+	       "jg %s_%d_%d%s%s_gre\n\t"
 	       "jng %s_%d_%d_fin\n\t"
-	       "%s_%d_%d%s%s_eq:",
+	       "%s_%d_%d%s%s_gre:",
 	       op1, op2,
 	       funcname, ifnum_ln, ifnum, op1, op2,
 	       funcname, ifnum_ln, ifnum,
@@ -87,9 +86,9 @@ char *statement_to_asm(char *string, bool is_if, bool is_while,
       op1[strlen(op1)-1] = '\0';
       op2++;op2++;
       snprintf(buf, sizeof(buf), "\n\t cmp %s, %s\n\t"
-	       "jl %s_%d_%d%s%s_eq\n\t"
+	       "jl %s_%d_%d%s%s_les\n\t"
 	       "jnl %s_%d_%d_fin\n\t"
-	       "%s_%d_%d%s%s_eq:",
+	       "%s_%d_%d%s%s_les:",
 	       op1, op2,
 	       funcname, ifnum_ln, ifnum, op1, op2,
 	       funcname, ifnum_ln, ifnum,
@@ -107,7 +106,6 @@ char *check_operator(char *string, const char *funcname, int ifnum_ln, int ifnum
   char *keyword_type = check_keyword(string);
   printf("%s", keyword_type);
   */
-  printf("%s", string);
   char *eq_ = strstr(string, eq);
   char *neq_ = strstr(string, neq);
   char *gre_ = strstr(string, gre);
@@ -129,7 +127,6 @@ char *check_operator(char *string, const char *funcname, int ifnum_ln, int ifnum
       char *first = strchr(string, '(');
       if(first != NULL) { first++; }
       char *string_statement = strtok(first, delim);
-      printf("%s\n", string_statement);
       char *asm_string = statement_to_asm(string_statement, true, false,
 					  funcname, ifnum_ln, ifnum);
       op_check_return = asm_string;
