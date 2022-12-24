@@ -14,6 +14,8 @@ COMMON_.c = src/asm_interp.c \
 	src/math.c \
 	src/asm_interp_funcs.c \
 	src/if.c \
+	src/asm_loops.c \
+	src/operators.c \
 	src/libwesm/com.c \
 	src/libwesm/log_parse.c \
 	src/argparse/argparse.c \
@@ -33,6 +35,8 @@ COMMONC_.o = asm_interp.o \
 	math.o \
 	asm_interp_funcs.o \
 	if.o \
+	asm_loops.o \
+	operators.o \
 	com.o \
 	log_parse.o \
 	argparse.o \

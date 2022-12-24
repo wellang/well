@@ -358,7 +358,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			}
 			char *callfind = strstr(lineline, "call~");
 			if(callfind != NULL) {callnum++;}
-			asm_interp_func_funcs(lineline,
+	        	asm_interp_func_funcs(lineline,
 					      out,
 					      line_yo,
 					      ifnum_ln,
@@ -469,8 +469,17 @@ void compile(int argc, char *argv[]) {
 
 	if(argparse_option_exists(parser, "--help") != ARGPARSE_NOT_FOUND ||
 	   argparse_option_exists(parser, "-h") != ARGPARSE_NOT_FOUND) {
-	  compile_help_arg();
-	  exit(0);
+
+	  int i = 1;
+	  for(i = 1; i < 256; i++) {
+	    if(argv[i] == NULL) {
+	      break;
+	    }
+	    if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
+	      compile_help_arg();
+	      exit(0);
+	    }
+	  }
 	}
 
     	if(argparse_option_exists(parser, "--output") != ARGPARSE_NOT_FOUND ||

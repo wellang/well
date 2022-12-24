@@ -6,23 +6,23 @@
 
 ~func:main {
 
-           move~ 1, rbp
-           move~ 1, rsp
+     move~ 1, rbp
+     move~ 1, rsp
 
-           move~ 5, r8
-           move~ 4, r9
+     move~ 5, r8
+     move~ 4, r9
 
-           ~if(rbp == rsp)
+     ~if(rbp == rsp)
 
-                   move~ 1, rax
-                   move~ 1, rdi
-                   move~ test, rsi
-                   move~ test.len, rdx
-                   syscall
+        move~ 1, rax
+        move~ 1, rdi
+        move~ test, rsi
+        move~ test.len, rdx
+        syscall
       
-            ~end
+      ~end
 
-            ~if(r8 != r9)
+      ~if(r8 != r9)
     
                     move~ 1, rax
 	                move~ 1, rdi
