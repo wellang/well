@@ -42,10 +42,10 @@ struct include_file {
 
 int include_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
 
-	string_interp(line, out);
-	int_interp(line, out);
+	string_interp(fname, line, line_num, out);
+	int_interp(fname, line, line_num, out);
 
-	char_interp(out, line);
+	char_interp(fname, out, line, line_num);
 	print_asm_interp(out, line, line_num, fname);
 	
 	return 0;
@@ -184,11 +184,15 @@ int file_lib_include_comp(const char *fname) {
 					  file_lib_include_vars_and_macros_comp(buf);
 
 				} else {
-					wlog_error(fname, line_num, "include missing file");
+					wlog_error(fname, line_num, "include missing file\n"
+                                                      "       |\n"
+                                                      "   %d|\t%s\n", line_num, line);
 					return 1;
 				}
 			} else {
-				wlog_error(fname, line_num, "include missing file");
+				wlog_error(fname,  line_num, "include missing file\n"
+                                             "       |\n"
+                                             "   %d|\t%s\n", line_num, line);
 				return 1;
 			}
 
@@ -238,7 +242,9 @@ int include_comp(FILE *out, char line[], int line_num, const char *fname,
 
 		if(include_file.wellfile == NULL) {
 		
-			wlog_error(fname_buf, line_num, "Invalid call file %s", file);
+			wlog_error(fname_buf, line_num, "Invalid call file %s"
+                                            "       |\n"
+                                            "   %d|\t%s\n", file, line_num, line);
 			return 1;
 		
 		}
@@ -351,7 +357,9 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 		char *file_and_func = strstr(line, tild);
 
 		if(file_and_func != NULL) {file_and_func++;} else {
-			wlog_error(fname, line_num, "MISSING lib file &/or function!\n");
+			wlog_error(fname, line_num, "MISSING lib file &/or function!\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return 1;
 		}
 
@@ -359,11 +367,15 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 		char *func = strchr(file_and_func, ':');
 		char *file = strtok(file_and_func, delim);
 		if(func != NULL) {func++;} else {
-			wlog_error(fname, line_num, "MISSING lib function after file name!\n");
+			wlog_error(fname, line_num, "MISSING lib function after file name!\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return -1;
 		}
 		if(file != NULL) {file++;} else {
-			wlog_error(fname, line_num, "MISSING lib file name before function!\n");
+			wlog_error(fname, line_num, "MISSING lib file name before function!\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return -1;
 		}
 		func[strlen(func)-1] = '\0';
@@ -383,7 +395,9 @@ int lib_comp(FILE *out, char line[], int line_num, const char *fname, const char
 		char line0[0x256];
 
 		if(include_file.wellfile == NULL) {
-			wlog_error(fname, line_num, "INVALID libcall file &/or you are on windows!\n");
+			wlog_error(fname, line_num, "INVALID libcall file &/or you are on windows!\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return 1;
 		}
 

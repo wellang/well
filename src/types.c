@@ -10,7 +10,7 @@
 #include "rodata.h"
 #include "types.h"
 
-int string_interp(char line[], FILE *out) {
+int string_interp(const char *fname, char line[], int line_num, FILE *out) {
 
 	char search[] = "string~ ";
 	char *string = strstr(line, search);
@@ -32,7 +32,9 @@ int string_interp(char line[], FILE *out) {
 			if(after_name != NULL) {
 				after_name++;
 			} else {
-				log_error("ERROR:: string missing '=' (string~ foo = 'bar')\n");
+				wlog_error(fname, line_num, "String missing '=' ex: string~ foo = 'bar'\n"
+                                            "       |\n"
+                                            "   %d|\t%s\n", line_num, line);
 				return 0;
 			}
 			
@@ -54,7 +56,9 @@ int string_interp(char line[], FILE *out) {
 					string_name);
 			fclose(out2);
 		} else {
-			log_error("ERROR:: string missing '~' (string~ foo = 'bar')\n");
+			wlog_error(fname, line_num, "String missing '~' ex: string~ foo = 'bar'\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return 0;
 		}
 
@@ -173,7 +177,7 @@ const char *mut_interp(char line[], int line_num) {
 }*/
 
 
-int int_interp(char line[], FILE *out) {
+int int_interp(const char *fname, char line[], int line_num, FILE *out) {
 
   const char *var_type;
   char *long_ = strstr(line, "long");
@@ -195,7 +199,9 @@ int int_interp(char line[], FILE *out) {
 			if(after_name != NULL) {
 				after_name++;
 			} else {
-				log_error("ERROR:: Variable missing '=', EX:(int~ foo = 1234)\n");
+				wlog_error(fname, line_num, "Variable missing '=' ex: int~ foo = 1234\n"
+                                            "       |\n"
+                                            "   %d|\t%s\n", line_num, line);
 				return 0;
 			}
 
@@ -206,7 +212,9 @@ int int_interp(char line[], FILE *out) {
 			fclose(out);
 
 		} else {
-			log_error("ERROR:: Variable missing '~', EX:(int~ foo = 1234)\n");
+			wlog_error(fname, line_num, "Variable missing '~' ex: int~ foo = 1234\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return 0;
 		}
 
@@ -258,7 +266,7 @@ int int_interp(char line[], FILE *out) {
 
 }*/
 
-int char_interp(FILE *out, char line[]) {
+int char_interp(const char *fname, FILE *out, char line[], int line_num) {
 	
 	char search[] = "char~ ";
 	char *char_search = strstr(line, search);
@@ -273,7 +281,9 @@ int char_interp(FILE *out, char line[]) {
 			if(after_name != NULL) {
 				after_name++;
 			} else {
-				log_error("char missing '='\n");
+				wlog_error(fname, line_num, "Char missing '=' ex: char~ foo = 'A'\n"
+                                            "       |\n"
+                                            "   %d|\t%s\n", line_num, line);
 				return 0;
 			}
 			after_name[strlen(after_name)-1] = '\0';

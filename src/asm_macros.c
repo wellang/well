@@ -47,7 +47,9 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 		if(aftertild != NULL) {
 			aftertild++;
 		} else {
-			wlog_error(fname, line_num, "Unfinished macro call\n");
+			wlog_error(fname, line_num, "Unfinished macro call\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return 1;
 		}
 
@@ -82,9 +84,6 @@ int macro_call_interp(char line[], const char *fname, int line_num) {
 				lnum++;
 
 				if(lnum == linenum) {
-				/*	wlog_error(fname, line_num, "Undefined reference to %s", before);
-					 need to fix this error!
-*/
 					return 1;
 				}
 
@@ -249,7 +248,9 @@ int macro_interp(const char *fname) {
 
 				}
 			} else {
-				wlog_error(fname, line_num, "Macro missing name and/or ':' delimeter!\n");
+				wlog_error(fname, line_num, "Macro missing name and/or ':' delimeter!\n"
+                                            "       |\n"
+                                            "   %d|\t%s\n", line_num, line);
 				return 0;
 			}
 	        	FILE *end = fopen("a.asm", "a");

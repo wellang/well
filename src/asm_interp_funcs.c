@@ -1,5 +1,6 @@
- #include <stdio.h>
- #include <stdlib.h>
+/*Copyright 2022 Tristan Wellman*/
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
   
 #include "mov_search.h"
@@ -16,10 +17,10 @@
 
 int asm_interp_var_funcs(char line[], FILE *out, int line_num, const char *fname) {
  
-        string_interp(line, out);
-        int_interp(line, out);
+        string_interp(fname, line, line_num, out);
+        int_interp(fname, line, line_num, out);
 
-        char_interp(out, line);
+        char_interp(fname, out, line, line_num);
         print_asm_interp(out, line, line_num, fname);
  
         return 0;

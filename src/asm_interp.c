@@ -282,7 +282,9 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	      }
 
 	    } else if(after_func == NULL) {
-	      wlog_error(fname, lineline_num, "Function does not have delimiter ':'\n");
+	      wlog_error(fname, lineline_num, "Function does not have delimiter ':'\n"
+                                                 "       |\n"
+                                                 "   %d|\t%s\n", lineline_num, line4);
 	      continue;
 	    }
 	  } else if(func != NULL && main != NULL) {

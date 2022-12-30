@@ -1,3 +1,4 @@
+/*Copyright (c) 2022 TristanWellman*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +15,7 @@ char *check_keyword(char *string) {
   };
 
   int i;
-  for(i = 0; i < 4; i++) {
+  for(i = 0; i < sizeof(keywords); i++) {
     char *check = strstr(string, keywords[i]);
     if(check != NULL) {
       keyword_return = check;

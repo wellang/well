@@ -18,7 +18,9 @@ int pop_interp(FILE *out, char line[], int line_num, const char *fname) {
 			after_pop++;
 			fprintf(out, "pop %s\n", after_pop);
 		} else if(after_pop == NULL) {
-			wlog_error(fname, line_num, "ERROR:: Pop instruction expects item\n\n");
+			wlog_error(fname, line_num, "Pop instruction expects item\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 			return 0;
 		}
 

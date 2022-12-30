@@ -1,4 +1,4 @@
-CC = cc
+CC = gcc
 CFLAGS = -std=c89 -g
 COMMON_.c = src/asm_interp.c \
 	src/mov_search.c \

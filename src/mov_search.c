@@ -40,7 +40,7 @@ int mov_interp(char line[], FILE *out, int line_num, const char *fname) {
 		*/		
 				const char delim2[] = ";";
 			} else if(after_var1 == NULL){
-				wlog_error(fname, line_num, "ERROR:: move missing ',' or second var in line:\n\n");
+				wlog_error(fname, line_num, "Move instruction missing ',' or second var");
 				return 0;
 			}
 
@@ -60,7 +60,7 @@ int mov_interp(char line[], FILE *out, int line_num, const char *fname) {
 			fclose(out5);
 
 		} else {
-			wlog_error(fname, line_num, "ERROR:: move missing '~' in line:\n\n");
+			wlog_error(fname, line_num, "Move instruction missing '~'");
 			return 0;
 		}		
 

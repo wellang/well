@@ -47,6 +47,8 @@ enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
     log_log(LOG_WARN, file, line_num, __VA_ARGS__)
 #define wlog_error(file, line_num, ...) \
     log_log(LOG_ERROR, file, line_num, __VA_ARGS__)
+/*                                            "       |\n"
+                                            "   %d|\t%s\n", line_num, line*/
 #define wlog_fatal(file, line_num, ...) \
     log_log(LOG_FATAL, file, line_num, __VA_ARGS__)
 

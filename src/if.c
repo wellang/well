@@ -323,7 +323,9 @@ bool IS_IN_IF(FILE *file, int lnum, const char *fname) {
             char *endi = strstr(line, "endi");
 
             if(line == NULL) {
-                wlog_error(fname, lnum, "if statement never ends!\n");
+                wlog_error(fname, lnum, "if statement never ends!\n"
+                                              "       |\n"
+                                              "   %d|\t%s\n", lnum, line);
                 return false;
             }
 
