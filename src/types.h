@@ -10,7 +10,7 @@ struct mut_data {
 };
 
 int string_interp(const char *fname, char line[], int line_num, FILE *out);
-const char *mut_interp(char line[], int line_num);
+int mut_interp(char line[], int line_num);
 int length_interp(char line[], FILE *out);
 int int_interp(const char *fname, char line[], int line_num, FILE *out);
 /*int _floa_interp_(char line[], FILE *out)*/

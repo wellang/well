@@ -21,6 +21,17 @@ int while_interp(FILE *out, char line[], int line_num, int whilenum_ln,
     }
 }
 
+
+/*
+ * For loops in wellang expect you to have declared what is in the first argument prior to the for loop.
+ * ---- ---- ----
+ * ex:
+ * move~ 1, rdi
+ * move~ 2, rsi
+ * ~for(rdi < rsi:add~ rdi, 1)
+ * ---- ---- ----
+ * rdi & rsi are given values prior to the for loop unlike c where is declared in the for loop :: for(i = 0; i < j; i++)
+ * */
 int for_interp(FILE *out, char line[], int line_num, int fornum_ln,
               const char *fname, const char *funcname, int fornum, bool is_in_if) {
 

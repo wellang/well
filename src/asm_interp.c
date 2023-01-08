@@ -32,7 +32,7 @@ const char *ifscope;
 
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
-        struct mut_data mut_data;
+    struct mut_data mut_data;
 
 	const char *fname;
 	fname = argv[1];
@@ -170,7 +170,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	      char *brack_s = strstr(mainlines2, "}");
 	      if(brack_s != NULL) {break;}
 	      if(mainlines2 == NULL) {break;}
-	      mut_data.muts[lnum22] = mut_interp(mainlines2, lnum22);
+	      /*mut_data.muts[lnum22] = */mut_interp(mainlines2, lnum22);
 	      lnum22++;
 	    }
 	  }

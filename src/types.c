@@ -70,7 +70,7 @@ int string_interp(const char *fname, char line[], int line_num, FILE *out) {
 
 }
 
-const char *mut_interp(char line[], int line_num) {
+int mut_interp(char line[], int line_num) {
 
   /*well:
     ~var:main {
@@ -125,7 +125,7 @@ const char *mut_interp(char line[], int line_num) {
 	  char buf[0x100];
 	  snprintf(buf, sizeof(buf), "%s: %s\n",
 		   mut_name, after_name);
-	  data.muts[line_num] = buf;
+	  /*data.muts[line_num] = buf;*/
 	  FILE *bss = fopen("a.asm", "a");
 	  fprintf(bss, buf);
 	  fclose(bss);
@@ -137,7 +137,7 @@ const char *mut_interp(char line[], int line_num) {
     
   }
 
-  return data.muts[line_num];
+  return 0;
   
 }
 
