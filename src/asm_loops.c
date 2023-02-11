@@ -6,6 +6,9 @@
 
 #include "log.h"
 #include "operators.h"
+#include "asm_loops.h"
+
+struct loop_data LDATS;
 
 int while_interp(FILE *out, char line[], int line_num, int whilenum_ln,
               const char *fname, const char *funcname, int whilenum, bool is_in_if) {
@@ -37,25 +40,28 @@ int for_interp(FILE *out, char line[], int line_num, int fornum_ln,
 
     out = fopen("a.asm", "a");
 
-    char *find_instruc = strstr(line, ":");
-    if(find_instruc != NULL) {
-        const char delim[] = ")";
-        /*should be something like "add~ r8, 1"*/
-        char *instruction = strtok(find_instruc, delim);
+    char *for_ = strstr(line, "~for");
+    if(for_ != NULL) {
+        char *find_instruc = strstr(line, ":");
+        if (find_instruc != NULL) {
+            const char delim[] = ")";
+            /*should be something like "add~ r8, 1"*/
+            char *instruction = strtok(find_instruc, delim);
+            LDATS.INS_FOR_LAT = instruction;
 
-        char *op = check_operator(line, funcname, fornum_ln, fornum);
-        if (op != NULL) {
-            char *noop = strstr(op, "NO_OP");
-            if (noop != NULL) { return 0; }
+            char *op = check_operator(line, funcname, fornum_ln, fornum);
+            if (op != NULL) {
+                /*char *noop = strstr(op, "NO_OP");
+                if (noop != NULL) { return 0; }*/
+                fprintf(out, "%s", op);
+            }
+        } else {
+            wlog_error(fname, line_num, "For loop missing instruction! ex: ~for(r8 < r9:add~ 1, r8) {}\n"
+                                        "       |\n"
+                                        "   %d|\t%s\n", line_num, line);
 
-            fprintf(out, "%s", op);
+            return 1;
         }
-    } else {
-        wlog_error(fname, line_num, "For loop missing instruction! ex: ~for(r8 < r9:add~ 1, r8) {}\n"
-                                          "       |\n"
-                                          "   %d|\t%s\n", line_num, line);
-
-        exit(1);
     }
 }
 

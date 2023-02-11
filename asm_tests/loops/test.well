@@ -7,7 +7,7 @@
 ~func:main {
 
     move~ 100, r8
-    ~while(r8 >= 1)
+    ~while(r8 > 1)
         
         move~ 1, rax
         move~ 1, rdi

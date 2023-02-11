@@ -18,12 +18,15 @@ int if_interp(FILE *out, char line[], int line_num, int ifnum_ln,
 
     out = fopen("a.asm", "a");
 
-    char *op = check_operator(line, funcname, ifnum_ln, ifnum);
-    if(op != NULL) {
-      char *noop = strstr(op, "NO_OP");
-      if(noop != NULL) { return 0; }
-    
-      fprintf(out, op);
+    char *if_ = strstr(line, "~if");
+    if(if_ != NULL) {
+        char *op = check_operator(line, funcname, ifnum_ln, ifnum);
+        if (op != NULL) {
+            char *noop = strstr(op, "NO_OP");
+            if (noop != NULL) { return 0; }
+
+            fprintf(out, op);
+        }
     }
 /*
  *

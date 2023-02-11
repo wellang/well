@@ -123,6 +123,8 @@ char *check_operator(char *string, const char *funcname, int ifnum_ln, int ifnum
 	    gre_ != NULL || les_ != NULL ||
 	    gre_or_eq_ != NULL || les_or_eq_ != NULL) {
     char *if_ = strstr(string, "~if");
+    char *while_ = strstr(string, "~while");
+    char *for_ = strstr(string, "~for");
     if(if_ != NULL) {
       const char delim[] = ")";
       char *first = strchr(string, '(');
@@ -132,8 +134,10 @@ char *check_operator(char *string, const char *funcname, int ifnum_ln, int ifnum
 					  funcname, ifnum_ln, ifnum);
       op_check_return = asm_string;
       return op_check_return;
-    } else if(!strcmp(string, "~while")) {
-      exit(0);
+    } else if(for_ != NULL) {
+        exit(0);
+    } else if(while_ != NULL) {
+        exit(0);
     }
   }
 
