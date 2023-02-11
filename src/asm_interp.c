@@ -733,7 +733,7 @@ void compile(int argc, char *argv[]) {
   }
 
 	time_end = clock();
-	log_info("Compile time:: %f seconds\n", ((double)(time_end - time_start) / CLOCKS_PER_SEC));
+	log_info("Compile time:: %fs, %fms\n", ((double)(time_end - time_start) / CLOCKS_PER_SEC), (((double)(time_end - time_start) / CLOCKS_PER_SEC) * 1000));
 	/*if(!strcmp(argv[2], "-o")) {
 		OUTPUT_NAME = argv[3];
 		EXEC_NAME = argv[4];
