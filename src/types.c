@@ -88,12 +88,13 @@ int mut_interp(char line[], int line_num) {
   
   struct mut_data data;
 
-  const char *muttypes[5] = {
+  const char *muttypes[6] = {
     "resb",
     "resw",
     "resq",
     "resy",
-    "resz"
+    "resz",
+    "resd"
   };
   
   char *string = strstr(line, "mut");
@@ -110,8 +111,9 @@ int mut_interp(char line[], int line_num) {
 	char *resq = strstr(line, muttypes[2]);
 	char *resy = strstr(line, muttypes[3]);
 	char *resz = strstr(line, muttypes[4]);
+	char *resd = strstr(line, muttypes[5]);
 	if(resb != NULL || resw != NULL ||
-	   resq != NULL || resy != NULL || resz != NULL) {
+	   resq != NULL || resy != NULL || resz != NULL || resd != NULL) {
 
 	  const char delim[] = "=";
 	  char *after_name = strchr(tild, '=');
