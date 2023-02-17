@@ -38,6 +38,10 @@ char *statement_to_asm(char *string, bool is_if, bool is_while,
       char *op1 = strtok(string, delim);
       op1[strlen(op1)-1] = '\0';
       op2++;op2++;op2++;
+      char *check_op1 = strstr(op1, "[");
+      char *check_op2 = strstr(op2, "[");
+      if(check_op1 != NULL || check_op2 != NULL) {
+      }
       snprintf(buf, sizeof(buf), "\n\t cmp %s, %s\n\t"
 	       "je %s_%d_%d%s%s_eq\n\t"
 	       "jne %s_%d_%d_fin\n\t"

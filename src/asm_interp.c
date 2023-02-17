@@ -24,6 +24,8 @@
 #include "asm_interp_funcs.h"
 #include "argparse/argparse.h"
 
+#include "DB/db.h"
+
 /*#include "asm2obj.h"*/
 
 bool comment_check;
@@ -31,6 +33,8 @@ bool comment_check;
 const char *ifscope;
 
 int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
+
+    struct welldb_table table = init_db();
 
     struct mut_data mut_data;
 
@@ -435,6 +439,21 @@ void compile(int argc, char *argv[]) {
 	/*use yasm instead of nasm assembler(not recommended)*/
 	argparse_add_option(&parser, "--use-yasm", "-yasm", ARGPARSE_FLAG);
 
+    /*dump specified value from Wellang database*/
+    argparse_add_option(&parser, "--dump-db", "-dump", ARGPARSE_FLAG);
+
+    if(argparse_option_exists(parser, "--dump-db") != ARGPARSE_NOT_FOUND ||
+       argparse_option_exists(parser, "-dump") != ARGPARSE_NOT_FOUND) {
+        int i = 0;
+        for(i = 0; i < 256;i++) {
+            if(argv[i] == NULL) {
+                break;
+            }
+            if(!strcmp(argv[i], "--dump-db") || !strcmp(argv[i], "-dump")) {
+                dump_db(argv[i + 1]);
+            }
+        }
+    }
 	bool use_yasm_asm;
 	bool use_gnu_ld;
 

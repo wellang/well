@@ -17,17 +17,19 @@ Wellang is in an extremely early state with pending syntax changes and the devel
 
 # About
 	
-### This is a project originally started by Tristan Wellman. This is a high level compiled assembly language; you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to NASM. See below for compilation and simple documentation.
+ This is a project by Tristan Wellman. Wellang is a high level compiled assembly language; you will have your low level assembly programming but with some features from high level languages. Wellang compiles directly to NASM. See below for compilation and simple documentation.
 
-NEED HELP?
+### NEED HELP?
 
-email: wellangcode@gmail.com
+Email: wellangcode@gmail.com
 
-wellang discord server: https://discord.gg/K4ufunGxJv
+Wellang discord server: https://discord.gg/K4ufunGxJv
 
 # Compile Wellang
 
-Linux
+NOTE: Wellang now requires SQLite3
+
+## Linux
 
 ```
 $ git clone https://github.com/wellang/well.git
@@ -37,7 +39,7 @@ or
 $ make base install-unix
 ```
 
-FreeBSD
+## FreeBSD
 
 ```
 $ git clone https://github.com/wellang/well.git
@@ -47,7 +49,7 @@ or
 $ gmake && gmake install-unix
 ```
 
-MacOS
+## MacOS
 
 ```
 $ git clone https://github.com/wellang/well.git
@@ -57,7 +59,7 @@ or
 $ make && make install-osx
 ```
 
-Windows
+## Windows
 
 [`windows installation`](windows/WINDOWS.md)
 
