@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c89 -g
+CFLAGS = -std=c89 -g -lsqlite3
 COMMON_.c = src/asm_interp.c \
 	src/mov_search.c \
 	src/syscall_interp.c \
@@ -20,7 +20,8 @@ COMMON_.c = src/asm_interp.c \
 	src/libwesm/log_parse.c \
 	src/argparse/argparse.c \
 	src/argparse/extract.c \
-	src/argparse/ap_inter.c
+	src/argparse/ap_inter.c \
+	src/DB/db.c
 COMMONC_.o = asm_interp.o \
 	mov_search.o \
 	syscall_interp.o \
@@ -41,7 +42,8 @@ COMMONC_.o = asm_interp.o \
 	log_parse.o \
 	argparse.o \
 	extract.o \
-	ap_inter.o
+	ap_inter.o \
+	db.o
 USR = usr
 CONFIG = .~
 LOCAL = /$(CONFIG)/.config/wellang/
@@ -73,7 +75,9 @@ install-win:
 	mkdir .$(subst /,\,$(LOC))
 	mkdir .$(subst /,\,$(LOCAL))logs
 	mkdir C:\wesm\libwesm
+	mkdir C:\wesm\DB
 	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
+	copy src\DB\welldb.db C:\wesm\DB
 	copy wesm.exe .$(subst /,\,$(LOC))
 
 install-osx:
@@ -85,8 +89,10 @@ install-osx:
 
 install-unix:
 	sudo mkdir $(INCLUDELOC)wellang
+	sudo mkdir $(INCLUDELOC)wellang/DB
 	@ # mkdir $(LOCAL)logs
 	sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
+	sudo cp src/DB/welldb.db $(INCLUDELOC)wellang/DB
 	sudo cp wesm $(LOC)
 
 vim:
