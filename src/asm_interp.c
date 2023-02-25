@@ -742,21 +742,24 @@ void compile(int argc, char *argv[]) {
 	}*/
 
 	argparse_free(parser);
+#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+    _fcloseall();
+#else
+    fcloseall();
+#endif
     close_db();
 
     if(keep_asm == false) {
 
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
-        system("del a.asm");
-        system("del a.o");
-        system("del .welldb.db");
+        system("del /f a.asm");
+        system("del /f a.o");
 #else
-        system("rm -f a.asm a.o welldb.db");
+        system("rm -f a.asm a.o");
 #endif
     } else {
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
-        system("del a.o");
-        system("del .welldb.db");
+        system("del /f a.o");
 #else
         system("rm -f a.o welldb.db");
 #endif
