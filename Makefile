@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c89 -g -lsqlite3
+CFLAGS = -std=c89 -g -L include/SQLite3
 COMMON_.c = src/asm_interp.c \
 	src/mov_search.c \
 	src/syscall_interp.c \
@@ -21,7 +21,9 @@ COMMON_.c = src/asm_interp.c \
 	src/argparse/argparse.c \
 	src/argparse/extract.c \
 	src/argparse/ap_inter.c \
-	src/DB/db.c
+	src/DB/db.c \
+	include/SQLite3/sqlite3.c
+
 COMMONC_.o = asm_interp.o \
 	mov_search.o \
 	syscall_interp.o \
@@ -43,7 +45,9 @@ COMMONC_.o = asm_interp.o \
 	argparse.o \
 	extract.o \
 	ap_inter.o \
-	db.o
+	db.o \
+	sqlite3.o
+
 USR = usr
 CONFIG = .~
 LOCAL = /$(CONFIG)/.config/wellang/
@@ -89,10 +93,8 @@ install-osx:
 
 install-unix:
 	sudo mkdir $(INCLUDELOC)wellang
-	sudo mkdir $(INCLUDELOC)wellang/DB
 	@ # mkdir $(LOCAL)logs
 	sudo cp -r $(LIBWESM) $(INCLUDELOC)wellang
-	sudo cp src/DB/welldb.db $(INCLUDELOC)wellang/DB
 	sudo cp wesm $(LOC)
 
 vim:

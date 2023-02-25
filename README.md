@@ -27,7 +27,6 @@ Wellang discord server: https://discord.gg/K4ufunGxJv
 
 # Compile Wellang
 
-NOTE: Wellang now requires SQLite3
 
 ## Linux
 

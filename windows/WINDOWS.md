@@ -9,7 +9,7 @@
 
 After installing the requirements for wellang on windows do the following:
 
-1.  Open cmd/and or windows powershell
+1.  Open cmd and/or Windows powershell
 2.  go to desired directory. ex: ``cd /path/to/Downloads``
 3.  download wellang: ``git clone https://wellang/well.git``
 4.  ``cd well``

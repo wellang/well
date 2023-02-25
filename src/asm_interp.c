@@ -32,9 +32,9 @@ bool comment_check;
 
 const char *ifscope;
 
-int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
+struct welldb_table db_table;
 
-    struct welldb_table table = init_db();
+int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 
     struct mut_data mut_data;
 
@@ -295,7 +295,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 	    if(INFO_DEBUG == true){wlog_info(fname, lineline_num, "found main fuction");}
 	    FILE *outputfunc = fopen("a.asm", "a");
 #if defined __APPLE__
-            fprintf(outputfunc, "\n\nglobal _main\n\n_main:\n\t");
+        fprintf(outputfunc, "\n\nglobal _main\n\n_main:\n\t");
 	    fclose(outputfunc);
 #else
 	    fprintf(outputfunc, "\n\nglobal main\n\nmain:\n\t");
@@ -361,6 +361,7 @@ int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
 			  ifnum_ln = line_yo;
 			  FILE *if_ = fopen(fname, "r+");
 			  is_in_if = IS_IN_IF(if_, line_yo, fname);
+              fclose(if_);
 			}
 			char *callfind = strstr(lineline, "call~");
 			if(callfind != NULL) {callnum++;}
@@ -488,6 +489,8 @@ void compile(int argc, char *argv[]) {
 	char gcc_buf[0x100];
 	char final_buf[0x100];
 
+    snprintf(gcc_buf, sizeof(gcc_buf), " ");
+
 	if(argparse_option_exists(parser, "--help") != ARGPARSE_NOT_FOUND ||
 	   argparse_option_exists(parser, "-h") != ARGPARSE_NOT_FOUND) {
 
@@ -602,6 +605,7 @@ void compile(int argc, char *argv[]) {
 		int i = 1;
 		for(i = 1; i < 256; i++) {
 			if(argv[i] == NULL) {
+                snprintf(gcc_buf, sizeof(gcc_buf), " ");
 				break;
 			}
 			if(!strcmp(argv[i], "-gcc") || !strcmp(argv[i], "-cc")) {
@@ -658,6 +662,7 @@ void compile(int argc, char *argv[]) {
 	clock_t time_start, time_end;
 	time_start = clock();
 
+    db_table = init_db();
 	asm_interp(argc, argv, INFO_DEBUG);
 
 	if(use_yasm_asm == true) {
@@ -710,49 +715,21 @@ void compile(int argc, char *argv[]) {
 	}
 
 	}
-	if(gcc_buf != NULL) {
+	if(!strcmp(gcc_buf, " ")) {
 		snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
 	} else {
 		snprintf(final_buf, sizeof(final_buf), "%s && %s %s", start, linker, out_buf);
 	}
 	system(final_buf);
 	if(INFO_DEBUG == true){log_info(final_buf);}
-	if(keep_asm == false) {
-		/*FILE *included_files = fopen("a.asm", "r+");
-		char line[256];
-		while(fgets(line, sizeof(line), included_files) != NULL) {
-			if(line == NULL) {
-				break;
-			}
-			char include[] = "include ";
-			char *find = strstr(line, include);
-			if(include != NULL) {
-				const char delim[] = "\"";
-				char *file_uno = strstr(include, "\"");
-				char *file = strtok(file_uno, delim);
-				char buf[0x100];
-				snprintf(buf, sizeof(buf), "r -f %s", file);
-				system(buf);
-			} else {
-				continue;
-			}
-		}*/
-#if defined _WIN32 | defined _WIN64 | defined __WIN32__
-    system("del a.asm");
-    system("del a.o");
-#else
-    system("rm -f a.asm a.o");
-#endif
-	} else {
-#if defined _WIN32 | defined _WIN64 | defined __WIN32__
-    system("del a.o");
-#else
-		system("rm -f a.o");
-#endif
-  }
 
 	time_end = clock();
 	log_info("Compile time:: %fs, %fms\n", ((double)(time_end - time_start) / CLOCKS_PER_SEC), (((double)(time_end - time_start) / CLOCKS_PER_SEC) * 1000));
+
+    char buf[0x100];
+    snprintf(buf, sizeof(buf), "%f,'%s'", ((double)(time_end - time_start) / CLOCKS_PER_SEC), argv[1]);
+    welldb_add_data("COMPILE_TIMES (FINAL_COMPILE_TIME,FILENAME)", buf);
+
 	/*if(!strcmp(argv[2], "-o")) {
 		OUTPUT_NAME = argv[3];
 		EXEC_NAME = argv[4];
@@ -765,6 +742,26 @@ void compile(int argc, char *argv[]) {
 	}*/
 
 	argparse_free(parser);
+    close_db();
+
+    if(keep_asm == false) {
+
+#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+        system("del a.asm");
+        system("del a.o");
+        system("del .welldb.db");
+#else
+        system("rm -f a.asm a.o welldb.db");
+#endif
+    } else {
+#if defined _WIN32 | defined _WIN64 | defined __WIN32__
+        system("del a.o");
+        system("del .welldb.db");
+#else
+        system("rm -f a.o welldb.db");
+#endif
+    }
+
 }
 
 int main(int argc, char *argv[]) {
