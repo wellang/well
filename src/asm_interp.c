@@ -715,7 +715,7 @@ void compile(int argc, char *argv[]) {
 	}
 
 	}
-	if(!strcmp(gcc_buf, " ")) {
+	if(gcc_buf[0] != '\0') {
 		snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
 	} else {
 		snprintf(final_buf, sizeof(final_buf), "%s && %s %s", start, linker, out_buf);
