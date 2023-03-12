@@ -426,8 +426,12 @@ void compile(int argc, char *argv[]) {
 	argparse_add_option(&parser, "--help", "-h", ARGPARSE_FLAG);
 	
 	argparse_add_option(&parser, "--output", "-o", ARGPARSE_FLAG);
-	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG); /* keeps the tmp assembly file*/
-   	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG); /* ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main*/
+    /* keeps the tmp assembly file*/
+	argparse_add_option(&parser, "--assembly", "-a", ARGPARSE_FLAG);
+    /*Only Produces assembly output file*/
+    argparse_add_option(&parser, "--only-asm", "-oasm", ARGPARSE_FLAG);
+    /* ex: wesm main.well -cc ::-lpthread -lcurl -g:: -o main*/
+   	argparse_add_option(&parser, "--gcc", "-cc", ARGPARSE_FLAG);
 	argparse_add_option(&parser, "--info", "-i", ARGPARSE_FLAG);
 
 
@@ -462,6 +466,7 @@ void compile(int argc, char *argv[]) {
 	const char *custom_format;
 	bool custom_format_used;
 	bool keep_asm;
+    bool only_asm;
 
 	const char *gcc_options;
 
@@ -563,6 +568,20 @@ void compile(int argc, char *argv[]) {
 	} else {
 		keep_asm = false;
 	}
+    if(argparse_option_exists(parser, "--only-asm") != ARGPARSE_NOT_FOUND ||
+            argparse_option_exists(parser, "-oasm") != ARGPARSE_NOT_FOUND) {
+        int i = 1;
+        for(i = 1; i < 256; i++) {
+            if(argv[i] == NULL) {
+                only_asm = false;
+                break;
+            }
+            if(!strcmp(argv[i], "--only-asm") || !strcmp(argv[i], "-oasm")) {
+                only_asm = true;
+                break;
+            }
+        }
+    }
 
 	if(argparse_option_exists(parser, "--use-gnuld") != ARGPARSE_NOT_FOUND ||
 			argparse_option_exists(parser, "-use-ld") != ARGPARSE_NOT_FOUND) {
@@ -715,13 +734,15 @@ void compile(int argc, char *argv[]) {
 	}
 
 	}
-	if(gcc_buf[0] != '\0') {
-		snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
-	} else {
-		snprintf(final_buf, sizeof(final_buf), "%s && %s %s", start, linker, out_buf);
-	}
-	system(final_buf);
-	if(INFO_DEBUG == true){log_info(final_buf);}
+    if(only_asm == false) {
+        if (gcc_buf[0] != '\0') {
+            snprintf(final_buf, sizeof(final_buf), "%s && %s %s %s", start, linker, gcc_buf, out_buf);
+        } else {
+            snprintf(final_buf, sizeof(final_buf), "%s && %s %s", start, linker, out_buf);
+        }
+        system(final_buf);
+        if (INFO_DEBUG == true) { log_info(final_buf); }
+    }
 
 	time_end = clock();
 	log_info("Compile time:: %fs, %fms\n", ((double)(time_end - time_start) / CLOCKS_PER_SEC), (((double)(time_end - time_start) / CLOCKS_PER_SEC) * 1000));
@@ -752,10 +773,18 @@ void compile(int argc, char *argv[]) {
     if(keep_asm == false) {
 
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
-        system("del /f a.asm");
-        system("del /f a.o");
+        if(only_asm == false) {
+            system("del /f a.asm");
+            system("del /f a.o");
+        } else {
+            system("del /f a.o");
+        }
 #else
-        system("rm -f a.asm a.o");
+        if(only_asm == false) {
+            system("rm -f a.asm a.o");
+        } else {
+            system("rm -f a.o");
+        }
 #endif
     } else {
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
