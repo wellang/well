@@ -147,7 +147,7 @@ int macro_interp(const char *fname) {
 
 					/*macro_name[strlen(macro_name)-1] = '\0';*/
 					FILE *mac = fopen("a.asm", "a");
-					fprintf(mac, "%%macro %s %s\n", macro_name, arg_num);
+					fprintf(mac, "\n%%macro %s %s\n", macro_name, arg_num);
 					fclose(mac);
 
 					FILE *read = fopen(fname, "r");
