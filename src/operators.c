@@ -139,9 +139,9 @@ char *check_operator(char *string, const char *funcname, int ifnum_ln, int ifnum
       op_check_return = asm_string;
       return op_check_return;
     } else if(for_ != NULL) {
-        exit(0);
+        const char delim[] = ")";
+        char *first = strchr(string, '(');
     } else if(while_ != NULL) {
-        exit(0);
     }
   }
 

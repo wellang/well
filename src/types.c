@@ -125,7 +125,7 @@ int mut_interp(char line[], int line_num) {
 	  after_name[strlen(after_name)-1] = '\0';
 	  mut_name[strlen(mut_name)-1] = '\0';
 	  char buf[0x100];
-	  snprintf(buf, sizeof(buf), "%s: %s\n",
+	  snprintf(buf, sizeof(buf), "\n%s: %s\n",
 		   mut_name, after_name);
 	  /*data.muts[line_num] = buf;*/
 	  FILE *bss = fopen("a.asm", "a");
