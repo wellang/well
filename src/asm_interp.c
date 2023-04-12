@@ -470,21 +470,24 @@ void compile(int argc, char *argv[]) {
 
 	const char *gcc_options;
 
+    const char *start;
+    const char *linker;
+
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
-  const char *start = "nasm -f win64 a.asm -o a.o";
-  const char *linker = "gcc a.o -no-pie";
+  start = "nasm -f win64 a.asm -o a.o";
+  linker = "gcc a.o -no-pie";
 #else
 #if defined __APPLE__
-  const char *start = "nasm -f macho64 a.asm -o a.o";
-  const char *linker = "gcc a.o -no-pie";
+  start = "nasm -f macho64 a.asm -o a.o";
+  linker = "gcc a.o -no-pie";
 #endif
 #if defined __gnu_linux__ || defined __linux__ || defined linux
-	const char *start = "nasm -f elf64 a.asm -o a.o";
-	const char *linker = "gcc a.o -no-pie";
+	start = "nasm -f elf64 a.asm -o a.o";
+	linker = "gcc a.o -no-pie";
 #endif
 #if defined __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__
-  const char *start = "nasm -f aoutb a.asm -o a.o";
-  const char *linker = "gcc a.o -no-pie";
+  start = "nasm -f aoutb a.asm -o a.o";
+  linker = "gcc a.o -no-pie";
 #endif
 #endif
 
