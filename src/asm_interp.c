@@ -1,30 +1,22 @@
 /*Copyright (c) 2022 TristanWellman*/
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <time.h>
-
+#include "util.h"
 #include "mov_search.h"
 #include "syscall_interp.h"
 #include "push_search.h"
 #include "types.h"
-#include "log.h"
 #include "instructions.h"
 #include "asm_macros.h"
 #include "include.h"
 #include "lea.h"
 #include "rodata.h"
 #include "if.h"
+#include "convert.h"
 
 #include "libwesm/com.h"
 #include "libwesm/log_parse.h"
 
 #include "asm_interp_funcs.h"
 #include "argparse/argparse.h"
-
-#include "DB/db.h"
 
 /*#include "asm2obj.h"*/
 
@@ -34,12 +26,11 @@ const char *ifscope;
 
 struct welldb_table db_table;
 
-int asm_interp(int argc, char *argv[], bool INFO_DEBUG) {
+int asm_interp(char *argv[], char *mfname, bool INFO_DEBUG) {
 
     struct mut_data mut_data;
 
-	const char *fname;
-	fname = argv[1];
+	const char *fname = mfname;
 	char *logfile = logparse_set_log_file(fname);
 	struct LOG_DATA log = LOGPARSE_INIT_FILE(fname);
 
@@ -419,9 +410,56 @@ void compile_help_arg() {
    printf("%s", help);
 }
 
+struct {
+    char *mfname;
+    char *mfname_asm;
+} MAIN_FNAME;
+void getmain_fname(char *argv[]) {
+    char *mfname = (char *)malloc(100);
+    char *tmp;
+    int i;
+    for(i = 0; i < 256; i++) {
+        tmp = (char *)malloc(256);
+        if(argv[i] == NULL) {
+            break;
+        }
+        int j;
+        for(j = 0; j < sizeof(argv[i][j]); j++) {
+            strcpy(&tmp[j], &argv[i][j]);
+        }
+        char *find = strstr(tmp, ".well");
+        if(find != NULL) {
+            strcpy(mfname, argv[i]);
+            break;
+        }
+        /*free(tmp);*/
+    }
+    MAIN_FNAME.mfname = (char *)malloc(sizeof(mfname));
+    strcpy(MAIN_FNAME.mfname, mfname);
+    /*free(mfname);*/
+
+    char *tmp2 = (char *)malloc(sizeof(MAIN_FNAME.mfname));
+    strcpy(tmp2, MAIN_FNAME.mfname);
+    const char delim[] = ".well";
+    char *f_asm = strtok(tmp2, ".");
+    /*free(tmp2);*/
+    if(f_asm != NULL) {
+        char buf[0x100];
+        snprintf(buf, sizeof(buf), "%s.asm", f_asm);
+        MAIN_FNAME.mfname_asm = (char *)malloc(sizeof(buf));
+        strcpy(MAIN_FNAME.mfname_asm, buf);
+    }
+}
+
 void compile(int argc, char *argv[]) {
 
 	struct ArgparseParser parser = argparse_init("wesm", argc, argv);
+
+    getmain_fname(argv);
+    if(MAIN_FNAME.mfname == NULL) {
+        log_fatal("No input files!\n");
+        exit(1);
+    }
 
 	argparse_add_option(&parser, "--help", "-h", ARGPARSE_FLAG);
 	
@@ -481,13 +519,9 @@ void compile(int argc, char *argv[]) {
   start = "nasm -f macho64 a.asm -o a.o";
   linker = "gcc a.o -no-pie";
 #endif
-#if defined __gnu_linux__ || defined __linux__ || defined linux
+#if defined __gnu_linux__ || defined __linux__ || defined linux || __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__
 	start = "nasm -f elf64 a.asm -o a.o";
 	linker = "gcc a.o -no-pie";
-#endif
-#if defined __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__
-  start = "nasm -f aoutb a.asm -o a.o";
-  linker = "gcc a.o -no-pie";
 #endif
 #endif
 
@@ -658,7 +692,7 @@ void compile(int argc, char *argv[]) {
 			
 	}
 
-	bool INFO_DEBUG;
+	bool INFO_DEBUG = false;
 
 	if(argparse_option_exists(parser, "--info") != ARGPARSE_NOT_FOUND ||
 			argparse_option_exists(parser, "-i") != ARGPARSE_NOT_FOUND) {
@@ -685,7 +719,8 @@ void compile(int argc, char *argv[]) {
 	time_start = clock();
 
     db_table = init_db();
-	asm_interp(argc, argv, INFO_DEBUG);
+	asm_interp(argv, MAIN_FNAME.mfname, INFO_DEBUG);
+    convert_file_to_mfname(MAIN_FNAME.mfname_asm);
 
 	if(use_yasm_asm == true) {
 		/*start*/
@@ -779,24 +814,33 @@ void compile(int argc, char *argv[]) {
         if(only_asm == false) {
             system("del /f a.asm");
             system("del /f a.o");
+            char buff[0x100];
+            snprintf(buff, sizeof(buff), "del /f %s", MAIN_FNAME.mfname_asm);
+            system(buff);
         } else {
+            system("del /f a.asm");
             system("del /f a.o");
         }
 #else
         if(only_asm == false) {
-            system("rm -f a.asm a.o");
+            char buff[0x100];
+            snprintf(buff, sizeof(buff), "rm -f a.asm a.o %s", MAIN_FNAME.mfname_asm);
+            system(buff);
         } else {
-            system("rm -f a.o");
+            system("rm -f a.asm a.o");
         }
 #endif
     } else {
 #if defined _WIN32 | defined _WIN64 | defined __WIN32__
         system("del /f a.o");
+        system("del /f a.asm");
 #else
         system("rm -f a.o welldb.db");
 #endif
     }
 
+    free(MAIN_FNAME.mfname);
+    free(MAIN_FNAME.mfname_asm);
 }
 
 int main(int argc, char *argv[]) {

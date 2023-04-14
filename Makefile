@@ -22,6 +22,7 @@ COMMON_.c = src/asm_interp.c \
 	src/argparse/extract.c \
 	src/argparse/ap_inter.c \
 	src/DB/db.c \
+	src/convert.c \
 	include/SQLite3/sqlite3.c
 
 COMMONC_.o = asm_interp.o \
@@ -46,6 +47,7 @@ COMMONC_.o = asm_interp.o \
 	extract.o \
 	ap_inter.o \
 	db.o \
+	convert.o \
 	sqlite3.o
 
 USR = usr
@@ -75,9 +77,9 @@ base:
 install-win:
 # Windows style
 # Replace for '\' directory separator of windows, '.\' current directory
-	mkdir .$(subst /,\,$(INCLUDELOC))wellang
-	mkdir .$(subst /,\,$(LOC))
-	mkdir .$(subst /,\,$(LOCAL))logs
+#	mkdir .$(subst /,\,$(INCLUDELOC))wellang
+#	mkdir .$(subst /,\,$(LOC))
+#	mkdir .$(subst /,\,$(LOCAL))logs
 	mkdir C:\wesm\libwesm
 	mkdir C:\wesm\DB
 	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
@@ -109,8 +111,8 @@ clean_vim:
 clean-win:
 	del /f $(COMMONC_.o)
 #	del /f .\wesm.exe
-	rmdir /s /q .\$(USR)
-	rmdir /s /q .\$(CONFIG)
+#	rmdir /s /q .\$(USR)
+#	rmdir /s /q .\$(CONFIG)
 	rmdir /s /q C:\wesm
 
 clean-osx:
@@ -128,3 +130,10 @@ clean-all-unix:
 	rm -f ~/.vim/ftdetect/well.vim
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)wesm
+
+EXLOC= example/linux
+ex:
+	wesm $(EXLOC)/helloworld.well -o helloworld
+	wesm $(EXLOC)/comments.well -o comments
+	wesm $(EXLOC)/macro.well -o macros
+	wesm $(EXLOC)/if.well -o if_statements

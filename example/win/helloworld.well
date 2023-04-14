@@ -6,26 +6,26 @@ asm~ extern ExitProcess
 
 ~var:main {
 
-    mut~ stdout = resw 0
-    mut~ BW = resw 0
-    string~ hello = 'Hello World!'
+mut~ stdout = resw 0
+mut~ BW = resw 0
+string~ hello = 'Hello World!'
 
 }
 
 ~func:main {
 
-    move~ -11, rcx
-    call~ GetStdHandle
-    move~ rax, [rel stdout]
+move~ -11, rcx
+        call~ GetStdHandle
+        move~ rax, [rel stdout]
 
-    move~ [rel stdout], rcx
-    move~ hello, rdx
-    move~ hello.len, r8
-    move~ BW, r9
-    push~ qword 0
-    call~ WriteFile
+move~ [rel stdout], rcx
+        move~ hello, rdx
+        move~ hello.len, r8
+        move~ BW, r9
+        push~ qword 0
+call~ WriteFile
 
-    xor~ rcx, rcx
-    call~ ExitProcess
+xor~ rcx, rcx
+call~ ExitProcess
 
 }
