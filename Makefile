@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c89 -g -L include/SQLite3
+CFLAGS = -std=c89 -g -mcmodel=large -L include/SQLite3
 COMMON_.c = src/asm_interp.c \
 	src/mov_search.c \
 	src/syscall_interp.c \
