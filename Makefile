@@ -22,7 +22,7 @@ COMMON_.c = src/asm_interp.c \
 	src/argparse/extract.c \
 	src/argparse/ap_inter.c \
 	src/DB/db.c \
-	src/convert.c \
+	src/cleanup_convert.c \
 	include/SQLite3/sqlite3.c
 
 COMMONC_.o = asm_interp.o \
@@ -47,7 +47,7 @@ COMMONC_.o = asm_interp.o \
 	extract.o \
 	ap_inter.o \
 	db.o \
-	convert.o \
+	cleanup_convert.o \
 	sqlite3.o
 
 USR = usr
@@ -55,6 +55,7 @@ CONFIG = .~
 LOCAL = /$(CONFIG)/.config/wellang/
 INCLUDELOC = /$(USR)/include/
 LOC = /$(USR)/bin/
+LOC_WIN = C:/wesm
 
 LIBWESM= src/libwesm
 
@@ -80,11 +81,12 @@ install-win:
 #	mkdir .$(subst /,\,$(INCLUDELOC))wellang
 #	mkdir .$(subst /,\,$(LOC))
 #	mkdir .$(subst /,\,$(LOCAL))logs
-	mkdir C:\wesm\libwesm
-	mkdir C:\wesm\DB
-	copy $(subst /,\,$(LIBWESM)) C:\wesm\libwesm
+	mkdir $(subst /,\,$(LOC_WIN))\libwesm
+	mkdir $(subst /,\,$(LOC_WIN))\DB
+	mkdir $(subst /,\,$(LOC_WIN))\bin
+	copy $(subst /,\,$(LIBWESM)) $(subst /,\,$(LOC_WIN))\libwesm
 	copy src\DB\welldb.db C:\wesm\DB
-	copy wesm.exe .$(subst /,\,$(LOC))
+	copy wesm.exe $(subst /,\,$(LOC_WIN))\bin
 
 install-osx:
 	sudo mkdir $(PREFIX_OSX)
@@ -113,7 +115,7 @@ clean-win:
 #	del /f .\wesm.exe
 #	rmdir /s /q .\$(USR)
 #	rmdir /s /q .\$(CONFIG)
-	rmdir /s /q C:\wesm
+	rmdir /s /q $(subst /,\,$(LOC_WIN))
 
 clean-osx:
 		rm -f $(COMMONC_.o)
@@ -130,10 +132,3 @@ clean-all-unix:
 	rm -f ~/.vim/ftdetect/well.vim
 	sudo rm -R $(INCLUDELOC)wellang
 	sudo rm -R $(LOC)wesm
-
-EXLOC= example/linux
-ex:
-	wesm $(EXLOC)/helloworld.well -o helloworld
-	wesm $(EXLOC)/comments.well -o comments
-	wesm $(EXLOC)/macro.well -o macros
-	wesm $(EXLOC)/if.well -o if_statements

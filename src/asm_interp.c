@@ -10,7 +10,7 @@
 #include "lea.h"
 #include "rodata.h"
 #include "if.h"
-#include "convert.h"
+#include "cleanup_convert.h"
 
 #include "libwesm/com.h"
 #include "libwesm/log_parse.h"
@@ -415,40 +415,43 @@ struct {
     char *mfname_asm;
 } MAIN_FNAME;
 void getmain_fname(char *argv[]) {
-    char *mfname = (char *)malloc(100);
+    char *mfname = malloc(100);
     char *tmp;
     int i;
     for(i = 0; i < 256; i++) {
-        tmp = (char *)malloc(256);
+        tmp = malloc(256);
         if(argv[i] == NULL) {
             break;
         }
         int j;
         for(j = 0; j < sizeof(argv[i][j]); j++) {
-            strcpy(&tmp[j], &argv[i][j]);
+            strcpy(&tmp[j],&argv[i][j]);
         }
         char *find = strstr(tmp, ".well");
+
         if(find != NULL) {
             strcpy(mfname, argv[i]);
             break;
         }
-        /*free(tmp);*/
     }
-    MAIN_FNAME.mfname = (char *)malloc(sizeof(mfname));
+    MAIN_FNAME.mfname = malloc(sizeof(mfname));
     strcpy(MAIN_FNAME.mfname, mfname);
-    /*free(mfname);*/
 
-    char *tmp2 = (char *)malloc(sizeof(MAIN_FNAME.mfname));
+
+    char *tmp2 = malloc(sizeof(MAIN_FNAME.mfname));
     strcpy(tmp2, MAIN_FNAME.mfname);
-    const char delim[] = ".well";
     char *f_asm = strtok(tmp2, ".");
-    /*free(tmp2);*/
     if(f_asm != NULL) {
         char buf[0x100];
         snprintf(buf, sizeof(buf), "%s.asm", f_asm);
-        MAIN_FNAME.mfname_asm = (char *)malloc(sizeof(buf));
+        MAIN_FNAME.mfname_asm = malloc(sizeof(buf));
         strcpy(MAIN_FNAME.mfname_asm, buf);
     }
+
+    free(tmp);
+    free(mfname);
+    free(tmp2);
+
 }
 
 void compile(int argc, char *argv[]) {
@@ -460,6 +463,7 @@ void compile(int argc, char *argv[]) {
         log_fatal("No input files!\n");
         exit(1);
     }
+    printf("%s:%s\n", MAIN_FNAME.mfname, MAIN_FNAME.mfname_asm);
 
 	argparse_add_option(&parser, "--help", "-h", ARGPARSE_FLAG);
 	
