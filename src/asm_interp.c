@@ -415,11 +415,11 @@ struct {
     char *mfname_asm;
 } MAIN_FNAME;
 void getmain_fname(char *argv[]) {
-    char *mfname = malloc(100);
+    char *mfname = malloc(100*sizeof(char *));
     char *tmp;
     int i;
     for(i = 0; i < 256; i++) {
-        tmp = malloc(256);
+        tmp = malloc(256*sizeof(char *));
         if(argv[i] == NULL) {
             break;
         }
@@ -438,13 +438,13 @@ void getmain_fname(char *argv[]) {
     strcpy(MAIN_FNAME.mfname, mfname);
 
 
-    char *tmp2 = malloc(sizeof(MAIN_FNAME.mfname));
+    char *tmp2 = malloc(sizeof(MAIN_FNAME.mfname)*sizeof(char *));
     strcpy(tmp2, MAIN_FNAME.mfname);
     char *f_asm = strtok(tmp2, ".");
     if(f_asm != NULL) {
         char buf[0x100];
         snprintf(buf, sizeof(buf), "%s.asm", f_asm);
-        MAIN_FNAME.mfname_asm = malloc(sizeof(buf));
+        MAIN_FNAME.mfname_asm = malloc(sizeof(buf)*sizeof(char *));
         strcpy(MAIN_FNAME.mfname_asm, buf);
     }
 
@@ -463,7 +463,6 @@ void compile(int argc, char *argv[]) {
         log_fatal("No input files!\n");
         exit(1);
     }
-    printf("%s:%s\n", MAIN_FNAME.mfname, MAIN_FNAME.mfname_asm);
 
 	argparse_add_option(&parser, "--help", "-h", ARGPARSE_FLAG);
 	
@@ -489,18 +488,6 @@ void compile(int argc, char *argv[]) {
     /*dump specified value from Wellang database*/
     argparse_add_option(&parser, "--dump-db", "-dump", ARGPARSE_FLAG);
 
-    if(argparse_option_exists(parser, "--dump-db") != ARGPARSE_NOT_FOUND ||
-       argparse_option_exists(parser, "-dump") != ARGPARSE_NOT_FOUND) {
-        int i = 0;
-        for(i = 0; i < 256;i++) {
-            if(argv[i] == NULL) {
-                break;
-            }
-            if(!strcmp(argv[i], "--dump-db") || !strcmp(argv[i], "-dump")) {
-                dump_db(argv[i + 1]);
-            }
-        }
-    }
 	bool use_yasm_asm;
 	bool use_gnu_ld;
 
@@ -810,6 +797,18 @@ void compile(int argc, char *argv[]) {
 #else
     fcloseall();
 #endif
+    if(argparse_option_exists(parser, "--dump-db") != ARGPARSE_NOT_FOUND ||
+       argparse_option_exists(parser, "-dump") != ARGPARSE_NOT_FOUND) {
+        int i = 0;
+        for(i = 0; i < 256;i++) {
+            if(argv[i] == NULL) {
+                break;
+            }
+            if(!strcmp(argv[i], "--dump-db") || !strcmp(argv[i], "-dump")) {
+                welldb_dump_db(argv[i + 1], 1);
+            }
+        }
+    }
     close_db();
 
     if(keep_asm == false) {

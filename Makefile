@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c89 -g -mcmodel=large -L include/SQLite3
+CFLAGS = -std=c89 -g -L include/SQLite3
 COMMON_.c = src/asm_interp.c \
 	src/mov_search.c \
 	src/syscall_interp.c \
@@ -76,11 +76,6 @@ base:
 	$(CC) $(CFLAGS) -o wesm $(COMMONC_.o)
 
 install-win:
-# Windows style
-# Replace for '\' directory separator of windows, '.\' current directory
-#	mkdir .$(subst /,\,$(INCLUDELOC))wellang
-#	mkdir .$(subst /,\,$(LOC))
-#	mkdir .$(subst /,\,$(LOCAL))logs
 	mkdir $(subst /,\,$(LOC_WIN))\libwesm
 	mkdir $(subst /,\,$(LOC_WIN))\DB
 	mkdir $(subst /,\,$(LOC_WIN))\bin
