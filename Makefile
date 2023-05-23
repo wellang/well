@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c89 -g -L include/SQLite3
-COMMON_.c = src/asm_interp.c \
+COMMON_.c := src/asm_interp.c \
 	src/mov_search.c \
 	src/syscall_interp.c \
 	src/push_search.c \
@@ -25,7 +25,7 @@ COMMON_.c = src/asm_interp.c \
 	src/cleanup_convert.c \
 	include/SQLite3/sqlite3.c
 
-COMMONC_.o = asm_interp.o \
+COMMONC_.o := asm_interp.o \
 	mov_search.o \
 	syscall_interp.o \
 	push_search.o \
@@ -74,6 +74,10 @@ all: base
 base:
 	$(CC) $(CFLAGS) -L src -c $(COMMON_.c)
 	$(CC) $(CFLAGS) -o wesm $(COMMONC_.o)
+
+base-arm:
+	$(CC) $(CFLAGS) -ldl -L src -c $(patsubst %include/SQLite3/sqlite3.c,%,$(COMMON_.c)) -lsqlite3
+	$(CC) $(CFLAGS) -ldl -o wesm $(patsubst %sqlite3.o,%,$(COMMONC_.o)) -lsqlite3
 
 install-win:
 	mkdir $(subst /,\,$(LOC_WIN))\libwesm

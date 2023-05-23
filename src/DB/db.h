@@ -1,7 +1,12 @@
 #ifndef WELL_DB_H
 #define WELL_DB_H
 
+#if defined __arm__
+#include <sqlite3.h>
+#else
 #include "../../include/SQLite3/sqlite3.h"
+#endif
+
 #if defined __gnu_linux__ | defined __linux__ | defined linux \
     | __FreeBSD__ | defined __NetBSD__ | defined __OpenBSD__
 #include <unistd.h>

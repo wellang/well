@@ -62,6 +62,15 @@ $ make && make install-osx
 
 [`windows installation`](windows/WINDOWS.md)
 
+## ARM/RaspberryPi
+
+```
+$ sudo apt-get install libsqlite3-dev sqlite3
+$ git clone https://github.com/wellang/well.git
+$ cd well
+$ make base-arm install-unix
+```
+
 ## Hello World program (using linux x86_x64 syscall table)
 
 ```
