@@ -7,7 +7,6 @@
 #include "log.h"
 #include "array_interp.h"
 
-#include "rodata.h"
 #include "types.h"
 
 int string_interp(const char *fname, char line[], int line_num, FILE *out) {

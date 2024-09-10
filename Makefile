@@ -1,54 +1,9 @@
 CC = gcc
 CFLAGS = -std=c89 -g -L include/SQLite3
-COMMON_.c := src/asm_interp.c \
-	src/mov_search.c \
-	src/syscall_interp.c \
-	src/push_search.c \
-	src/types.c \
-	src/instructions.c \
-	src/log.c \
-	src/array_interp.c \
-	src/asm_macros.c \
-	src/include.c \
-	src/lea.c \
-	src/math.c \
-	src/asm_interp_funcs.c \
-	src/if.c \
-	src/asm_loops.c \
-	src/operators.c \
-	src/libwesm/com.c \
-	src/libwesm/log_parse.c \
-	src/argparse/argparse.c \
-	src/argparse/extract.c \
-	src/argparse/ap_inter.c \
-	src/DB/db.c \
-	src/cleanup_convert.c \
+COMMON_.c := src/*.c \
 	include/SQLite3/sqlite3.c
 
-COMMONC_.o := asm_interp.o \
-	mov_search.o \
-	syscall_interp.o \
-	push_search.o \
-	types.o \
-	instructions.o \
-	log.o \
-	array_interp.o \
-	asm_macros.o \
-	include.o \
-	lea.o \
-	math.o \
-	asm_interp_funcs.o \
-	if.o \
-	asm_loops.o \
-	operators.o \
-	com.o \
-	log_parse.o \
-	argparse.o \
-	extract.o \
-	ap_inter.o \
-	db.o \
-	cleanup_convert.o \
-	sqlite3.o
+COMMONC_.o := *.o 
 
 USR = usr
 CONFIG = .~

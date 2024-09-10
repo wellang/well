@@ -1,4 +1,5 @@
 /*Copyright (c) 2022 TristanWellman*/
+#include "asm_interp.h"
 #include "util.h"
 #include "mov_search.h"
 #include "syscall_interp.h"
@@ -8,7 +9,6 @@
 #include "asm_macros.h"
 #include "include.h"
 #include "lea.h"
-#include "rodata.h"
 #include "if.h"
 #include "cleanup_convert.h"
 
@@ -26,81 +26,63 @@ const char *ifscope;
 
 struct welldb_table db_table;
 
+void close_files(struct wellFileData *file_data) {
+	if(file_data->input!=NULL&&
+			file_data->output!=NULL) {
+		fclose(file_data->input);
+		fclose(file_data->output);
+	}
+}
+
+void resetf(struct wellFileData *file_data) {
+	fseek(file_data->input, 0, SEEK_SET);
+}
+void setperms(struct wellFileData *file_data, char *perms) {
+	fclose(file_data->input);
+	file_data->input = fopen(file_data->input_name, perms);
+}
+
 int asm_interp(char *argv[], char *mfname, bool INFO_DEBUG) {
+
+	const char *fname = mfname;
+
+	struct wellFileData file_data;
+	file_data.input_name = fname;
+	file_data.input = fopen(file_data.input_name, "r+");
+	file_data.output = fopen("a.asm", "a");
 
     struct mut_data mut_data;
 
-	const char *fname = mfname;
 	char *logfile = logparse_set_log_file(fname);
 	struct LOG_DATA log = LOGPARSE_INIT_FILE(fname);
 
-	/*FILE *file6 = fopen(fname, "r+");
-	char line7[256];
-
-        while(fgets(line7, sizeof(line7), file6) != NULL) {
-                
-                char include_search[] = "include~ ";
-                char *include = strstr(line7, include_search);
-                
-		char comment[] = "//";
-		char *search_com = strstr(line7, comment);
-		
-		if(include != NULL && search_com == NULL) {
-     
-                        char *tild = strchr(line7, '~');
-
-			if(tild != NULL) {
-				tild++;
-			}
-
-			const char *fpath = tild;		
-
-			include_comp(fpath);
-                        
-                        return 0;
-                } else {
-			continue;	
-		}
-                if(line7 == NULL) {
-                        break;
-                }       
-                
-        } */ 
-
 	char line8[256];
-	FILE *bits = fopen(fname, "r+");
 	FILE *bit_out;
 	int lnum = 0;
-	while(fgets(line8, sizeof(line8), bits) != NULL) {
+	while(fgets(line8, sizeof(line8), file_data.input) != NULL) {
+		/*Check for comments*/
 		comment_check = __check_com__(line8);
-		if(comment_check == true) {
-			continue;
-		}
+		if(comment_check == true) continue;
+		/*Compile*/
 		lnum++;
 		bits_interp(bit_out, line8, lnum, fname);
-		if(line8 == NULL) {
-			break;
-		}
+		if(line8 == NULL) break;
 	}
+	resetf(&file_data);
 
 	char line[256];
-
-	FILE *file;
-	file = fopen(fname, "r+");
-
 	FILE *output;
 	output = fopen("a.asm", "a");
-
 	fprintf(output, "section .data\n"/*section .text\n\n"*/);
 	fclose(output);
 
-	while(fgets(line, sizeof(line), file) != NULL) {
+	while(fgets(line, sizeof(line), file_data.input) != NULL) {
 
+		/*Check Comments*/
 		comment_check = __check_com__(line);
-		if(comment_check == true) {
-			  continue;
-		}
+		if(comment_check == true) continue;
 
+		/*Find var section*/
 		char var_search[] = "~var:main";
 		char *var = strstr(line, var_search);
 
@@ -110,32 +92,24 @@ int asm_interp(char *argv[], char *mfname, bool INFO_DEBUG) {
 			char mainlines[256];
 			int lnum2 = 0;
 			while(fgets(mainlines, sizeof(mainlines), varread) != NULL) {
+				/*Check Comments*/
 				comment_check = __check_com__(mainlines);
-				if(comment_check == true) {
-					  continue;
-				}
+				if(comment_check == true) continue;
 			        char brack_s[] = "}";
 				char *search_b = strstr(mainlines, brack_s);
-				if(search_b != NULL) {
-					break;
-				}
+				if(search_b != NULL) break;
 				
-				if(mainlines == NULL) {
-					break;
-				} else {
-					/*_floa_interp_(mainlines, out2);*/
-					asm_interp_var_funcs(mainlines, out2, lnum2, fname);
-					/*mut_data.muts[lnum2] = mut_interp(mainlines, lnum2);*/
-				}
+				if(mainlines == NULL) break;
+				else asm_interp_var_funcs(mainlines, out2, lnum2, fname);
+
 				lnum2++;
 			}
 
 		}
 	
-		if(line == NULL) {
-			break;
-		}
+		if(line == NULL) break;
 	}
+	resetf(&file_data);
 	
 	FILE *bss = fopen("a.asm", "a");
 	fprintf(bss, "\nsection .bss\n");
