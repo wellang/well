@@ -1,15 +1,24 @@
-#ifndef WELL_UTIL_H
-#define WELL_UTIL_H
+/*Copyright (c) 2024 Tristan Wellman*/
+
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <time.h>
+#include <math.h>
 
-#include "log.h"
-#include "DB/db.h"
+#define WLOG(logLevel, ...) \
+	fprintf(stdout, "%s "#logLevel"  (%s:%d): %s\n", \
+		__TIME__,__FILE__,__LINE__,__VA_ARGS__);
 
-#define MAX_INT_S 2147483647
+#define WASSERT(err, ...) \
+	if(!(err)) {fprintf(stderr,__VA_ARGS__);exit(1);}	
+
+#define RESETFCURSOR(file) \
+	fseek(file, 0, SEEK_SET);
+
+#define ARRLEN(x) \
+		(sizeof(x)/sizeof(x[0]))
 
 #endif

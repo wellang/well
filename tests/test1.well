@@ -1,0 +1,12 @@
+~include <std.well>
+
+~extern printf
+
+~constants {
+	string:text = "Hellope!"
+}
+
+~int:main {
+	move~ text, r1
+	call~ printf
+}

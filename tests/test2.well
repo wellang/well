@@ -1,0 +1,35 @@
+~include <std.well>
+
+~constants {
+	string:text = "Hello World!\n%d\n"
+}
+
+; a1, a2, cin, cout, aout
+~instruction:add1b(5) {
+
+}
+
+; a1, a2, cout
+~instruction:add4b(3) {
+	move~ arg3, r3  		; I'll come up with a better idea for calling arguments
+	move~ arg1, r1
+	move~ arg2, r2
+
+	move~ 0, r4
+	~while(r4 < 4) {
+		
+	}
+
+}
+
+; wellang registers: r0-7
+; args get converted at comp time to x0-7 for arm or rdi-r9 for x86_64
+~int:main {
+
+	add4b~ 0100, 0011, r2
+
+	move~ test, r1
+	call~ printf
+	
+	return~ 0
+}

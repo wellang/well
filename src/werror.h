@@ -1,0 +1,26 @@
+/*Copyright (c) 2024 Tristan Wellman*/
+#ifndef WERROR_H
+#define WERROR_H
+
+struct wErrors {
+	int errorCount;
+	int warnCount;
+};
+struct wErrors errors;
+
+#define WERROR_MISSING_BRACKET 1
+
+#define WLOG_WERROR(werror, file, line, function, ...) 		\
+	fprintf(stderr, "%s \033[31m"#werror"\033[0m in %s:%d - %s\n%s",		\
+			__TIME__, file, line, function, __VA_ARGS__); 	\
+	errors.errorCount++;
+
+#define WLOG_WARN(wwarn, file, line, function, ...) \
+	fprntf(); \
+	errors.warnCount++;
+
+#define WERROR_EXIT() \
+	fprintf(stdout, "%d errors generated.\n", errors.errorCount); \
+	if(errors.errorCount>0) exit(EXIT_FAILURE);
+
+#endif
