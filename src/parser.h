@@ -21,6 +21,7 @@ struct StringArray {
 enum wTypes {
 	NONE=0,
 	INCLUDE,
+	EXTERN,
 	FUNCTION,
 	IFSTATE,
 	LOOP,
@@ -38,6 +39,8 @@ enum wTypes {
 #define MAXFUNCTIONS 10000
 #define DEFMAXFSIZE 100000 /*default max amount of lines for a function*/
 
+#define DEFAULTINSARGSIZE 2
+
 /*Declarations for dynamic scope arrays*/
 typedef struct {
 	enum wTypes scopeType;
@@ -49,6 +52,7 @@ typedef struct {
 	char *line; /* move~ 1, r */
 	char *instruction; /* move */
 	char **arguments; /* ["1", "r"] */
+	int argLen;
 } Instruction;
 
 typedef struct {
@@ -63,7 +67,6 @@ typedef struct {
 struct parserOut {
 	char **asmOutBuffer;
 	int AOBSize;
-
 };
 
 /*Struct to hold arrays of parser handy data*/
@@ -77,6 +80,7 @@ struct parserData {
 
 	Scope scopes[MAXSCOPES];
 	Function functions[MAXFUNCTIONS];
+	int totalFunctions;
 };
 
 /**

@@ -1,0 +1,13 @@
+~include <std.well>
+
+~constants {
+	~string:text = "Hello World!\n"
+}
+
+~int:main {
+	
+	move~ text, r1
+	call~ printf
+
+	return~ 0
+}

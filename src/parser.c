@@ -22,11 +22,15 @@ int checkImportantType(char *line) {
 	return 0;
 }
 
+
 /* * * * *
  * Scope related functions!
  * * * * */
+
+
 enum wTypes getScopeType(char *line) {
 	if(strstr(line, "~constants")) return CONSTANTS;
+	if(strstr(line, "~extern")) return EXTERN;
 	if(strstr(line, "~include")) return INCLUDE;
 	int i, col=0, curl=0;
 	for(i=0;line[i]!='\0';i++) {
@@ -54,7 +58,9 @@ char *getWT(enum wTypes t) {
 		case LOOP: return "LOOP";
 		case VARIABLE: return "VARIABLE";
 		case CONSTANTS: return "CONSTANTS";
+		case EXTERN: return "EXTERN";
 	}
+	return "";
 }
 
 char *getScopeName(char *line) {
@@ -127,13 +133,63 @@ Scope getNextScope(Scope scope, struct parserData *parser) {
 	return (Scope){};
 }
 
+
+
 /* * * * *
  * Instruction related functions.
  * * * * */
 
+
+
+void appendInsArgs(Instruction *ins, char *arg) {
+	if(ins->argLen>=DEFAULTINSARGSIZE) {
+		ins->arguments = 
+			(char **)realloc(ins->arguments, sizeof(char *)*(ins->argLen+1));
+		ins->arguments[ins->argLen+1] = (char *)malloc(sizeof(char)*strlen(arg));
+		strcpy(ins->arguments[ins->argLen+1], arg);
+	} else {
+		int i;
+		for(i=0;i<DEFAULTINSARGSIZE;i++) {
+			if(ins->arguments[i]==NULL) break;
+		}
+		ins->arguments[i] = (char *)malloc(sizeof(char)*strlen(arg));
+		strcpy(ins->arguments[i], arg);
+		ins->argLen++;
+	}
+}
+
+void getInstructionArguments(Instruction *ins) {
+	if(ins->line!=NULL) {
+		ins->arguments = (char **)malloc(sizeof(char *)*DEFAULTINSARGSIZE);
+		ins->argLen = 0;
+		char *backup = (char *)malloc(sizeof(char)*strlen(ins->line));
+		strcpy(backup, ins->line);
+		char *ignoreIns = strstr(backup, "~");
+		if(ignoreIns!=NULL) {
+			ignoreIns++;
+			char *arg = strtok(ignoreIns, ",");
+			while(arg!=NULL) {
+				int i;
+				for(i=0;i<strlen(arg);i++) {
+					if(arg[i]=='\n') arg[i] = '\0';
+				}
+				appendInsArgs(ins, arg);
+				arg = strtok(NULL, ",");
+			}
+		}
+		free(backup);
+	}
+}
+
 void disectInstructionName(Instruction *ins) {
 	if(ins->line!=NULL) {
-		
+		char *backup = (char *)malloc(sizeof(char)*strlen(ins->line));
+		strcpy(backup, ins->line);
+		EATTABS(backup);
+		/*move~ text, r1*/
+		char *name = strtok(backup, "~");
+		if(name!=NULL) strcpy(ins->instruction, name);
+		free(backup);
 	}
 }
 
@@ -144,7 +200,7 @@ void parseInstruction(char *line, Instruction ins) {
 	if(ins.instruction==NULL) ins.instruction = (char *)malloc(sizeof(char)*50);
 	disectInstructionName(&ins);
 
-		
+	getInstructionArguments(&ins);
 
 }
 
@@ -153,10 +209,12 @@ void parseInstruction(char *line, Instruction ins) {
  * Function related functions
  * * * * */
 
+
 void appendFuncArr(Function func, struct parserData *parser) {
 	int i;
 	for(i=0;i<MAXFUNCTIONS&&parser->functions[i].funName!=NULL;i++);
 	parser->functions[i] = func;
+	parser->totalFunctions++;
 }
 
 int checkFuncForExternScope(int lineNum, struct parserData *parser) {
@@ -258,15 +316,32 @@ void dumpFunctionData(struct parserData *parser) {
 	}
 }
 
+int verifyMainFunction(struct parserData *parser) {
+	int i;
+	for(i=0;i<MAXFUNCTIONS&&parser->functions[i].funName!=NULL;i++) {
+		if(!strcmp(parser->functions[i].funName, "main")) return 1;
+	}
+	WLOG_WERROR(WERROR_MAIN, 
+				parser->fData->fileName, 
+				0, "", "");
+	return 0;
+}
+
+
+
 /* * * * *
  * Parser initialization and running functions
  * * * * */
+
+
+
 void parseProgram(struct parserData *parser) {
 	getScopes(parser);
-	/* Useful for debugging
-	* dumpScopes(parser);*/
 	getFunctionData(parser);
-	dumpFunctionData(parser);
+	verifyMainFunction(parser);
+	/* Useful for debugging
+	* dumpScopes(parser);
+	* dumpFunctionData(parser);*/
 	
 }
 
@@ -296,6 +371,8 @@ struct parserData *initParser(wData *data) {
 	gPData->bufferSize = i;
 
 	fclose(gPData->fData->main);
+
+	gPData->totalFunctions = 0;
 
 	return gPData;
 }

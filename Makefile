@@ -3,7 +3,7 @@ CFLAGS= -g -O2 -std=c89 -Iinclude
 
 COMMON_C= $(wildcard src/*.c) \
 		  $(wildcard include/*.c)
-COMMON_O= $(wildcard *.o)
+COMMON_O= *.o
 
 BIN= well
 
@@ -22,3 +22,6 @@ vim:
 clean_vim:
 	rm -f ~/.vim/syntax/well.vim
 	rm -f ~/.vim/ftdetect/well.vim
+
+clean:
+	rm *.o $(BIN)

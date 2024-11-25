@@ -3,6 +3,7 @@
 #include "wdata.h"
 #include "parser.h"
 #include "werror.h"
+#include "asmout.h"
 
 int argCheckOption(struct ArgparseParser *parser,
 		char *option1, char *option2);
@@ -23,8 +24,12 @@ int main(int argc, char **argv) {
 	struct parserData *p = initParser(&data);
 	parseProgram(p);
 
+	AsmOut output;
+	initAsmOut(p, &output);
+
 	WERROR_EXIT();
 
+	freeAsm(&output);
 	argparse_free(data.argParser);
 	if(data.main!=NULL) fclose(data.main);
 

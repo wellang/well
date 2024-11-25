@@ -21,4 +21,10 @@
 #define ARRLEN(x) \
 		(sizeof(x)/sizeof(x[0]))
 
+#define EATTABS(line) 							\
+	int i,j; 									\
+	for(i=0;line[i];i++) { 						\
+		if(line[i]!='\t') line[j++] = line[i];} \
+	line[j]='\0';
+
 #endif

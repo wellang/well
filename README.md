@@ -38,8 +38,6 @@ $ make
 ```
 ~include <std.well>
 
-~extern printf
-
 ~constants {
 	~string:text = 'Hello World!'
 }
