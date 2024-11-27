@@ -18,6 +18,7 @@ typedef struct {
 
 } AsmOut;
 
+void convertToAsm(AsmOut *out); 
 void freeAsm(AsmOut *out);
 void initAsmOut(struct parserData *parser, AsmOut *output); 
 

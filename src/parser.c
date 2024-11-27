@@ -134,6 +134,84 @@ Scope getNextScope(Scope scope, struct parserData *parser) {
 }
 
 
+/*
+ * Variable related functions
+ * */
+
+void dumpVariables(struct parserData *parser) {
+	int i;
+	for(i=0;i<parser->totalVariables;i++) {
+		printf("%s:%s\n", parser->variables[i].varName,
+				parser->variables[i].value);
+	}
+}
+
+void setVariableType(Variable *var, char *type) {
+	if(!strcmp(type, "string")) var->type = STRING;
+	if(!strcmp(type, "char")) var->type = CHAR;
+	if(!strcmp(type, "int")) var->type = INT;
+	if(!strcmp(type, "float")) var->type = FLOAT;
+}
+
+/*This is expected to be ran AFTER scopes have been initialized*/
+void getVariables(struct parserData *parser) {
+
+	/*default to 1 and realloc for each one so it's more dynamic
+	 * I know it's slower...*/
+	parser->variables = (Variable *)malloc(sizeof(Variable));
+	parser->totalVariables = 0;
+
+	int i, j=0;
+	for(i=0;i<MAXSCOPES;i++) {
+		if(parser->scopes[i].scopeName==NULL) break;
+		
+		if(parser->scopes[i].scopeType == VARIABLE) {
+			
+			if(parser->totalVariables<i) 
+				parser->variables = (Variable *)realloc(parser->variables, sizeof(Variable)*i);
+
+			char *line = parser->fileBuffer[parser->scopes[i].lineNum];
+			char *data = strstr(line, "=");
+			if(data==NULL) {
+ 				WLOG_WERROR(WERROR_UNINITIALIZED_VARIABLE,
+						parser->fData->fileName, 
+						parser->scopes[i].lineNum, "", "");	
+			} else {
+				data++;
+				if(data[strlen(data)-1]=='\n') data[strlen(data)-1] = '\0';
+				while(data[0]==' ') data++;
+				parser->variables[j].value = (char *)malloc(sizeof(char)*strlen(data));
+				strcpy(parser->variables[j].value, data);
+
+				/*save data*/
+				EATTABS(line);
+				char *tmp  = (char *)malloc(sizeof(char)*strlen(line));
+				strcpy(tmp, line);
+				
+				/*type*/
+				char *type = strstr(line, "~");
+				/*we don't need to check cuz it was already processed*/
+				type++;
+				type = strtok(type, ":");
+				setVariableType(&parser->variables[j], type);
+
+				/*name, once again we don't need to check*/
+				char *name = strstr(tmp, ":");
+				name++;
+				
+				name = strtok(name, "=");
+				while(name[strlen(name)-1]==' ') name[strlen(name)-1] = '\0';
+				parser->variables[j].varName = (char *)malloc(sizeof(char)*strlen(name));
+				strcpy(parser->variables[j].varName, name);
+
+				parser->totalVariables++;
+				j++;
+				free(tmp);
+			}
+		}
+	}
+}
+
 
 /* * * * *
  * Instruction related functions.
@@ -339,7 +417,9 @@ void parseProgram(struct parserData *parser) {
 	getScopes(parser);
 	getFunctionData(parser);
 	verifyMainFunction(parser);
-	/* Useful for debugging
+	getVariables(parser);
+	/*dumpVariables(parser);
+	* Useful for debugging
 	* dumpScopes(parser);
 	* dumpFunctionData(parser);*/
 	

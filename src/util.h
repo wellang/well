@@ -22,8 +22,9 @@
 		(sizeof(x)/sizeof(x[0]))
 
 #define EATTABS(line) 							\
-	int i,j; 									\
-	for(i=0;line[i];i++) { 						\
+	int i,j=0; 									\
+	for(i=0;line[i];i++) {						\
+		if(line[j+1]=='\0') break; 				\
 		if(line[i]!='\t') line[j++] = line[i];} \
 	line[j]='\0';
 

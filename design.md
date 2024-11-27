@@ -34,6 +34,12 @@ Variables are held as constants in a const section
 ~type:name = ...
 
 ~string:text = "Hello World!"
+
+~char:h = 'h'
+
+~int:number = 64
+
+~float:decimal = 3.14
 ```
 
 ## Functions

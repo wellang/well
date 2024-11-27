@@ -1,4 +1,5 @@
 /*Copyright (c) 2024 Tristan Wellman*/
+#include <time.h>
 #include "util.h"
 #include "wdata.h"
 #include "parser.h"
@@ -14,6 +15,9 @@ void initArgParseArgs(wData *data, int argc, char *argv[]);
 
 int main(int argc, char **argv) {
 
+	clock_t start, end;
+	start = clock();
+
 	wData data;
 	initArgParseArgs(&data, argc, argv);
 	runArgParsing(&data);	
@@ -26,6 +30,13 @@ int main(int argc, char **argv) {
 
 	AsmOut output;
 	initAsmOut(p, &output);
+
+	end = clock();
+	char timeBuf[100];
+	snprintf(timeBuf, sizeof(timeBuf), "Compile time: %fs, %fms", 
+			((double)(end-start) / CLOCKS_PER_SEC), 
+			(((double)(end-start) / CLOCKS_PER_SEC) * 1000));
+	WLOG(INFO, timeBuf);
 
 	WERROR_EXIT();
 

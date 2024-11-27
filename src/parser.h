@@ -30,6 +30,13 @@ enum wTypes {
 };
 
 
+enum varTypes {
+	INT,
+	CHAR,
+	STRING,
+	FLOAT,
+};
+
 /*
  * If you need more than that many scopes in a file,
  * you should re-think what you are doing
@@ -64,8 +71,14 @@ typedef struct {
 	Instruction *instructions;
 } Function;
 
+typedef struct {
+	enum varTypes type;
+	char *varName;
+	char *value;
+} Variable;
+
 struct parserOut {
-	char **asmOutBuffer;
+	char *asmOutBuffer; /*single super long string*/
 	int AOBSize;
 };
 
@@ -81,6 +94,8 @@ struct parserData {
 	Scope scopes[MAXSCOPES];
 	Function functions[MAXFUNCTIONS];
 	int totalFunctions;
+	Variable *variables;
+	int totalVariables;
 };
 
 /**
