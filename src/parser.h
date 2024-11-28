@@ -77,19 +77,12 @@ typedef struct {
 	char *value;
 } Variable;
 
-struct parserOut {
-	char *asmOutBuffer; /*single super long string*/
-	int AOBSize;
-};
-
 /*Struct to hold arrays of parser handy data*/
 struct parserData {
 	wData *fData;
 	
 	char **fileBuffer;
 	int bufferSize;
-
-	struct parserOut output;
 
 	Scope scopes[MAXSCOPES];
 	Function functions[MAXFUNCTIONS];

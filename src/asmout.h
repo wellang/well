@@ -6,13 +6,33 @@
 #include "werror.h"
 #include "parser.h"
 
+struct bufferOut {
+	char *asmOutBuffer; /*single super long string*/
+	int AOBSize;
+};
+
+struct asmBuffers {
+
+	/* This should be something like:
+	 *  .section __TEXT,__text
+	 *  .global _main
+	 *  .p2align 2
+	 * */
+	char *heading; 
+
+	char *variables;
+
+	struct bufferOut output;
+};
+
 /*Parser data in asm form*/
 typedef struct {
 
 	FILE *asmOut;
+	struct asmBuffers buffers;
 	
 	struct parserData *parser;
-
+	
 	/*malloc to total function length in parser*/
 	Function *functions;
 

@@ -6,12 +6,28 @@
  * Instruction conversion
  * */
 
+/* This should be pretty standard along all CPUs
+ * Variable conversion
+ * */
+
+void convertVariables(AsmOut *out) {
+
+}
+
 /*
  * Run
  * */
 
+void initHeader(AsmOut *out) {
+	char *standardHead = 
+		"\t.section __TEXT,__text\n\t.global _main\n\t.p2align 2\n";
+	out->buffers.heading = (char *)malloc(sizeof(char)*strlen(standardHead));
+	strcpy(out->buffers.heading, standardHead);
+}
+
 void convertToAsm(AsmOut *out) {
-	
+	initHeader(out);
+	convertVariables(out);
 }
 
 
@@ -49,7 +65,8 @@ void initAsmOut(struct parserData *parser, AsmOut *output) {
 	output->asmOut = fopen(fileName, "wr");
 
 	int roughEstimate = getRoughFileSize(output);
-	output->parser->output.asmOutBuffer = (char *)malloc(sizeof(char)*roughEstimate);
+	output->buffers.output.asmOutBuffer = (char *)malloc(sizeof(char)*roughEstimate);
+	output->buffers.output.AOBSize = 0;
 
 	/*Don't forget output buffer is in parser->output.asmOutBuffer*/
 }
