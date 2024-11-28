@@ -169,7 +169,6 @@ void getVariables(struct parserData *parser) {
 			
 			if(parser->totalVariables<i) 
 				parser->variables = (Variable *)realloc(parser->variables, sizeof(Variable)*i);
-
 			char *line = parser->fileBuffer[parser->scopes[i].lineNum];
 			char *data = strstr(line, "=");
 			if(data==NULL) {
@@ -184,7 +183,7 @@ void getVariables(struct parserData *parser) {
 				strcpy(parser->variables[j].value, data);
 
 				/*save data*/
-				EATTABS(line);
+				/*EATTABS(line);*/
 				char *tmp  = (char *)malloc(sizeof(char)*strlen(line));
 				strcpy(tmp, line);
 				
@@ -203,7 +202,6 @@ void getVariables(struct parserData *parser) {
 				while(name[strlen(name)-1]==' ') name[strlen(name)-1] = '\0';
 				parser->variables[j].varName = (char *)malloc(sizeof(char)*strlen(name));
 				strcpy(parser->variables[j].varName, name);
-
 				parser->totalVariables++;
 				j++;
 				free(tmp);
@@ -418,10 +416,10 @@ void parseProgram(struct parserData *parser) {
 	getFunctionData(parser);
 	verifyMainFunction(parser);
 	getVariables(parser);
-	/*dumpVariables(parser);
-	* Useful for debugging
-	* dumpScopes(parser);
-	* dumpFunctionData(parser);*/
+	/*dumpVariables(parser);*/
+	/* Useful for debugging*/
+	 /*dumpScopes(parser);*/
+	/* dumpFunctionData(parser);*/
 	
 }
 

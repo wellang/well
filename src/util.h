@@ -21,6 +21,9 @@
 #define ARRLEN(x) \
 		(sizeof(x)/sizeof(x[0]))
 
+/*Please don't ever use this piece of shit I made.
+ * I am sorry.
+ * */
 #define EATTABS(line) 							\
 	int i,j=0; 									\
 	for(i=0;line[i];i++) {						\
