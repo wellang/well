@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
 
 	AsmOut output;
 	initAsmOut(p, &output);
+	convertToAsm(&output);
 
 	end = clock();
 	char timeBuf[100];

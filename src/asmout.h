@@ -6,6 +6,8 @@
 #include "werror.h"
 #include "parser.h"
 
+#define DEFVARBSIZE 1024
+
 struct bufferOut {
 	char *asmOutBuffer; /*single super long string*/
 	int AOBSize;

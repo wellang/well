@@ -18,3 +18,7 @@
 * Did variable parsing.
 * added some Werrors, fixed tab eater.
 
+## 11/28/24 - variables to asm
+
+* string and char conversions to asm
+
