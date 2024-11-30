@@ -146,11 +146,19 @@ void dumpVariables(struct parserData *parser) {
 	}
 }
 
-void setVariableType(Variable *var, char *type) {
-	if(!strcmp(type, "string")) var->type = STRING;
-	if(!strcmp(type, "char")) var->type = CHAR;
-	if(!strcmp(type, "int")) var->type = INT;
-	if(!strcmp(type, "float")) var->type = FLOAT;
+void setVariableType(Variable *var, char *type,
+		int lineNum, char *file) {
+	if(!strcmp(type, "string")) {
+		var->type = STRING; return;
+	} else if(!strcmp(type, "char")) {
+		var->type = CHAR; return;
+	} else if(!strcmp(type, "int")) {
+		var->type = INT; return;
+	} else if(!strcmp(type, "float")) {
+		var->type = FLOAT; return;
+	}
+	WLOG_WERROR(WERROR_UNDEFINED_TYPE,
+			file, lineNum, "constants", "");
 }
 
 /*This is expected to be ran AFTER scopes have been initialized*/
@@ -192,7 +200,8 @@ void getVariables(struct parserData *parser) {
 				/*we don't need to check cuz it was already processed*/
 				type++;
 				type = strtok(type, ":");
-				setVariableType(&parser->variables[j], type);
+				setVariableType(&parser->variables[j], type,
+						parser->scopes[i].lineNum, parser->fData->fileName);
 
 				/*name, once again we don't need to check*/
 				char *name = strstr(tmp, ":");

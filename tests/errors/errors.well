@@ -1,0 +1,16 @@
+~include <std.well>
+
+~constants {
+	; Undefined Type: should be string
+	~String:text = "Hello World!\n"
+
+	; Uninitialized constant
+	~int:i
+}
+
+; Missing curly brace...
+~void:test {
+	~if(...) {
+}
+
+; Missing main function
