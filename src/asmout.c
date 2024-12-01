@@ -2,10 +2,35 @@
 
 #include "asmout.h"
 #include "hexconvert.h"
+#include "cpu.h"
 
-/* TODO
- * Instruction conversion
+/*
+ * Instruction Conversion
  * */
+
+/* 
+ * Funtion output
+* */
+
+void convertFunctions(AsmOut *out) {
+	switch(CPU) {
+		/*alpha*/
+		case ALPHA: break; /*TODO*/
+		/*intel*/
+		case AMD_X86_64: break; /*TODO*/
+		case I386: break; /*TODO*/
+		case ITANIUM_64: break; /*TODO*/
+		/*ARM*/
+		case ARM_MAC: break; /*TODO*/
+		case ARMv7: break; /*TODO*/
+		/*IBM*/
+		case POWERPC: break; /*TODO*/
+		case RS6000: break; /*TODO*/
+		case SZ_IBM: break; /*TODO*/
+		/*SUN*/
+		case SPARC: break; /*TODO*/
+	};	
+}
 
 /* This should be pretty standard along all CPUs
  * Variable conversion
@@ -109,6 +134,7 @@ void completeBuffer(AsmOut *out) {
 
 void convertToAsm(AsmOut *out) {
 	initHeader(out);
+	convertFunctions(out);
 	convertVariables(out);
 
 	completeBuffer(out);

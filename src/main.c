@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "werror.h"
 #include "asmout.h"
+#include "cpu.h"
 
 int argCheckOption(struct ArgparseParser *parser,
 		char *option1, char *option2);
@@ -33,10 +34,12 @@ int main(int argc, char **argv) {
 	convertToAsm(&output);
 
 	end = clock();
+	char *cpu_str;
+	GETCPUSTR(CPU, cpu_str);
 	char timeBuf[100];
-	snprintf(timeBuf, sizeof(timeBuf), "Compile time: %fs, %fms", 
+	snprintf(timeBuf, sizeof(timeBuf), "Compile time: %fs, %fms on %s", 
 			((double)(end-start) / CLOCKS_PER_SEC), 
-			(((double)(end-start) / CLOCKS_PER_SEC) * 1000));
+			(((double)(end-start) / CLOCKS_PER_SEC) * 1000), cpu_str);
 	WLOG(INFO, timeBuf);
 
 	WERROR_EXIT();

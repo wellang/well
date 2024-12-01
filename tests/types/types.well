@@ -2,7 +2,7 @@
 
 ~constants {
 	~string:str = "STRING"
-	~char:ch = 'CHAR'
+	~char:ch = 'C'
 	~int:i = 1478
 	~float:f = 3.14
 }

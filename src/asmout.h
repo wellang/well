@@ -21,8 +21,8 @@ struct asmBuffers {
 	 *  .p2align 2
 	 * */
 	char *heading; 
-
 	char *variables;
+	char *functions;
 
 	struct bufferOut output;
 };

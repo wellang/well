@@ -2,7 +2,7 @@
 
 ## 11/23/24 - Total rewrite
 
-* This "change" is deleting all of what was and adding this initial commit
+* This "change" is deleting all of what was and adding this initial commit.
 * functional parser.
 
 ## 11/25/24 - Design, parser, asmOut
@@ -26,3 +26,7 @@
 
 * hex converter for integers.
 * asm conversions for integers.
+
+## 12/01/24 
+
+* CPU architecture detection and "todo" setup for function conversions.
