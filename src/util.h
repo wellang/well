@@ -21,6 +21,16 @@
 #define ARRLEN(x) \
 		(sizeof(x)/sizeof(x[0]))
 
+/*
+ *  keep in mind this is pretty sketchy since we declare a variable in a macro
+ *  don't use it more than once per function bud.
+ */
+#define STARTAPPCHAR(str, c) \
+	char *STRET = (char*)malloc(sizeof(char)*(strlen(str)+2)); \
+	STRET[0] = c; 											   \
+	memcpy(STRET+1, str, strlen(str));						   \
+	STRET[strlen(str)+1] = '\0';							   \
+
 /*Please don't ever use this piece of shit I made.
  * I am sorry.
  * */

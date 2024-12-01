@@ -1,6 +1,7 @@
 /*Copyright (c) 2024 Tristan Wellman*/
 
 #include "asmout.h"
+#include "hexconvert.h"
 
 /* TODO
  * Instruction conversion
@@ -30,7 +31,7 @@ char *getAsmChar(char *name, char *value) {
 	snprintf(nameBuf, sizeof(nameBuf), "wl_ch_%s%d", name, cCount);
 	char buf[strlen(name)+strlen(value)+100];
 	snprintf(buf, sizeof(buf),
-			"\t.global %s\n%s:\n\t.byte %d\n",
+			"\n\t.global %s\n%s:\n\t.byte %d\n",
 			nameBuf, nameBuf, value[0]);
 	cCount++;
 	char *ret = (char *)malloc(sizeof(char)*strlen(buf)+1);
@@ -39,12 +40,21 @@ char *getAsmChar(char *name, char *value) {
 }
 
 char *getAsmInt(char *name, char *value) {
-	/*TODO: make hex converter*/
-	return " ";
+	char *hexValue = uint64ToHex(value);
+	static int iCount = 0;
+	char nameBuf[strlen(name)+100];
+	snprintf(nameBuf, sizeof(nameBuf), "wl_int_%s%d", name, iCount);
+	char buf[strlen(nameBuf)+strlen(hexValue)+100];
+	snprintf(buf, sizeof(buf), 
+			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.long %s\n",
+			nameBuf, nameBuf, hexValue);	
+	iCount++;
+	char *ret = (char *)malloc(sizeof(char)*strlen(buf)+1);
+	strcpy(ret, buf);
+	return ret;
 }
 
 char *getAsmFloat(char *name, char *value) {
-	/*TODO: make hex converter*/
 	return " ";
 }
 

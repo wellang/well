@@ -22,3 +22,7 @@
 
 * string and char conversions to asm
 
+## 11/30/24 - hex conversions
+
+* hex converter for integers.
+* asm conversions for integers.

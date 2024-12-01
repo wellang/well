@@ -182,7 +182,7 @@ void getVariables(struct parserData *parser) {
 			if(data==NULL) {
  				WLOG_WERROR(WERROR_UNINITIALIZED_VARIABLE,
 						parser->fData->fileName, 
-						parser->scopes[i].lineNum, "", "");	
+						parser->scopes[i].lineNum, "constants", "");	
 			} else {
 				data++;
 				if(data[strlen(data)-1]=='\n') data[strlen(data)-1] = '\0';
@@ -408,7 +408,7 @@ int verifyMainFunction(struct parserData *parser) {
 	}
 	WLOG_WERROR(WERROR_MAIN, 
 				parser->fData->fileName, 
-				0, "", "");
+				0, "Global", "");
 	return 0;
 }
 
