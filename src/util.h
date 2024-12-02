@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <dirent.h>
 
 #define WLOG(logLevel, ...) \
 	fprintf(stdout, "%s "#logLevel"  (%s:%d): %s\n", \

@@ -14,6 +14,8 @@ void runArgParsing(wData *data);
 
 void initArgParseArgs(wData *data, int argc, char *argv[]); 
 
+void compileFile(wData *data); 
+
 int main(int argc, char **argv) {
 
 	clock_t start, end;
@@ -33,6 +35,11 @@ int main(int argc, char **argv) {
 	initAsmOut(p, &output);
 	convertToAsm(&output);
 
+	freeParser(p);
+	freeAsm(&output);
+	argparse_free(data.argParser);
+	if(data.main!=NULL) fclose(data.main);
+
 	end = clock();
 	char *cpu_str;
 	GETCPUSTR(CPU, cpu_str);
@@ -44,10 +51,7 @@ int main(int argc, char **argv) {
 
 	WERROR_EXIT();
 
-	freeAsm(&output);
-	argparse_free(data.argParser);
-	if(data.main!=NULL) fclose(data.main);
-
+	compileFile(&data);
 	return 0;
 }
 
@@ -113,5 +117,13 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	
 	argparse_error(data->argParser);
 	
+}
+
+void compileFile(wData *data) {
+	char *fileDirect = strtok(data->fileName, ".");
+	strcat(fileDirect, ".s");
+	char comp[256];
+	char *args[] = {"gcc", fileDirect, NULL};
+	execvp("gcc", args);
 }
 

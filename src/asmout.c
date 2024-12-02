@@ -5,14 +5,82 @@
 #include "cpu.h"
 
 /*
+ * Register conversion
+ * */
+
+/*
  * Instruction Conversion
  * */
+
+char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
+	/*
+	 * This is just temporary so I can have something that works...
+	 * */
+	char outBuf[100];
+	if(!strcmp(ins.instruction, "move")) {
+		/*TODO check instruction argument size for invalid args*/
+		Variable v = getVarFrom(out->parser, ins.arguments[0]);
+		char asmVName[1024];
+		switch(v.type) {
+			case STRING: sprintf(asmVName, "wl_str.%s", ins.arguments[0]);break;
+			case CHAR: sprintf(asmVName, "wl_ch_%s", ins.arguments[0]);break;
+			case INT: sprintf(asmVName, "wl_int_%s", ins.arguments[0]);break;
+			case FLOAT: sprintf(asmVName, "wl_fl_%s", ins.arguments[0]);break;
+		};
+		snprintf(outBuf, sizeof(outBuf), 
+				"\tadrp %s,%s@PAGE\n\tadd %s, %s, %s@PAGEOFF\n",
+				"x0", asmVName, "x0", "x0", asmVName);
+	} else if(!strcmp(ins.instruction, "call")) {
+		sprintf(outBuf, "\tbl _%s\n", ins.arguments[0]);
+	} else if(!strcmp(ins.instruction, "return")) {
+		sprintf(outBuf, "\tmov x0, #0\n\tbl _exit\n");
+	}
+	char *ret = (char *)malloc(sizeof(char)*strlen(outBuf));
+	strcpy(ret, outBuf);
+	return ret;
+}
 
 /* 
  * Funtion output
 * */
 
+char *createFunctionHeader(char *name) {
+	char head[strlen(name)+100];
+	snprintf(head,sizeof(head),
+			"\t.section __TEXT,__text\n\t.global _%s\n\t.p2align 2\n_%s:\n",
+			name, name);
+	char *ret = (char *)malloc(sizeof(char)*strlen(head)+2);
+	strcat(ret, head);
+	return ret;
+}
+
+
+void convertFunctionsARM_MAC(AsmOut *out) {
+	/*x registers are 64-bit w registers are 32*/
+	size_t bufferSize=1;
+	int i,j;
+	for(i=0;i<out->parser->totalFunctions;i++) {
+		char *header = createFunctionHeader(out->parser->functions[i].funName);
+		bufferSize+=(strlen(header)+2);
+		out->buffers.functions =
+			(char *)realloc(out->buffers.functions, sizeof(char)*bufferSize);
+		strcat(out->buffers.functions, header);
+		/*instructions*/
+		for(j=0;j<out->parser->functions[i].dataLength;j++) {
+			if(out->parser->functions[i].instructions[j].instruction==NULL) continue;
+			char *asmInstruction = 
+				convertInstructionARM_MAC(out, out->parser->functions[i].instructions[j]);
+			bufferSize+=strlen(asmInstruction)+2;
+			out->buffers.functions =
+				(char *)realloc(out->buffers.functions, sizeof(char)*bufferSize);
+			strcat(out->buffers.functions, asmInstruction);
+		}	
+
+	}
+}
+
 void convertFunctions(AsmOut *out) {
+	out->buffers.functions = (char *)malloc(sizeof(char));
 	switch(CPU) {
 		/*alpha*/
 		case ALPHA: break; /*TODO*/
@@ -21,7 +89,7 @@ void convertFunctions(AsmOut *out) {
 		case I386: break; /*TODO*/
 		case ITANIUM_64: break; /*TODO*/
 		/*ARM*/
-		case ARM_MAC: break; /*TODO*/
+		case ARM_MAC: convertFunctionsARM_MAC(out); break;
 		case ARMv7: break; /*TODO*/
 		/*IBM*/
 		case POWERPC: break; /*TODO*/
@@ -40,8 +108,8 @@ char *getAsmString(char *name, char *value) {
 	static int strCount = 0;
 	char buf[strlen(name)+strlen(value)+100];
 	snprintf(buf, sizeof(buf),
-			"wl_str.%s.%d:\n\t.asciz %s\n",
-			name, strCount, value);
+			"wl_str.%s:\n\t.asciz %s\n",
+			name, value);
 	strCount++;
 	char *ret = (char *)malloc(sizeof(char)*strlen(buf)+1);
 	strcpy(ret, buf);
@@ -114,26 +182,18 @@ void convertVariables(AsmOut *out) {
  * Run
  * */
 
-void initHeader(AsmOut *out) {
-	char *standardHead = 
-		"\t.section __TEXT,__text\n\t.global _main\n\t.p2align 2\n";
-	out->buffers.heading = (char *)malloc(sizeof(char)*strlen(standardHead)+10);
-	strcpy(out->buffers.heading, standardHead);
-}
-
 void completeBuffer(AsmOut *out) {
-	if(out->buffers.heading==NULL||
+	if(out->buffers.functions==NULL||
 			out->buffers.variables==NULL) return;
 	int totalSize = 
-		strlen(out->buffers.heading)+
+		strlen(out->buffers.functions)+
 		strlen(out->buffers.variables);
 	out->buffers.output.asmOutBuffer = (char *)malloc(sizeof(char)*(totalSize+100));
-	strcpy(out->buffers.output.asmOutBuffer, out->buffers.heading);
+	strcpy(out->buffers.output.asmOutBuffer, out->buffers.functions);
 	strcat(out->buffers.output.asmOutBuffer, out->buffers.variables);
 }
 
 void convertToAsm(AsmOut *out) {
-	initHeader(out);
 	convertFunctions(out);
 	convertVariables(out);
 

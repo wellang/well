@@ -27,6 +27,9 @@
 * hex converter for integers.
 * asm conversions for integers.
 
-## 12/01/24 
+## 12/01/24 - Working Hello World 
 
 * CPU architecture detection and "todo" setup for function conversions.
+* Free parser data
+* Simple arm macos instruction conversion (this allows a simple hello world to work)
+* run gnu assembler on asm output

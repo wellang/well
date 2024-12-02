@@ -1,6 +1,7 @@
 	.section __TEXT,__text
 	.global _main
 	.p2align 2
+_main:
 wl_str.str.0:
 	.asciz "STRING"
 

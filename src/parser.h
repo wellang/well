@@ -58,7 +58,7 @@ typedef struct {
 typedef struct {
 	char *line; /* move~ 1, r */
 	char *instruction; /* move */
-	char **arguments; /* ["1", "r"] */
+	char **arguments; /* ["1", "r1"] */
 	int argLen;
 } Instruction;
 
@@ -94,7 +94,9 @@ struct parserData {
 /**
  * Function Prototypes
  * */
+Variable getVarFrom(struct parserData *parser, char *name);
 void parseProgram(struct parserData *parser);
 struct parserData *initParser(wData *data);
+void freeParser(struct parserData *parser);
 
 #endif

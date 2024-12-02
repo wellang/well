@@ -161,6 +161,14 @@ void setVariableType(Variable *var, char *type,
 			file, lineNum, "constants", "");
 }
 
+Variable getVarFrom(struct parserData *parser, char *name) {
+	int i;
+	for(i=0;i<parser->totalVariables;i++) {
+		if(!strcmp(parser->variables[i].varName, name)) return parser->variables[i];
+	}
+	return (Variable){};
+}
+
 /*This is expected to be ran AFTER scopes have been initialized*/
 void getVariables(struct parserData *parser) {
 
@@ -227,6 +235,7 @@ void getVariables(struct parserData *parser) {
 
 
 void appendInsArgs(Instruction *ins, char *arg) {
+	while(arg[0]==' ') arg++;
 	if(ins->argLen>=DEFAULTINSARGSIZE) {
 		ins->arguments = 
 			(char **)realloc(ins->arguments, sizeof(char *)*(ins->argLen+1));
@@ -278,14 +287,14 @@ void disectInstructionName(Instruction *ins) {
 	}
 }
 
-void parseInstruction(char *line, Instruction ins) {
-	if(ins.line==NULL) ins.line = (char *)malloc(sizeof(char)*256);
-	strcpy(ins.line, line);
+void parseInstruction(char *line, Instruction *ins) {
+	if(ins->line==NULL) ins->line = (char *)malloc(sizeof(char)*256);
+	strcpy(ins->line, line);
 	/*If you have an instruction name that is more than 50 characters... ._. */
-	if(ins.instruction==NULL) ins.instruction = (char *)malloc(sizeof(char)*50);
-	disectInstructionName(&ins);
+	if(ins->instruction==NULL) ins->instruction = (char *)malloc(sizeof(char)*50);
+	disectInstructionName(ins);
 
-	getInstructionArguments(&ins);
+	getInstructionArguments(ins);
 
 }
 
@@ -362,7 +371,7 @@ void parseFunctionInstructions(Function *func) {
 		if(checkImportantType(func->data[i])) continue;
 
 		parseInstruction(func->data[i],
-				func->instructions[i]);
+				&func->instructions[i]);
 	}
 }
 
@@ -464,8 +473,50 @@ struct parserData *initParser(wData *data) {
 	return gPData;
 }
 
-void freeParser() {
-	free(gPData->fileBuffer);
-	/* TODO free all the other shit in functions,instructions,etc. */
+void freeParser(struct parserData *parser) {
+	int i,j,k;
+	if(parser == NULL) return;
+    /*fileBuffer*/
+    if(parser->fileBuffer) {
+        for (i = 0; i < parser->bufferSize; i++) {
+            free(parser->fileBuffer[i]);
+        }
+        free(parser->fileBuffer);
+    }
+    /*Functions*/
+    for(i = 0;i<MAXFUNCTIONS&&parser->functions[i].funName != NULL;i++) {
+        Function *func = &parser->functions[i];
+        free(func->funName);
+        if(func->data) {
+            for(j = 0;j<func->dataLength;j++) free(func->data[j]);
+            free(func->data);
+        }
+        /*instructions*/
+        if(func->instructions) {
+            for(j = 0;j<func->dataLength;j++) {
+                Instruction *ins = &func->instructions[j];
+                free(ins->line);
+                free(ins->instruction);
+                if(ins->arguments) {
+                    for(k = 0;k<ins->argLen;k++) free(ins->arguments[k]);
+                    free(ins->arguments);
+                }
+            }
+            free(func->instructions);
+        }
+    }
+    /*variables*/
+    if(parser->variables) {
+        for (i = 0;i<parser->totalVariables;i++) {
+            free(parser->variables[i].varName);
+            free(parser->variables[i].value);
+        }
+        free(parser->variables);
+    }
+    /*scopes*/
+    for(i = 0;i<MAXSCOPES&&parser->scopes[i].scopeName != NULL;i++)
+        free(parser->scopes[i].scopeName);
+
+    free(parser);
 }
 
