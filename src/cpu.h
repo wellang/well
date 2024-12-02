@@ -31,7 +31,7 @@ static enum cpuType CPU =
 		__X86__ || _x86_ /*mingw & watcom*/
 	I386;
 #elif defined  __ia64__ || _M_IA64 || __itanium__
-	ITANIUM_64
+	ITANIUM_64;
 #elif defined __PPC__ || __powerpc64__ || _M_PPC
 	POWERPC;
 #elif defined __THW_RS6000 || _POWER

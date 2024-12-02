@@ -8,9 +8,11 @@
 typedef struct {
 	FILE *main;
 	char *fileName;
-	struct ArgparseParser argParser;
+	struct ArgparseParser argParser;	
 	
-	int KEEPASM, USEINFO;
+	int KEEPASM, USEINFO, USELD;
+	char *ccFlags;
+	char *ldflags;
 } wData;
 
 #endif

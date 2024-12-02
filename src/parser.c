@@ -246,7 +246,7 @@ void appendInsArgs(Instruction *ins, char *arg) {
 		for(i=0;i<DEFAULTINSARGSIZE;i++) {
 			if(ins->arguments[i]==NULL) break;
 		}
-		ins->arguments[i] = (char *)malloc(sizeof(char)*strlen(arg));
+		ins->arguments[i] = (char *)malloc(sizeof(char)*(strlen(arg)+2));
 		strcpy(ins->arguments[i], arg);
 		ins->argLen++;
 	}
@@ -273,6 +273,7 @@ void getInstructionArguments(Instruction *ins) {
 		}
 		free(backup);
 	}
+	if(ins->argLen==0) ins->arguments = NULL;
 }
 
 void disectInstructionName(Instruction *ins) {
@@ -406,6 +407,7 @@ void dumpFunctionData(struct parserData *parser) {
 		WLOG(INFO, parser->functions[i].funName);
 		for(j=0;j<parser->functions[i].dataLength;j++) {
 			printf("%s", parser->functions[i].data[j]);
+			printf("%s\n", parser->functions[i].instructions[j].arguments[0]);
 		}
 	}
 }
@@ -422,6 +424,17 @@ int verifyMainFunction(struct parserData *parser) {
 }
 
 
+/* TODO
+ * Compiler directive handling
+ * */
+
+/*TODO
+ * Extern handling
+ * */
+
+/* TODO
+ * Inclusion handling
+ * */
 
 /* * * * *
  * Parser initialization and running functions
@@ -432,12 +445,12 @@ int verifyMainFunction(struct parserData *parser) {
 void parseProgram(struct parserData *parser) {
 	getScopes(parser);
 	getFunctionData(parser);
-	verifyMainFunction(parser);
 	getVariables(parser);
+	verifyMainFunction(parser);
 	/*dumpVariables(parser);*/
 	/* Useful for debugging*/
 	 /*dumpScopes(parser);*/
-	/* dumpFunctionData(parser);*/
+	 /*dumpFunctionData(parser);*/
 	
 }
 

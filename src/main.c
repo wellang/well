@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
 
 	wData data;
 	initArgParseArgs(&data, argc, argv);
+	data.ccFlags = NULL;
 	runArgParsing(&data);	
 
 	WASSERT(data.main!=NULL,
@@ -35,7 +36,8 @@ int main(int argc, char **argv) {
 	initAsmOut(p, &output);
 	convertToAsm(&output);
 
-	freeParser(p);
+	/*freeParser(p);
+	 * This breaks on FreeBSD so I'm not gonna worry about it for now*/
 	freeAsm(&output);
 	argparse_free(data.argParser);
 	if(data.main!=NULL) fclose(data.main);
@@ -80,7 +82,19 @@ void runArgParsing(wData *data) {
 		data->USEINFO=1;
 	if(argCheckOption(&data->argParser, "--assembly", "-a"))
 		data->KEEPASM=1;
-
+	
+	if(argCheckOption(&data->argParser, "--gcc", "-cc")) {
+		int i;
+		for(i=0;i<data->argParser.argc;i++) {
+			if(!strcmp(data->argParser.argv[i], "-cc")||
+				!strcmp(data->argParser.argv[i], "--gcc")) {
+				if(i+1<data->argParser.argc) {
+					data->ccFlags = data->argParser.argv[i+1];
+					break;
+				}
+			}
+		}	
+	}
 
 }
 
@@ -106,7 +120,6 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 
 	argparse_add_argument(&data->argParser, "arg1");
 
-
 	argparse_add_option(&data->argParser, "--help", "-h", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--output", "-o", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--gcc", "-cc", ARGPARSE_FLAG);
@@ -115,7 +128,7 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	argparse_add_option(&data->argParser, "--use-gnuld", "-use-ld", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--ldflags", "-ldflags", ARGPARSE_FLAG);
 	
-	argparse_error(data->argParser);
+	//argparse_error(data->argParser);
 	
 }
 
@@ -123,7 +136,17 @@ void compileFile(wData *data) {
 	char *fileDirect = strtok(data->fileName, ".");
 	strcat(fileDirect, ".s");
 	char comp[256];
-	char *args[] = {"gcc", fileDirect, NULL};
+	if(data->USELD) {
+		return;
+	}
+	char *args[] = {"gcc", fileDirect, data->ccFlags, NULL};
+	if(data->ccFlags==NULL) args[2] = ""; 
+	if(data->USEINFO) {
+		int argLen = ARRLEN(args);
+		char buf[256];
+		sprintf(buf, "%s %s %s", args[0], args[1], args[2]);
+		WLOG(INFO, buf);
+	}
 	execvp("gcc", args);
 }
 

@@ -6,7 +6,7 @@ struct wErrors {
 	int errorCount;
 	int warnCount;
 };
-struct wErrors errors;
+static struct wErrors errors;
 
 #define WERROR_MISSING_BRACKET 1
 #define WERROR_MAIN 2

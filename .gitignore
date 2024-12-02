@@ -1,2 +1,4 @@
 .DS_Store
 *.o
+tests/libs/*
+tests/functions/*

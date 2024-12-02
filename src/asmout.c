@@ -17,6 +17,7 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 	 * This is just temporary so I can have something that works...
 	 * */
 	char outBuf[100];
+
 	if(!strcmp(ins.instruction, "move")) {
 		/*TODO check instruction argument size for invalid args*/
 		Variable v = getVarFrom(out->parser, ins.arguments[0]);
@@ -31,11 +32,12 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 				"\tadrp %s,%s@PAGE\n\tadd %s, %s, %s@PAGEOFF\n",
 				"x0", asmVName, "x0", "x0", asmVName);
 	} else if(!strcmp(ins.instruction, "call")) {
-		sprintf(outBuf, "\tbl _%s\n", ins.arguments[0]);
+		if(ins.arguments>0) 
+			sprintf(outBuf, "\tbl _%s\n", ins.arguments[0]);
 	} else if(!strcmp(ins.instruction, "return")) {
 		sprintf(outBuf, "\tmov x0, #0\n\tbl _exit\n");
 	}
-	char *ret = (char *)malloc(sizeof(char)*strlen(outBuf));
+	char *ret = (char *)malloc(sizeof(char)*(strlen(outBuf)+2));
 	strcpy(ret, outBuf);
 	return ret;
 }
@@ -44,7 +46,25 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
  * Funtion output
 * */
 
+char *getCPUMain() {
+	char *ret = (char *)malloc(sizeof(char)*15);
+	switch(CPU) {
+		case ARM_MAC: strcpy(ret, "main"); break;
+		case AMD_X86_64: strcpy(ret, "start"); break;
+		case ALPHA: break; /*TODO*/
+		case I386: break; /*TODO*/
+		case ITANIUM_64: break; /*TODO*/
+		case ARMv7: break; /*TODO*/
+		case POWERPC: break; /*TODO*/
+		case RS6000: break; /*TODO*/
+		case SZ_IBM: break; /*TODO*/
+		case SPARC: break; /*TODO*/
+	}
+	return ret;
+}
+
 char *createFunctionHeader(char *name) {
+	if(!strcmp(name, "main")) name = getCPUMain();
 	char head[strlen(name)+100];
 	snprintf(head,sizeof(head),
 			"\t.section __TEXT,__text\n\t.global _%s\n\t.p2align 2\n_%s:\n",
@@ -216,6 +236,7 @@ void freeAsm(AsmOut *out) {
 }
 
 void initAsmOut(struct parserData *parser, AsmOut *output) {
+	output->parser = (struct parserData *)malloc(sizeof(*parser));
 	output->parser = parser;
 	int i;
 	output->functions = (Function *)malloc(sizeof(Function)*parser->totalFunctions);
@@ -235,8 +256,6 @@ void initAsmOut(struct parserData *parser, AsmOut *output) {
 	/*reopen with write mode/create file*/
 	output->asmOut = fopen(fileName, "wr");
 
-	int roughEstimate = getRoughFileSize(output);
-	output->buffers.output.asmOutBuffer = (char *)malloc(sizeof(char)*roughEstimate);
 	output->buffers.output.AOBSize = 0;
 
 	/*Don't forget output buffer is in parser->output.asmOutBuffer*/

@@ -1,8 +1,8 @@
 CC= gcc
 CFLAGS= -g -O2 -std=c89 -Iinclude
 
-COMMON_C= $(wildcard src/*.c) \
-		  $(wildcard include/*.c)
+COMMON_C= src/*.c \
+		  include/*.c
 COMMON_O= *.o
 
 BIN= well
