@@ -33,3 +33,8 @@
 * Free parser data
 * Simple arm macos instruction conversion (this allows a simple hello world to work)
 * run gnu assembler on asm output
+
+## 12/02/24 (and like 12-2am on 03) - Optimization and buf fixing
+
+* Fixing and cleaning up all the memory issues and whatnot.
+* trying to figure out a weird Instruction arg issue I am having.

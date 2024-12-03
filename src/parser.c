@@ -183,8 +183,8 @@ void getVariables(struct parserData *parser) {
 		
 		if(parser->scopes[i].scopeType == VARIABLE) {
 			
-			if(parser->totalVariables<i) 
-				parser->variables = (Variable *)realloc(parser->variables, sizeof(Variable)*i);
+			parser->variables = (Variable *)realloc(parser->variables, 
+					sizeof(Variable)*(parser->totalVariables+1));
 			char *line = parser->fileBuffer[parser->scopes[i].lineNum];
 			char *data = strstr(line, "=");
 			if(data==NULL) {
@@ -197,7 +197,6 @@ void getVariables(struct parserData *parser) {
 				while(data[0]==' ') data++;
 				parser->variables[j].value = (char *)malloc(sizeof(char)*strlen(data));
 				strcpy(parser->variables[j].value, data);
-
 				/*save data*/
 				/*EATTABS(line);*/
 				char *tmp  = (char *)malloc(sizeof(char)*strlen(line));
@@ -218,46 +217,64 @@ void getVariables(struct parserData *parser) {
 				name = strtok(name, "=");
 				while(name[strlen(name)-1]==' ') name[strlen(name)-1] = '\0';
 				parser->variables[j].varName = (char *)malloc(sizeof(char)*strlen(name));
-				strcpy(parser->variables[j].varName, name);
+				parser->variables[j].varName = strdup(name);
 				parser->totalVariables++;
-				j++;
+				j = parser->totalVariables;
 				free(tmp);
 			}
 		}
 	}
 }
 
-
 /* * * * *
  * Instruction related functions.
  * * * * */
 
+/*copy the whole structure.
+ * I have been trying to figure out this stupid 
+ * missing instruction argument with the second instruction(specifically) issue.
+ *
+ * Maybe this will help me fix it. Idk, I've been up figuring this out for 10 hours.*/
+Instruction instructionDup(const Instruction *src) {
+	Instruction ret;
+	memset(&ret, 0, sizeof(Instruction));
 
+	ret.argLen = src->argLen;
+	ret.capacity = src->capacity;
+	if(src->line!=NULL) ret.line = strdup(src->line);
+	if(src->instruction!=NULL) ret.instruction = strdup(src->instruction);
+
+	if(src->argLen>0&&src->arguments!=NULL) {
+		ret.arguments = calloc(src->capacity>0 ? src->capacity : DEFAULTINSARGSIZE, 
+				sizeof(char *));
+		int i;
+		for(i=0;i<src->argLen;i++) {
+			if(src->arguments[i]!=NULL) 
+				ret.arguments[i] = strdup(src->arguments[i]);
+		}
+	}
+	return ret;
+}
 
 void appendInsArgs(Instruction *ins, char *arg) {
 	while(arg[0]==' ') arg++;
-	if(ins->argLen>=DEFAULTINSARGSIZE) {
-		ins->arguments = 
-			(char **)realloc(ins->arguments, sizeof(char *)*(ins->argLen+1));
-		ins->arguments[ins->argLen+1] = (char *)malloc(sizeof(char)*strlen(arg));
-		strcpy(ins->arguments[ins->argLen+1], arg);
-	} else {
-		int i;
-		for(i=0;i<DEFAULTINSARGSIZE;i++) {
-			if(ins->arguments[i]==NULL) break;
-		}
-		ins->arguments[i] = (char *)malloc(sizeof(char)*(strlen(arg)+2));
-		strcpy(ins->arguments[i], arg);
-		ins->argLen++;
-	}
+	if(ins->argLen>=ins->capacity) {
+        size_t newCapacity = ins->capacity==0 ? DEFAULTINSARGSIZE : ins->capacity*2;
+        char **newArgs = realloc(ins->arguments, sizeof(char *)*newCapacity);
+        ins->arguments = newArgs;
+    	ins->capacity = newCapacity;
+	} 
+	ins->arguments[ins->argLen] = strdup(arg);
+	ins->argLen++;
+
 }
 
 void getInstructionArguments(Instruction *ins) {
 	if(ins->line!=NULL) {
-		ins->arguments = (char **)malloc(sizeof(char *)*DEFAULTINSARGSIZE);
 		ins->argLen = 0;
-		char *backup = (char *)malloc(sizeof(char)*strlen(ins->line));
-		strcpy(backup, ins->line);
+		ins->capacity = DEFAULTINSARGSIZE;
+		ins->arguments = calloc(ins->capacity, sizeof(char *));
+		char *backup = strdup(ins->line);
 		char *ignoreIns = strstr(backup, "~");
 		if(ignoreIns!=NULL) {
 			ignoreIns++;
@@ -278,25 +295,28 @@ void getInstructionArguments(Instruction *ins) {
 
 void disectInstructionName(Instruction *ins) {
 	if(ins->line!=NULL) {
-		char *backup = (char *)malloc(sizeof(char)*strlen(ins->line));
-		strcpy(backup, ins->line);
+		char *backup = strdup(ins->line);
 		EATTABS(backup);
 		/*move~ text, r1*/
 		char *name = strtok(backup, "~");
-		if(name!=NULL) strcpy(ins->instruction, name);
+		if(name!=NULL) ins->instruction = strdup(name);
 		free(backup);
 	}
 }
 
 void parseInstruction(char *line, Instruction *ins) {
-	if(ins->line==NULL) ins->line = (char *)malloc(sizeof(char)*256);
-	strcpy(ins->line, line);
-	/*If you have an instruction name that is more than 50 characters... ._. */
-	if(ins->instruction==NULL) ins->instruction = (char *)malloc(sizeof(char)*50);
+    if (ins==NULL||line==NULL) return;
+	memset(ins, 0, sizeof(Instruction));
+	ins->line = NULL;
+    ins->instruction = NULL;
+    ins->arguments = NULL;
+    ins->line = strdup(line);
+    /*If you have an instruction name that is more than 50 characters... ._. */
+    ins->instruction = calloc(50, sizeof(char));
+	
 	disectInstructionName(ins);
 
 	getInstructionArguments(ins);
-
 }
 
 
@@ -354,8 +374,7 @@ void buffToFunc(Function *func, struct parserData *parser) {
 			if(scopeCarry<0) break;
 		}
 		int pos = i-(func->scope.lineNum+1);
-		func->data[pos] = (char *)malloc(sizeof(char)*1024);
-		strcpy(func->data[pos], parser->fileBuffer[i]);
+		func->data[pos] = strdup(parser->fileBuffer[i]);
 		func->dataLength++;
 	}
 	if(scopeCarry>0) {
@@ -369,6 +388,8 @@ void buffToFunc(Function *func, struct parserData *parser) {
 void parseFunctionInstructions(Function *func) {
 	int i;
 	for(i=0;i<func->dataLength;i++) {
+		if(func->data[i]==NULL) continue;
+		if(strlen(func->data[i])<=1) continue;
 		if(checkImportantType(func->data[i])) continue;
 
 		parseInstruction(func->data[i],
@@ -385,15 +406,16 @@ void getFunctionData(struct parserData *parser) {
 		/*Make sure it's a function scope*/
 		if(s->scopeType==FUNCTION) {
 			Function f;
-			f.data = (char **)malloc(sizeof(char *)*DEFMAXFSIZE);
+			memset(&f, 0, sizeof(Function));
+			f.data = calloc(DEFMAXFSIZE, sizeof(char *));
 			f.dataLength = 0;
-			f.funName = (char *)malloc(sizeof(char)*256);
-			strcpy(f.funName, s->scopeName);
+			f.funName = calloc(256, sizeof(char));
+			f.funName = strdup(s->scopeName);
 			f.scope = *s;
 
 			buffToFunc(&f, parser);
 
-			f.instructions = (Instruction *)malloc(sizeof(Instruction)*f.dataLength);
+			f.instructions = calloc(f.dataLength, sizeof(Instruction));
 			parseFunctionInstructions(&f);
 
 			appendFuncArr(f, parser);

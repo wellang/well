@@ -128,7 +128,7 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	argparse_add_option(&data->argParser, "--use-gnuld", "-use-ld", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--ldflags", "-ldflags", ARGPARSE_FLAG);
 	
-	//argparse_error(data->argParser);
+	argparse_error(data->argParser);
 	
 }
 

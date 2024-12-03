@@ -1,0 +1,13 @@
+~constants {
+	~string:text = "Hello World!\n"
+}
+
+~void:print {
+	call~ printf
+}
+
+~int:main {
+	move~ text, r1
+	call~ print
+	return~ 0
+}
