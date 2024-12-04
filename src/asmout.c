@@ -4,6 +4,8 @@
 #include "hexconvert.h"
 #include "cpu.h"
 
+#include "ARM_MAC.h"
+
 /*
  * Register conversion
  * */
@@ -24,37 +26,6 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 	strcpy(ret, outBuf);
 	return ret;
 } 
-
-char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
-	/*
-	 * This is just temporary so I can have something that works...
-	 * */
-
-	char outBuf[100] = {0};
-
-	if(!strcmp(ins.instruction, "move")) {
-		/*TODO check instruction argument size for invalid args*/
-		Variable v = getVarFrom(out->parser, ins.arguments[0]);
-		char asmVName[1024];
-		switch(v.type) {
-			case STRING: sprintf(asmVName, "wl_str.%s", ins.arguments[0]);break;
-			case CHAR: sprintf(asmVName, "wl_ch_%s", ins.arguments[0]);break;
-			case INT: sprintf(asmVName, "wl_int_%s", ins.arguments[0]);break;
-			case FLOAT: sprintf(asmVName, "wl_fl_%s", ins.arguments[0]);break;
-		};
-		snprintf(outBuf, sizeof(outBuf), 
-				"\tadrp %s,%s@PAGE\n\tadd %s, %s, %s@PAGEOFF\n",
-				"x0", asmVName, "x0", "x0", asmVName);
-	} else if(!strcmp(ins.instruction, "call")) {
-        if(ins.argLen>0 && ins.arguments[0]!=NULL)
-            snprintf(outBuf, sizeof(outBuf), "\tbl _%s\n", ins.arguments[0]);
-	} else if(!strcmp(ins.instruction, "return")) {
-		sprintf(outBuf, "\tmov x0, #0\n\tbl _exit\n");
-	}
-
-	char *ret = strdup(outBuf);
-	return ret;
-}
 
 /* 
  * Funtion output
@@ -88,13 +59,11 @@ char *createFunctionHeader(char *name) {
 	return ret;
 }
 
-
 void convertFunctions(AsmOut *out) {
 	out->buffers.functions = (char *)malloc(sizeof(char));
 	/*It actually makes me mad that I'm making sure memory is okay
 	 * because of my schizo ass instruction issues. */
 	*out->buffers.functions = '\0'; 
-	/*x registers are 64-bit w registers are 32*/
 	size_t bufferSize=1;
 	int i,j;
 	for(i=0;i<out->parser->totalFunctions;i++) {
@@ -103,11 +72,14 @@ void convertFunctions(AsmOut *out) {
 		out->buffers.functions =
 			realloc(out->buffers.functions, bufferSize);
 		strcat(out->buffers.functions, header);
+
+		static int setAllocation = 0;
 		/*instructions*/
 		for(j=0;j<out->parser->functions[i].dataLength;j++) {
 			Instruction *curIns = &out->parser->functions[i].instructions[j];
 			if(curIns->instruction==NULL) continue;
 			char *asmInstruction = NULL;
+			char *stackAllocation = NULL;
 
 			switch(CPU) {
 				/*alpha*/
@@ -121,6 +93,7 @@ void convertFunctions(AsmOut *out) {
 				/*ARM*/
 				case ARM_MAC: 
 							asmInstruction = convertInstructionARM_MAC(out, *curIns);
+							stackAllocation = stackAllocateARM_MAC();
 							break;
 				case ARMv7: break; /*TODO*/
 				/*IBM*/
@@ -131,12 +104,40 @@ void convertFunctions(AsmOut *out) {
 				case SPARC: break; /*TODO*/
 			};
 
-			bufferSize+=strlen(asmInstruction)+2;
+			bufferSize+=strlen(asmInstruction)+
+						strlen(stackAllocation)+2;
 			out->buffers.functions =
 				(char *)realloc(out->buffers.functions, bufferSize);
+			if(setAllocation==0) {
+				strcat(out->buffers.functions, stackAllocation);
+				setAllocation=1;
+			}
 			strcat(out->buffers.functions, asmInstruction);
 			free(asmInstruction);
-		}	
+		}
+		setAllocation = 0;
+
+		/*Check for void function type so we can return correctly*/
+		if(out->parser->functions[i].type==VOID) {
+			char *deallocateStack = NULL;
+			switch(CPU) {
+				case ALPHA: break; /*TODO*/
+				case AMD_X86_64: break;
+				case I386: break; /*TODO*/
+				case ITANIUM_64: break; /*TODO*/
+				case ARM_MAC: deallocateStack = stackDeallocateARM_MAC();break;
+				case ARMv7: break; /*TODO*/
+				case POWERPC: break; /*TODO*/
+				case RS6000: break; /*TODO*/
+				case SZ_IBM: break; /*TODO*/
+				case SPARC: break; /*TODO*/
+			};
+			strcat(deallocateStack, "\tret\n");
+			bufferSize+=strlen(deallocateStack)+2;
+			out->buffers.functions =
+				(char *)realloc(out->buffers.functions, bufferSize);
+			strcat(out->buffers.functions, deallocateStack);
+		}
 
 	}
 }
@@ -206,6 +207,7 @@ void convertVariables(AsmOut *out) {
 			case FLOAT: asmVar = getAsmFloat(curName, curValue);break;
 			case STRING: asmVar = getAsmString(curName, curValue);break;
 			case CHAR: asmVar = getAsmChar(curName, curValue);break;
+			case VOID: /*TODO*/break;
 		};
 		if(asmVar!=NULL) {
 			totalSize += strlen(asmVar);

@@ -35,6 +35,7 @@ enum varTypes {
 	CHAR,
 	STRING,
 	FLOAT,
+	VOID,
 };
 
 /*
@@ -64,6 +65,7 @@ typedef struct {
 } Instruction;
 
 typedef struct {
+	enum varTypes type;
 	char *funName;
 	char **data; /*All the code inside the function scope*/
 	int dataLength;

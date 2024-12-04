@@ -156,6 +156,8 @@ void setVariableType(Variable *var, char *type,
 		var->type = INT; return;
 	} else if(!strcmp(type, "float")) {
 		var->type = FLOAT; return;
+	} else if(!strcmp(type, "void")) {
+		var->type = VOID; return;
 	}
 	WLOG_WERROR(WERROR_UNDEFINED_TYPE,
 			file, lineNum, "constants", "");
@@ -234,7 +236,8 @@ void getVariables(struct parserData *parser) {
  * I have been trying to figure out this stupid 
  * missing instruction argument with the second instruction(specifically) issue.
  *
- * Maybe this will help me fix it. Idk, I've been up figuring this out for 10 hours.*/
+ * Maybe this will help me fix it. Idk, I've been up figuring this out for 10 hours.
+ * Update: It didn't fix anything and is now useless :) */
 Instruction instructionDup(const Instruction *src) {
 	Instruction ret;
 	memset(&ret, 0, sizeof(Instruction));
@@ -315,7 +318,6 @@ void parseInstruction(char *line, Instruction *ins) {
     ins->instruction = calloc(50, sizeof(char));
 	
 	disectInstructionName(ins);
-
 	getInstructionArguments(ins);
 }
 
@@ -386,15 +388,48 @@ void buffToFunc(Function *func, struct parserData *parser) {
 }
 
 void parseFunctionInstructions(Function *func) {
-	int i;
-	for(i=0;i<func->dataLength;i++) {
-		if(func->data[i]==NULL) continue;
-		if(strlen(func->data[i])<=1) continue;
-		if(checkImportantType(func->data[i])) continue;
-
+	int i,j=0;
+	for(i=0;i<func->dataLength;i++,j++) {
+		if(func->data[i]==NULL||
+				strlen(func->data[i])<=1||
+				checkImportantType(func->data[i])) {
+			if(j>0) j--;
+			continue;
+		}
 		parseInstruction(func->data[i],
-				&func->instructions[i]);
+				&func->instructions[j]);
 	}
+}
+
+void getFunctionType(struct parserData *parser, Function *func) {
+	char *line = strdup(
+			parser->fileBuffer[func->scope.lineNum]);
+	char *type = strstr(line, "~");
+	if(type!=NULL) {
+		type++;
+		type = strtok(type, ":");
+		Variable grabtype;
+		setVariableType(&grabtype, type,
+				func->scope.lineNum, parser->fData->fileName);
+		func->type = grabtype.type;
+	}
+}
+
+int verifyFunctionReturn(struct parserData *parser, Function *func) {
+	
+	int i;
+	if(func->type==VOID) return 1; /*you don't need to return in void*/
+	for(i=0;i<func->dataLength&&
+			func->instructions[i].instruction!=NULL;i++) {
+		if(!strcmp(func->instructions[i].instruction, "return")) {
+			return 1;
+		}
+	}
+
+	WLOG_WERROR(WERROR_NO_RETURN, 
+			parser->fData->fileName, func->scope.lineNum, 
+			func->funName, "");
+	return 0;
 }
 
 void getFunctionData(struct parserData *parser) {
@@ -414,11 +449,12 @@ void getFunctionData(struct parserData *parser) {
 			f.scope = *s;
 
 			buffToFunc(&f, parser);
+			getFunctionType(parser, &f);
 
-			f.instructions = calloc(f.dataLength, sizeof(Instruction));
+			f.instructions = calloc(f.dataLength+10, sizeof(Instruction));
 			parseFunctionInstructions(&f);
 
-			appendFuncArr(f, parser);
+			if(verifyFunctionReturn(parser, &f)) appendFuncArr(f, parser);
 		}
 	}
 }

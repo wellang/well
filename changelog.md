@@ -38,3 +38,8 @@
 
 * Fixing and cleaning up all the memory issues and whatnot.
 * trying to figure out a weird Instruction arg issue I am having.
+
+## 12/03/24 - return types
+
+* support for function types added.
+* asm output for returning values and void functions made

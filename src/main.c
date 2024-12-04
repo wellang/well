@@ -132,6 +132,12 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	
 }
 
+void cleanupAsm(wData *data, char *asmOut) {
+	if(data->KEEPASM) return;
+	char *args[] = {"rm", asmOut, NULL};
+	execvp("rm", args);
+}
+
 void compileFile(wData *data) {
 	char *fileDirect = strtok(data->fileName, ".");
 	strcat(fileDirect, ".s");
@@ -142,11 +148,11 @@ void compileFile(wData *data) {
 	char *args[] = {"gcc", fileDirect, data->ccFlags, NULL};
 	if(data->ccFlags==NULL) args[2] = ""; 
 	if(data->USEINFO) {
-		int argLen = ARRLEN(args);
 		char buf[256];
 		sprintf(buf, "%s %s %s", args[0], args[1], args[2]);
 		WLOG(INFO, buf);
 	}
 	execvp("gcc", args);
+	cleanupAsm(data, fileDirect);
 }
 
