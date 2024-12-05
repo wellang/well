@@ -10,7 +10,8 @@ typedef struct {
 	char *fileName;
 	struct ArgparseParser argParser;	
 	
-	int KEEPASM, USEINFO, USELD;
+	int KEEPASM, USEINFO, USELD, COBJ;
+	char *outputFile;
 	char *ccFlags;
 	char *ldflags;
 } wData;

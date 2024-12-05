@@ -80,12 +80,33 @@ typedef struct {
 	char *value;
 } Variable;
 
+struct Directives {
+	int NOMAIN;
+	/*TODO add more comp directives*/
+};
+
+struct Externs {
+	char **externs;
+	int externSize;
+	int capacity;
+};
+
+struct Inclusion {
+	char **includedFiles;
+	int includeSize;
+	int capacity;
+};
+
 /*Struct to hold arrays of parser handy data*/
 struct parserData {
 	wData *fData;
 	
 	char **fileBuffer;
 	int bufferSize;
+
+	struct Directives compDirectives;
+	struct Externs externals;
+	struct Inclusion includes;
 
 	Scope scopes[MAXSCOPES];
 	Function functions[MAXFUNCTIONS];

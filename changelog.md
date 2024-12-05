@@ -43,3 +43,8 @@
 
 * support for function types added.
 * asm output for returning values and void functions made
+
+## 12/05/24 - directives, compiler options
+
+* Added compiler directives for .well files, ``#NOMAIN`` for example tells the compiler to ignore main verification.
+* Added compiler CLI options for output names and object-only output.

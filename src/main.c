@@ -68,6 +68,7 @@ void runArgParsing(wData *data) {
 	char *help = "WELLANG CLI HELP:\n\n"
     "--help      | -h: Need help? Use -h\n"
     "--output    | -o: Set name of executable output\n"
+	"--cobject   | -c: Compiler to object(.o) file.\n"
     "--gcc       | -cc: Set your cflags (ex: wesm main.well -cc '-g -lpthread')\n"
     "--assembly  | -a: Keep the assembly output file\n"
     "--info      | -i: Shows extra debug information at compile time\n\n"
@@ -78,6 +79,22 @@ void runArgParsing(wData *data) {
 		WLOG(INFO, help);
 		exit(0);
 	}
+
+	if(argCheckOption(&data->argParser, "--output", "-o")) {
+		int i;
+		for(i=0;i<data->argParser.argc;i++) {
+			if(!strcmp(data->argParser.argv[i], "-o")||
+				!strcmp(data->argParser.argv[i], "--object")) {
+				if(i+1<data->argParser.argc) {
+					data->outputFile = data->argParser.argv[i+1];
+					break;
+				}
+			}
+		}	
+	}
+
+	if(argCheckOption(&data->argParser, "--cobject", "-c")) 
+		data->COBJ=1;
 	if(argCheckOption(&data->argParser, "--info", "-i")) 
 		data->USEINFO=1;
 	if(argCheckOption(&data->argParser, "--assembly", "-a"))
@@ -102,6 +119,11 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	data->argParser = argparse_init("well", argc, argv);
 	data->KEEPASM=0;
 	data->USEINFO=0;
+	data->USELD=0;
+	data->COBJ=0;
+	data->outputFile=NULL;
+	data->ccFlags=NULL;
+	data->ldflags=NULL;
 
 	int i;
 	for(i=0;i<argc;i++) {
@@ -122,6 +144,7 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 
 	argparse_add_option(&data->argParser, "--help", "-h", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--output", "-o", ARGPARSE_FLAG);
+	argparse_add_option(&data->argParser, "--cobject", "-c", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--gcc", "-cc", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--assembly", "-a", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--info", "-i", ARGPARSE_FLAG);
@@ -145,11 +168,26 @@ void compileFile(wData *data) {
 	if(data->USELD) {
 		return;
 	}
-	char *args[] = {"gcc", fileDirect, data->ccFlags, NULL};
-	if(data->ccFlags==NULL) args[2] = ""; 
-	if(data->USEINFO) {
+	if(data->outputFile!=NULL) {
 		char buf[256];
-		sprintf(buf, "%s %s %s", args[0], args[1], args[2]);
+		snprintf(buf, sizeof(buf), "-o %s", data->outputFile);
+		data->outputFile = strdup(buf);
+	}
+	char *args[] = {
+		"gcc", fileDirect, data->ccFlags, "", 
+		data->outputFile, NULL};
+	if(data->ccFlags==NULL) args[2] = ""; 
+	if(data->COBJ) args[3] = "-c";
+	if(data->outputFile==NULL) args[4] = NULL;
+	if(data->USEINFO) {
+		char *buf = calloc(256, sizeof(char));
+		int i;
+		for(i=0;i<ARRLEN(args)-1;i++) {
+			if(args[i]==NULL) break;
+			char str[100];
+			snprintf(str, sizeof(str), "%s ", args[i]);
+			strcat(buf, str);
+		}
 		WLOG(INFO, buf);
 	}
 	execvp("gcc", args);

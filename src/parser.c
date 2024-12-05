@@ -482,9 +482,26 @@ int verifyMainFunction(struct parserData *parser) {
 }
 
 
-/* TODO
+/*
  * Compiler directive handling
  * */
+void getCompTimeDirectives(struct parserData *parser) {
+	parser->compDirectives.NOMAIN = 0;
+	int i;
+	for(i=0;i<parser->bufferSize;i++) {
+		char *line = strdup(parser->fileBuffer[i]);
+		char *directive = strchr(line, '#');
+		if(directive!=NULL) {
+			directive++;
+			while(directive[strlen(directive)-1]=='\n') directive[strlen(directive)-1] = '\0';
+			directive = strtok(directive, " ");
+			/*See what the directive is*/
+			if(!strcmp(directive, "nomain")||
+					!strcmp(directive, "NOMAIN")) parser->compDirectives.NOMAIN=1;
+		}
+	}
+}
+
 
 /*TODO
  * Extern handling
@@ -501,10 +518,13 @@ int verifyMainFunction(struct parserData *parser) {
 
 
 void parseProgram(struct parserData *parser) {
+	getCompTimeDirectives(parser);
+
 	getScopes(parser);
 	getFunctionData(parser);
 	getVariables(parser);
-	verifyMainFunction(parser);
+	if(!parser->compDirectives.NOMAIN)
+		verifyMainFunction(parser);
 	/*dumpVariables(parser);*/
 	/* Useful for debugging*/
 	 /*dumpScopes(parser);*/
