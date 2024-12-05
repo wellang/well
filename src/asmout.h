@@ -24,6 +24,9 @@ struct asmBuffers {
 	char *variables;
 	char *functions;
 
+	char *externals;
+	char *includes;
+
 	struct bufferOut output;
 };
 

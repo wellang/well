@@ -199,8 +199,8 @@ void convertVariables(AsmOut *out) {
 		 * printf("%s = %s\n", 
 				out->parser->variables[i].varName,
 				out->parser->variables[i].value);*/
-		char *curName = out->parser->variables[i].varName;
-		char *curValue = out->parser->variables[i].value;
+		char *curName = strdup(out->parser->variables[i].varName);
+		char *curValue = strdup(out->parser->variables[i].value);
 		char *asmVar;	
 		switch(out->parser->variables[i].type) {
 			case INT: asmVar = getAsmInt(curName, curValue);break;
@@ -212,9 +212,31 @@ void convertVariables(AsmOut *out) {
 		if(asmVar!=NULL) {
 			totalSize += strlen(asmVar);
 			out->buffers.variables = (char *)realloc(
-					out->buffers.variables, sizeof(char)*(totalSize+1));
+					out->buffers.variables, sizeof(char)*(totalSize+2));
 			strcat(out->buffers.variables, asmVar);	
 		}	
+	}
+}
+
+/*
+ * Externals and inclusiom
+ * */
+
+void convertExternals_Includes(AsmOut *out) {
+	out->buffers.externals = calloc(1, sizeof(char));
+	out->buffers.includes = calloc(1, sizeof(char));
+	int totalSize=1;
+	int i;
+	for(i=0;i<out->parser->externals.externSize;i++) {
+		char *curEx = strdup(out->parser->externals.externs[i]);
+		char buf[strlen(curEx)+100];
+		snprintf(buf, sizeof(buf), "\t.extern %s\n", curEx);
+		if(curEx!=NULL) {
+			totalSize+=strlen(buf);
+			out->buffers.externals = 
+				(char *)realloc(out->buffers.externals, sizeof(char)*(totalSize+2));
+			strcat(out->buffers.externals, buf);
+		}
 	}
 }
 
@@ -227,13 +249,17 @@ void completeBuffer(AsmOut *out) {
 			out->buffers.variables==NULL) return;
 	int totalSize = 
 		strlen(out->buffers.functions)+
-		strlen(out->buffers.variables);
-	out->buffers.output.asmOutBuffer = (char *)malloc(sizeof(char)*(totalSize+100));
-	strcpy(out->buffers.output.asmOutBuffer, out->buffers.functions);
+		strlen(out->buffers.variables)+
+		strlen(out->buffers.externals)+
+		strlen(out->buffers.includes);
+	out->buffers.output.asmOutBuffer = calloc(totalSize*100, sizeof(char));
+	strcpy(out->buffers.output.asmOutBuffer, out->buffers.externals);
+	strcat(out->buffers.output.asmOutBuffer, out->buffers.functions);
 	strcat(out->buffers.output.asmOutBuffer, out->buffers.variables);
 }
 
 void convertToAsm(AsmOut *out) {
+	convertExternals_Includes(out);
 	convertFunctions(out);
 	convertVariables(out);
 

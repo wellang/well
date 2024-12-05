@@ -14,6 +14,8 @@ static struct wErrors errors;
 #define WERROR_UNINITIALIZED_VARIABLE 4
 #define WERROR_UNDEFINED_TYPE 5
 #define WERROR_NO_RETURN 6
+#define WERROR_INVALID_SYNTAX 7
+#define WERROR_EXTERN_NOVALUE 8
 
 #define WLOG_WERROR(werror, file, line, function, ...) 		\
 	fprintf(stderr, "%s \033[31m"#werror"\033[0m in %s:%d - %s\n%s",		\

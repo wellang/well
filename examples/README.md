@@ -12,8 +12,9 @@
 }
 
 ~int:main {
-    move~ test, r1
+    move~ text, r1
     call~ printf
+    return~ 0
 }
 ```
 

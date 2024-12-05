@@ -503,9 +503,41 @@ void getCompTimeDirectives(struct parserData *parser) {
 }
 
 
-/*TODO
+/*
  * Extern handling
  * */
+
+void getExternals(struct parserData *parser) {
+	static int defaultArrSize = 100;
+	parser->externals.externs = calloc(defaultArrSize+2, sizeof(char *));
+	parser->externals.capacity = defaultArrSize;
+	parser->externals.externSize = 0;
+	int i;
+	for(i=0;i<MAXSCOPES&&parser->scopes[i].scopeName!=NULL;i++) {
+		if(parser->scopes[i].scopeType==EXTERN) {
+			char *line = strdup(parser->fileBuffer[parser->scopes[i].lineNum]);
+			char *external = strstr(line, "~extern");
+			if(external!=NULL) {
+				external+=strlen("~extern");
+				while(external[0]==' ') external++;
+				while(external[strlen(external)-1]=='\n') external[strlen(external)-1] = '\0';
+				if(parser->externals.externSize>=parser->externals.capacity) {
+					parser->externals.capacity*=2;
+					parser->externals.externs = 
+						(char **)realloc(parser->externals.externs, 
+								sizeof(char *)*parser->externals.capacity);
+				}
+				parser->externals.externs[parser->externals.externSize] =
+					strdup(external);
+				parser->externals.externSize++;
+			} else {
+				WLOG_WERROR(WERROR_EXTERN_NOVALUE,
+						parser->fData->fileName, 
+						parser->scopes[i].lineNum, "Global", "");	
+			}
+		}
+	}
+}
 
 /* TODO
  * Inclusion handling
@@ -521,6 +553,7 @@ void parseProgram(struct parserData *parser) {
 	getCompTimeDirectives(parser);
 
 	getScopes(parser);
+	getExternals(parser);
 	getFunctionData(parser);
 	getVariables(parser);
 	if(!parser->compDirectives.NOMAIN)
