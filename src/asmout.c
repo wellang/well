@@ -224,9 +224,9 @@ void convertVariables(AsmOut *out) {
 
 void convertExternals_Includes(AsmOut *out) {
 	out->buffers.externals = calloc(1, sizeof(char));
-	out->buffers.includes = calloc(1, sizeof(char));
 	int totalSize=1;
 	int i;
+	/*Externals*/
 	for(i=0;i<out->parser->externals.externSize;i++) {
 		char *curEx = strdup(out->parser->externals.externs[i]);
 		char buf[strlen(curEx)+100];
@@ -250,8 +250,7 @@ void completeBuffer(AsmOut *out) {
 	int totalSize = 
 		strlen(out->buffers.functions)+
 		strlen(out->buffers.variables)+
-		strlen(out->buffers.externals)+
-		strlen(out->buffers.includes);
+		strlen(out->buffers.externals);
 	out->buffers.output.asmOutBuffer = calloc(totalSize*100, sizeof(char));
 	strcpy(out->buffers.output.asmOutBuffer, out->buffers.externals);
 	strcat(out->buffers.output.asmOutBuffer, out->buffers.functions);
@@ -282,6 +281,7 @@ void freeAsm(AsmOut *out) {
 }
 
 void initAsmOut(struct parserData *parser, AsmOut *output) {
+	if(output==NULL) output = calloc(1, sizeof(AsmOut));
 	output->parser = (struct parserData *)malloc(sizeof(*parser));
 	output->parser = parser;
 	int i;

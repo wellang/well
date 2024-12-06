@@ -49,3 +49,8 @@
 * Added compiler directives for .well files, ``#NOMAIN`` for example tells the compiler to ignore main verification.
 * Added compiler CLI options for output names and object-only output.
 * Added extern support: ``~extern foo``.
+
+## 12/06/24 - Local file inclusion, C flags and object compilation
+
+* Added support for including local ``.well`` files. ``~include "foo.well"``
+* Changed the way files are compiled and linked.

@@ -23,7 +23,6 @@ int main(int argc, char **argv) {
 
 	wData data;
 	initArgParseArgs(&data, argc, argv);
-	data.ccFlags = NULL;
 	runArgParsing(&data);	
 
 	WASSERT(data.main!=NULL,
@@ -124,6 +123,9 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	data->outputFile=NULL;
 	data->ccFlags=NULL;
 	data->ldflags=NULL;
+	data->flagLen=0;
+	data->cap=1;
+	data->flags = calloc(1, sizeof(char *));
 
 	int i;
 	for(i=0;i<argc;i++) {
@@ -151,7 +153,7 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	argparse_add_option(&data->argParser, "--use-gnuld", "-use-ld", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--ldflags", "-ldflags", ARGPARSE_FLAG);
 	
-	argparse_error(data->argParser);
+	/*argparse_error(data->argParser);*/
 	
 }
 
@@ -159,6 +161,17 @@ void cleanupAsm(wData *data, char *asmOut) {
 	if(data->KEEPASM) return;
 	char *args[] = {"rm", asmOut, NULL};
 	execvp("rm", args);
+}
+
+void tokenizeCCFlags(wData *data) {
+	char *token = strtok(data->ccFlags, " ");
+	for(;token!=NULL;data->flagLen++) {
+		data->flags[data->flagLen] = strdup(token);
+		data->cap++;
+		data->flags = (char **)realloc(data->flags, sizeof(char *)*data->cap);
+		token = strtok(NULL, " ");
+		if(data->flagLen==0&&token==NULL) break;
+	}
 }
 
 void compileFile(wData *data) {
@@ -173,12 +186,11 @@ void compileFile(wData *data) {
 		snprintf(buf, sizeof(buf), "-o %s", data->outputFile);
 		data->outputFile = strdup(buf);
 	}
-	char *args[] = {
-		"gcc", fileDirect, data->ccFlags, "", 
-		data->outputFile, NULL};
-	if(data->ccFlags==NULL) args[2] = ""; 
-	if(data->COBJ) args[3] = "-c";
-	if(data->outputFile==NULL) args[4] = NULL;
+	tokenizeCCFlags(data);
+	char *args[] = {"gcc", fileDirect, "-c", NULL};
+	/*if(data->ccFlags==NULL) args[2] = ""; */
+	/*if(data->COBJ) args[3] = "-c";*/
+	/*if(data->outputFile==NULL) args[4] = NULL;*/
 	if(data->USEINFO) {
 		char *buf = calloc(256, sizeof(char));
 		int i;
@@ -190,7 +202,73 @@ void compileFile(wData *data) {
 		}
 		WLOG(INFO, buf);
 	}
-	execvp("gcc", args);
-	cleanupAsm(data, fileDirect);
+	/*run compiler*/
+	pid_t pid = fork();
+	if(pid==0) {
+		execvp("gcc", args);
+	} else if(pid>0)  {
+		int status;
+		waitpid(pid, &status, 0);
+
+		int i;
+		for(i=0;i<data->includeSize;i++) {
+			args[1] = strdup(data->includedFiles[i]);
+			if(data->USEINFO) {
+				char *buf = calloc(256, sizeof(char));
+				int j;
+				for(j=0;j<ARRLEN(args)-1;j++) {
+					if(args[i]==NULL) break;
+					char str[100];
+					snprintf(str, sizeof(str), "%s ", args[j]);
+					strcat(buf, str);
+				}
+				WLOG(INFO, buf);
+			}
+			pid = fork();
+			if(pid==0) execvp("gcc", args);
+			else if(pid>0) waitpid(pid, &status, 0);
+		}
+		/*link objs*/
+		char *linkArgs[ARRLEN(args)+data->includeSize+data->flagLen];
+		linkArgs[0] = "gcc";
+		linkArgs[1] = data->outputFile;
+		fileDirect = strtok(fileDirect, ".");
+		strcat(fileDirect, ".o");
+		linkArgs[2] = strdup(fileDirect);
+		for(i=0;i<data->includeSize;i++) {
+			char *curInclude = strtok(data->includedFiles[i], ".");
+			strcat(curInclude, ".o");
+			linkArgs[i+3] = strdup(curInclude);
+		}
+		/*Get C flags*/
+		int l;
+		for(l=0;l<data->flagLen;l++)
+			linkArgs[l+data->includeSize+3] = strdup(data->flags[l]);
+		linkArgs[l+data->includeSize+4] = NULL;
+		
+		/*trim up linkArgs*/
+		linkArgs[i+5] = NULL;
+		for(i=0;i<ARRLEN(linkArgs)-1;i++) {
+			if((linkArgs[i]==NULL||!strcmp(linkArgs[i],""))
+					&&i+1<ARRLEN(linkArgs)-1) {
+				linkArgs[i] = linkArgs[i+1];
+				linkArgs[i+1] = NULL;
+				if(linkArgs[i]==NULL) linkArgs[i] = "";
+			}
+		}
+		if(data->USEINFO) {
+			char *buf = calloc(256, sizeof(char));
+			int j;
+			for(j=0;j<ARRLEN(linkArgs)-1;j++) {
+				if(linkArgs[j]==NULL) break;
+				char str[100];
+				snprintf(str, sizeof(str), "%s ", linkArgs[j]);	
+				strcat(buf, str);
+			}
+			WLOG(INFO, buf);
+		}
+		if(fork()==0) execvp("gcc", linkArgs);
+	}
+	/*cleanupAsm(data, fileDirect);*/
 }
 

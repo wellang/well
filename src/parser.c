@@ -1,5 +1,6 @@
 /*Copyright (c) 2024 Tristan Wellman*/
 #include "parser.h"
+#include "asmout.h"
 #include "werror.h"
 
 struct parserData *gPData;
@@ -41,7 +42,7 @@ enum wTypes getScopeType(char *line) {
 		if(strstr(line, "if")) return IFSTATE;
 		if(strstr(line, "while")||
 				strstr(line, "for")) return LOOP;
-	}
+}
 
 	if(col&&curl) return FUNCTION;
 	if(col&&!curl) return VARIABLE;
@@ -187,7 +188,7 @@ void getVariables(struct parserData *parser) {
 			
 			parser->variables = (Variable *)realloc(parser->variables, 
 					sizeof(Variable)*(parser->totalVariables+1));
-			char *line = parser->fileBuffer[parser->scopes[i].lineNum];
+		char *line = parser->fileBuffer[parser->scopes[i].lineNum];
 			char *data = strstr(line, "=");
 			if(data==NULL) {
  				WLOG_WERROR(WERROR_UNINITIALIZED_VARIABLE,
@@ -539,9 +540,78 @@ void getExternals(struct parserData *parser) {
 	}
 }
 
-/* TODO
+/* 
  * Inclusion handling
  * */
+
+void getIncludedFiles(struct parserData *parser) {
+	static int defaultArrSize = 100;
+	parser->includes.includedFiles = calloc(defaultArrSize+2, sizeof(char *));
+	parser->fData->includedFiles = calloc(defaultArrSize+2, sizeof(char *));
+	parser->includes.capacity = defaultArrSize;
+	parser->includes.includeSize = 0;
+	parser->fData->includeSize = 0;
+	int i;
+	for(i=0;i<MAXSCOPES&&parser->scopes[i].scopeName!=NULL;i++) {
+		if(parser->scopes[i].scopeType==INCLUDE) {
+			char *line = strdup(parser->fileBuffer[parser->scopes[i].lineNum]);
+			char *included = strstr(line, "~include");
+			if(included!=NULL) {
+				included+=strlen("~include");
+				while(included[0]==' ') included++;
+				while(included[strlen(included)-1]=='\n') included[strlen(included)-1] = '\0';
+				if(included[0]=='<') {
+					/*TODO standard*/
+				} else if(included[0]=='\"'&&
+						included[strlen(included)-1]=='\"') {
+					included++;
+					included[strlen(included)-1] = '\0';
+					if(parser->includes.includeSize>=parser->includes.capacity) {
+						parser->includes.capacity*=2;
+						parser->includes.includedFiles = 
+							(char **)realloc(parser->includes.includedFiles, 
+									sizeof(char *)*parser->includes.capacity);
+						parser->fData->includedFiles = 
+							(char **)realloc(parser->fData->includedFiles,
+									sizeof(char *)*parser->includes.capacity);
+
+					}
+					parser->includes.includedFiles[parser->includes.includeSize] =
+						strdup(included);
+					/*set the .s file so we can create objs*/
+					char *tmp = strdup(included);
+					char *asmFile = strtok(tmp, ".");
+					strcat(asmFile, ".s");
+					parser->fData->includedFiles[parser->fData->includeSize] =
+						strdup(asmFile);
+
+					parser->includes.includeSize++;
+					parser->fData->includeSize++;
+					/*Run the parser on the included file*/
+					wData *data = calloc(1, sizeof(wData));
+					data->main = fopen(included, "r");
+					data->fileName = strdup(included);
+					WASSERT(data->main!=NULL,
+						"FATAL:: Failed to open file: %s", included);
+					struct parserData *p = calloc(1, sizeof(struct parserData));
+					p = initParser(data);
+					parseProgram(p);
+					AsmOut *output = calloc(1, sizeof(AsmOut));
+					initAsmOut(p, output);
+					convertToAsm(output);
+					freeAsm(output);
+					free(data);
+					free(p);
+					free(output);
+				}
+			} else {
+				WLOG_WERROR(WERROR_EXTERN_NOVALUE,
+					parser->fData->fileName, 
+					parser->scopes[i].lineNum, "Global", "");	
+			}
+		}
+	}
+}
 
 /* * * * *
  * Parser initialization and running functions
@@ -553,6 +623,7 @@ void parseProgram(struct parserData *parser) {
 	getCompTimeDirectives(parser);
 
 	getScopes(parser);
+	getIncludedFiles(parser);
 	getExternals(parser);
 	getFunctionData(parser);
 	getVariables(parser);

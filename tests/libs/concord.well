@@ -1,0 +1,14 @@
+#NOMAIN
+
+; concord functions
+~extern discord_init
+~extern discord_add_intents
+~extern discord_set_on_ready
+~extern discord_set_on_message_create
+~extern discord_run
+~extern discord_create_message
+
+; log functions
+~extern log_log
+~extern log_info
+
