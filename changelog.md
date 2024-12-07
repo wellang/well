@@ -50,7 +50,9 @@
 * Added compiler CLI options for output names and object-only output.
 * Added extern support: ``~extern foo``.
 
-## 12/06/24 - Local file inclusion, C flags and object compilation
+## 12/06/24 - Local file inclusion, C flags and object compilation, register conversion
 
 * Added support for including local ``.well`` files. ``~include "foo.well"``
 * Changed the way files are compiled and linked.
+* Added Arm Mac register conversions.
+* added sstruct & lstruct instructions to save and load returned C structures.

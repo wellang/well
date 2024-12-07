@@ -1,0 +1,32 @@
+~include "raylib.well"
+
+~constants {
+	~string:title = "Hello Raylib!"
+	~int:screenWidth = 480
+	~int:screenHeight = 480
+	~int:fpsLimit = 60
+	~int:retz = 1
+}
+
+~void:run {
+	call~ BeginDrawing
+	call~ EndDrawing
+	call~ WindowShouldClose
+	cmpz~ r1, #0, run
+	call~ CloseWindow
+	move~ retz, r1
+	call~ exit
+}
+
+~int:main {
+	move~ screenWidth, r1
+	move~ screenHeight, r2
+	move~ title, r3
+	call~ InitWindow
+	move~ fpsLimit, r1
+	call~ SetTargetFPS
+	call~ WindowShouldClose
+	cmpz~ r1, #0, run
+	call~ CloseWindow
+	return~ 0
+}

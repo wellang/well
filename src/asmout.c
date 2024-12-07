@@ -10,6 +10,30 @@
  * Register conversion
  * */
 
+int checkRegister(char *reg) {
+	char *num = strstr(reg, "r");
+	if(num!=NULL) {
+		num++;
+		if(strlen(num)>1) return 0;
+		int regNum = atoi(num);
+		if(regNum>0&&regNum<9) return 1;
+	}
+	return 0;
+}
+
+int regToEnum(char *reg) {
+	if(!strcmp(reg, "r1")) return R1;
+	if(!strcmp(reg, "r2")) return R2;
+	if(!strcmp(reg, "r3")) return R3;
+	if(!strcmp(reg, "r4")) return R4;
+	if(!strcmp(reg, "r5")) return R5;
+	if(!strcmp(reg, "r6")) return R6;
+	if(!strcmp(reg, "r7")) return R7;
+	if(!strcmp(reg, "r8")) return R8;
+	if(!strcmp(reg, "sp")) return SP;
+	return R1;
+}
+
 /*
  * Instruction Conversion
  * */
@@ -162,7 +186,7 @@ char *getAsmChar(char *name, char *value) {
 	while(value[strlen(value)-1]=='\'') value[strlen(value)-1] = '\0';
 	static int cCount = 0;
 	char nameBuf[strlen(name)+100];
-	snprintf(nameBuf, sizeof(nameBuf), "wl_ch_%s%d", name, cCount);
+	snprintf(nameBuf, sizeof(nameBuf), "wl_ch_%s", name);
 	char buf[strlen(name)+strlen(value)+100];
 	snprintf(buf, sizeof(buf),
 			"\n\t.global %s\n%s:\n\t.byte %d\n",
@@ -176,11 +200,11 @@ char *getAsmInt(char *name, char *value) {
 	char *hexValue = uint64ToHex(value);
 	static int iCount = 0;
 	char nameBuf[strlen(name)+100];
-	snprintf(nameBuf, sizeof(nameBuf), "wl_int_%s%d", name, iCount);
+	snprintf(nameBuf, sizeof(nameBuf), "wl_int_%s", name);
 	char buf[strlen(nameBuf)+strlen(hexValue)+100];
 	snprintf(buf, sizeof(buf), 
 			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.long %s\n",
-			nameBuf, nameBuf, hexValue);	
+			nameBuf, nameBuf, value);	
 	iCount++;
 	char *ret = strdup(buf);
 	return ret;

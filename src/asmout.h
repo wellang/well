@@ -8,6 +8,24 @@
 
 #define DEFVARBSIZE 1024
 
+/*
+ * Registers:
+ * R0 - R7: General purpose registers
+ * SP: Stack Pointer.
+ * TODO add more for compat
+ * */
+enum registers {
+	R1=0,
+	R2,
+	R3,
+	R4,
+	R5,
+	R6,
+	R7,
+	R8,
+	SP
+};
+
 struct bufferOut {
 	char *asmOutBuffer; /*single super long string*/
 	int AOBSize;
@@ -43,6 +61,8 @@ typedef struct {
 
 } AsmOut;
 
+int checkRegister(char *reg);
+int regToEnum(char *reg);
 void convertToAsm(AsmOut *out); 
 void freeAsm(AsmOut *out);
 void initAsmOut(struct parserData *parser, AsmOut *output); 

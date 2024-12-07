@@ -1,0 +1,20 @@
+#NOMAIN
+
+; concord functions
+~extern discord_init
+~extern discord_add_intents
+~extern discord_set_on_ready
+~extern discord_set_on_message_create
+~extern discord_run
+~extern discord_create_message
+
+; log functions
+~extern _log_log
+
+~constants {
+	~int:DISCORD_GATEWAY_MESSAGE_CONTENT = 32768
+}
+
+~void:log_info {
+	call~ _log_log
+}

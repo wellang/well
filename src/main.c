@@ -247,7 +247,6 @@ void compileFile(wData *data) {
 		linkArgs[l+data->includeSize+4] = NULL;
 		
 		/*trim up linkArgs*/
-		linkArgs[i+5] = NULL;
 		for(i=0;i<ARRLEN(linkArgs)-1;i++) {
 			if((linkArgs[i]==NULL||!strcmp(linkArgs[i],""))
 					&&i+1<ARRLEN(linkArgs)-1) {

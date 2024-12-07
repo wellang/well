@@ -1,0 +1,31 @@
+~include "concord.well"
+
+~constants {
+	~string:BOT_TOKEN = "TOKEN"
+	~string:test = "DO NOT REDEEM!\n"
+}
+
+~void:on_ready {
+
+}
+
+~void:on_message {
+
+}
+
+~int:main {
+	
+	move~ BOT_TOKEN, r1
+	call~ discord_init
+	sstruct~ r1
+	
+	lstruct~ r1
+	move~ DISCORD_GATEWAY_MESSAGE_CONTENT, r2
+	call~ discord_add_intents
+
+	move~ test, r1
+	call~ printf
+
+	return~ 0
+}
+
