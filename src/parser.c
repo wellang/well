@@ -10,8 +10,9 @@ struct parserData *gPData;
  * EX: ~constants or ~type:function 
  * */
 int checkImportantType(char *line) {
+    if(line==NULL||*line=='\0') return 0;
 	int i, stype=0;
-	for(i=0;line[i]!='\0';i++) {
+	for(i=0;i<strlen(line)&&line[i]!='\0';i++) {
 		/* 
 		 * ~ is the special sensor for types or instructions
 		 * ~... is a spectial type,
@@ -278,7 +279,8 @@ void getInstructionArguments(Instruction *ins) {
 		ins->argLen = 0;
 		ins->capacity = DEFAULTINSARGSIZE;
 		ins->arguments = calloc(ins->capacity, sizeof(char *));
-		char *backup = strdup(ins->line);
+        char *backup = calloc(strlen(ins->line)+1, sizeof(char));
+		strcpy(backup, ins->line);
 		char *ignoreIns = strstr(backup, "~");
 		if(ignoreIns!=NULL) {
 			ignoreIns++;
@@ -299,25 +301,21 @@ void getInstructionArguments(Instruction *ins) {
 
 void disectInstructionName(Instruction *ins) {
 	if(ins->line!=NULL) {
-		char *backup = strdup(ins->line);
+        char *backup = calloc(strlen(ins->line)+1, sizeof(char));
+		strcpy(backup, ins->line);
 		EATTABS(backup);
 		/*move~ text, r1*/
+
 		char *name = strtok(backup, "~");
-		if(name!=NULL) ins->instruction = strdup(name);
+		if(name!=NULL) {
+			ins->instruction = calloc(strlen(name)+1, sizeof(char));
+            strcpy(ins->instruction, name);
+        }
 		free(backup);
 	}
 }
 
 void parseInstruction(char *line, Instruction *ins) {
-    if (ins==NULL||line==NULL) return;
-	memset(ins, 0, sizeof(Instruction));
-	ins->line = NULL;
-    ins->instruction = NULL;
-    ins->arguments = NULL;
-    ins->line = strdup(line);
-    /*If you have an instruction name that is more than 50 characters... ._. */
-    ins->instruction = calloc(50, sizeof(char));
-	
 	disectInstructionName(ins);
 	getInstructionArguments(ins);
 }
@@ -361,7 +359,9 @@ void buffToFunc(Function *func, struct parserData *parser) {
 	/*NOTE: func data buffer must already be allocated, I aint checking it!*/
 	int i = func->scope.lineNum+1;
 	int scopeCarry=0; /*amount of scopes inside the function I.E. loops*/
+	func->dataLength = 0;
 	for(;i<parser->bufferSize;i++) {
+        if(parser->fileBuffer[i]==NULL||parser->fileBuffer[i][0]=='\n') continue;
 		if(checkFuncForExternScope(i, parser)) scopeCarry++;
 		if(strstr(parser->fileBuffer[i], "}")) {
 
@@ -377,7 +377,13 @@ void buffToFunc(Function *func, struct parserData *parser) {
 			if(scopeCarry<0) break;
 		}
 		int pos = i-(func->scope.lineNum+1);
-		func->data[pos] = strdup(parser->fileBuffer[i]);
+        if(pos>=func->capacity) {
+          	func->capacity+=DEFAULTINSARGSIZE/2;
+          	func->data = (char **)realloc(func->data, sizeof(char *)*func->capacity);
+        }
+        func->data[pos] = calloc(strlen(parser->fileBuffer[i])+1, sizeof(char));
+		strcpy(func->data[pos], parser->fileBuffer[i]);
+
 		func->dataLength++;
 	}
 	if(scopeCarry>0) {
@@ -391,21 +397,29 @@ void buffToFunc(Function *func, struct parserData *parser) {
 void parseFunctionInstructions(Function *func) {
 	int i,j=0;
 	for(i=0;i<func->dataLength;i++,j++) {
+
+        if(func->data[i][0]=='\n'||func->data[i][0]=='\0') continue;
 		if(func->data[i]==NULL||
-				strlen(func->data[i])<=1||
 				checkImportantType(func->data[i])) {
 			if(j>0) j--;
 			continue;
 		}
-		parseInstruction(func->data[i],
+        char *cpy = calloc(strlen(func->data[i])+1, sizeof(char));
+        strcpy(cpy, func->data[i]);
+		/*memset(func->instructions[i], 0, sizeof(Instruction));*/
+		func->instructions[j].line = calloc(strlen(func->data[i])+1, sizeof(char));
+		strcpy(func->instructions[j].line, func->data[i]);
+		func->instructions[j].instruction = NULL;
+		func->instructions[j].arguments = NULL;
+		parseInstruction(cpy,
 				&func->instructions[j]);
 	}
 }
 
 void getFunctionType(struct parserData *parser, Function *func) {
-	char *line = strdup(
-			parser->fileBuffer[func->scope.lineNum]);
-	char *type = strstr(line, "~");
+    if(func->scope.lineNum>parser->bufferSize) return;
+    if(parser->fileBuffer[func->scope.lineNum]==NULL) return;
+	char *type = strstr(parser->fileBuffer[func->scope.lineNum], "~");
 	if(type!=NULL) {
 		type++;
 		type = strtok(type, ":");
@@ -417,7 +431,7 @@ void getFunctionType(struct parserData *parser, Function *func) {
 }
 
 int verifyFunctionReturn(struct parserData *parser, Function *func) {
-	
+	if(parser==NULL||func==NULL) return 0;
 	int i;
 	if(func->type==VOID) return 1; /*you don't need to return in void*/
 	for(i=0;i<func->dataLength&&
@@ -436,17 +450,18 @@ int verifyFunctionReturn(struct parserData *parser, Function *func) {
 void getFunctionData(struct parserData *parser) {
 	int i;
 	/*scope ptr*/
-	Scope *s = (Scope *)malloc(sizeof(Scope));
+	Scope *s = calloc(1, sizeof(Scope));
 	for(i=0;i<MAXSCOPES&&parser->scopes[i].scopeName!=NULL&&
 			(s=&parser->scopes[i]);i++) {
 		/*Make sure it's a function scope*/
 		if(s->scopeType==FUNCTION) {
 			Function f;
 			memset(&f, 0, sizeof(Function));
-			f.data = calloc(DEFMAXFSIZE, sizeof(char *));
+			f.data = calloc(DEFMAXFSIZE+2, sizeof(char *));
+            f.capacity = DEFMAXFSIZE;
 			f.dataLength = 0;
-			f.funName = calloc(256, sizeof(char));
-			f.funName = strdup(s->scopeName);
+			f.funName = calloc(strlen(s->scopeName)+1, sizeof(char));
+			strcpy(f.funName, s->scopeName);
 			f.scope = *s;
 
 			buffToFunc(&f, parser);
@@ -473,7 +488,7 @@ void dumpFunctionData(struct parserData *parser) {
 
 int verifyMainFunction(struct parserData *parser) {
 	int i;
-	for(i=0;i<MAXFUNCTIONS&&parser->functions[i].funName!=NULL;i++) {
+	for(i=0;i<parser->totalFunctions&&parser->functions[i].funName!=NULL;i++) {
 		if(!strcmp(parser->functions[i].funName, "main")) return 1;
 	}
 	WLOG_WERROR(WERROR_MAIN, 
@@ -490,8 +505,8 @@ void getCompTimeDirectives(struct parserData *parser) {
 	parser->compDirectives.NOMAIN = 0;
 	int i;
 	for(i=0;i<parser->bufferSize;i++) {
-		char *line = strdup(parser->fileBuffer[i]);
-		char *directive = strchr(line, '#');
+		if(parser->fileBuffer[i]==NULL) continue;
+		char *directive = strchr(parser->fileBuffer[i], '#');
 		if(directive!=NULL) {
 			directive++;
 			while(directive[strlen(directive)-1]=='\n') directive[strlen(directive)-1] = '\0';
@@ -637,22 +652,22 @@ void parseProgram(struct parserData *parser) {
 }
 
 struct parserData *initParser(wData *data) {
-	gPData = (struct parserData *)malloc(sizeof(struct parserData));
+    gPData = calloc(1, sizeof(struct parserData));
 	gPData->fData = data;
 
 	WASSERT(gPData->fData->main!=NULL,
 			"FATAL:: Main file not found!");
 
 
-	gPData->fileBuffer = (char **)malloc(sizeof(char *)*1024);
+	gPData->fileBuffer = calloc(2048, sizeof(char *));
 
 	/*Get all the file data into the file buffer*/
-	char line[1024];
+	char line[2048];
 	int i, mul=1;
 	for(i=0;fgets(line, sizeof(line), gPData->fData->main)!=NULL;i++) { 
-		if(i>=1024*mul) {
+		if(i>=2048*mul) {
 			gPData->fileBuffer = (char **)realloc(gPData->fileBuffer,
-					sizeof(char *)*1024);
+					sizeof(char *)*(2048*mul));
 			mul++;
 		} 
 

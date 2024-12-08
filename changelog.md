@@ -56,3 +56,8 @@
 * Changed the way files are compiled and linked.
 * Added Arm Mac register conversions.
 * added sstruct & lstruct instructions to save and load returned C structures.
+
+## 12/08/24 - Get well compiling on windoez
+
+* Changed some memory stuff so it will run fine on windows with Cygwin.
+* Started adding stuff for AMD_X86_64 compilation.

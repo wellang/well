@@ -138,7 +138,8 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 		snprintf(outBuf, sizeof(outBuf), "\ttbz %s, %s, _%s\n", arg1, arg2, arg3);
 	}
 
-	char *ret = strdup(outBuf);
+	char *ret = calloc(strlen(outBuf)+1, sizeof(char));
+	strcpy(ret, outBuf);
 	return ret;
 }
 

@@ -5,6 +5,7 @@
 #include "cpu.h"
 
 #include "ARM_MAC.h"
+#include "AMD_X86_64.h"
 
 /*
  * Register conversion
@@ -34,22 +35,6 @@ int regToEnum(char *reg) {
 	return R1;
 }
 
-/*
- * Instruction Conversion
- * */
-
-char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
-	char outBuf[100];
-	if(!strcmp(ins.instruction, "move")) {
-		printf("%s\n", ins.arguments[0]);
-		snprintf(outBuf, sizeof(outBuf), 
-				"\tmov %s(%%rip),%s\n",
-				ins.arguments[0], ins.arguments[1]);
-	}
-	char *ret = (char *)malloc(sizeof(char)*(strlen(outBuf)+2));
-	strcpy(ret, outBuf);
-	return ret;
-} 
 
 /* 
  * Funtion output
@@ -111,6 +96,7 @@ void convertFunctions(AsmOut *out) {
 				/*intel*/
 				case AMD_X86_64:							
 							asmInstruction = convertInstructionAMD_X86_64(out, *curIns);
+                            stackAllocation = stackAllocateAMD_X86_64();
 							break;
 				case I386: break; /*TODO*/
 				case ITANIUM_64: break; /*TODO*/
@@ -127,17 +113,18 @@ void convertFunctions(AsmOut *out) {
 				/*SUN*/
 				case SPARC: break; /*TODO*/
 			};
-
-			bufferSize+=strlen(asmInstruction)+
-						strlen(stackAllocation)+2;
-			out->buffers.functions =
-				(char *)realloc(out->buffers.functions, bufferSize);
-			if(setAllocation==0) {
-				strcat(out->buffers.functions, stackAllocation);
-				setAllocation=1;
-			}
-			strcat(out->buffers.functions, asmInstruction);
-			free(asmInstruction);
+			if(asmInstruction!=NULL&&!strcmp(asmInstruction, "")) {
+				bufferSize+=strlen(asmInstruction)+
+							strlen(stackAllocation)+2;
+				out->buffers.functions =
+					(char *)realloc(out->buffers.functions, bufferSize);
+				if(setAllocation==0) {
+					strcat(out->buffers.functions, stackAllocation);
+					setAllocation=1;
+				}
+				strcat(out->buffers.functions, asmInstruction);
+				free(asmInstruction);
+            }
 		}
 		setAllocation = 0;
 

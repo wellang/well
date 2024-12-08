@@ -13,6 +13,9 @@ base:
 	$(CC) $(CFLAGS) $(COMMON_C) -c
 	$(CC) $(CFLAGS) $(COMMON_O) -o $(BIN)
 
+run_test:
+	well tests/helloWorld/helloworld.well -i
+
 vim_:
 	mkdir -p ~/.vim/syntax
 	mkdir -p ~/.vim/ftdetect

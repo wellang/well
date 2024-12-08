@@ -45,7 +45,7 @@ static enum cpuType CPU =
 #define GETCPUSTR(cpu_t, str) \
 	switch(cpu_t) {\
 		case ALPHA: str="ALPHA";break; \
-		case AMD_X86_64: str="AMD_X86";break; \
+		case AMD_X86_64: str="AMD_X86_64";break; \
 		case ARM_MAC: str="ARM_MAC";break; \
 		case ARMv7: str="ARMV7";break; \
 		case I386: str="I386";break; \

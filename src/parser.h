@@ -45,7 +45,7 @@ enum varTypes {
 #define MAXSCOPES 100000
 
 #define MAXFUNCTIONS 10000
-#define DEFMAXFSIZE 100000 /*default max amount of lines for a function*/
+#define DEFMAXFSIZE 1024 /*default max amount of lines for a function*/
 
 #define DEFAULTINSARGSIZE 2
 
@@ -69,6 +69,7 @@ typedef struct {
 	char *funName;
 	char **data; /*All the code inside the function scope*/
 	int dataLength;
+    int capacity;
 	Scope scope;
 	/*needs malloced to amount of lines in function*/
 	Instruction *instructions;
