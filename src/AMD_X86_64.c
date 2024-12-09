@@ -46,22 +46,25 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 		char *val2;
 		if(checkRegister(ins.arguments[0])) {
 			char *ARMReg = mapRegisterAMD_X86_64(ins.arguments[0]);
-			val1 = strdup(ARMReg);
+			val1 = calloc(strlen(ARMReg)+1, sizeof(char));
+			strcpy(val1, ARMReg);
 		} else {
 			Variable v = getVarFrom(out->parser, ins.arguments[0]);
 			char asmVName[1024];
 			switch(v.type) {
-				case STRING: sprintf(asmVName, "wl_str.%s", ins.arguments[0]);break;
+				case STRING: sprintf(asmVName, "wl_str_%s", ins.arguments[0]);break;
 				case CHAR: sprintf(asmVName, "wl_ch_%s", ins.arguments[0]);break;
 				case INT: sprintf(asmVName, "wl_int_%s", ins.arguments[0]);break;
 				case FLOAT: sprintf(asmVName, "wl_fl_%s", ins.arguments[0]);break;
 				case VOID: /*TODO*/break;
 			};
-			val1 = strdup(asmVName);
+			val1 = calloc(strlen(asmVName)+1, sizeof(char));
+			strcpy(val1, asmVName);
 		}
 		if(checkRegister(ins.arguments[1])) {
 			char *ARMReg = mapRegisterAMD_X86_64(ins.arguments[1]);
-			val2 = strdup(ARMReg);
+			val2 = calloc(strlen(ARMReg)+1, sizeof(char));
+			strcpy(val2, ARMReg);
 		} else {
 			Variable v = getVarFrom(out->parser, ins.arguments[1]);
 			char asmVName[1024];
@@ -72,12 +75,14 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 				case FLOAT: sprintf(asmVName, "wl_fl_%s", ins.arguments[1]);break;
 				case VOID: /*TODO*/break;
 			};
-			val2 = strdup(asmVName);
+			val2 = calloc(strlen(asmVName)+1, sizeof(char));
+			strcpy(val2, asmVName);
 		}
 
 		snprintf(outBuf, sizeof(outBuf),
-				"\tmov %s(%%rip),%s\n",
-				val1, val2);
+				"\tmovq %s(%%rip),%%%s\n", val1, val2);
+		if(val1!=NULL) free(val1);
+		if(val2!=NULL) free(val2);
 	/*
 	 * Call
 	 * */
@@ -90,7 +95,7 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 	} else if(!strcmp(ins.instruction, "return")) {
 		if(ins.arguments[0]!=NULL) {
 			if(strlen(ins.arguments[0])==0) ins.arguments[0] = "0";
-			sprintf(outBuf, "\tmov $%s, %%eax\n%s\tret\n",
+			sprintf(outBuf, "\tmovl $%s, %%eax\n%s\tret\n",
 					ins.arguments[0], stackDeallocateAMD_X86_64());
 		}
     }

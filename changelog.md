@@ -61,3 +61,7 @@
 
 * Changed some memory stuff so it will run fine on windows with Cygwin.
 * Started adding stuff for AMD_X86_64 compilation.
+
+## 12/09/24 - X86_64 instruction converstions
+
+* "Added" support for X86_64 systems. (Working hello world).

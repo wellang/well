@@ -167,7 +167,7 @@ void setVariableType(Variable *var, char *type,
 
 Variable getVarFrom(struct parserData *parser, char *name) {
 	int i;
-	for(i=0;i<parser->totalVariables;i++) {
+	for(i=0;i<parser->totalVariables&&parser->variables[i].varName!=NULL;i++) {
 		if(!strcmp(parser->variables[i].varName, name)) return parser->variables[i];
 	}
 	return (Variable){};
@@ -221,7 +221,7 @@ void getVariables(struct parserData *parser) {
 				name = strtok(name, "=");
 				while(name[strlen(name)-1]==' ') name[strlen(name)-1] = '\0';
 				parser->variables[j].varName = (char *)malloc(sizeof(char)*strlen(name));
-				parser->variables[j].varName = strdup(name);
+				strcpy(parser->variables[j].varName, name);
 				parser->totalVariables++;
 				j = parser->totalVariables;
 				free(tmp);
@@ -263,13 +263,16 @@ Instruction instructionDup(const Instruction *src) {
 
 void appendInsArgs(Instruction *ins, char *arg) {
 	while(arg[0]==' ') arg++;
+    while(arg[strlen(arg)-1]=='\n'||
+               arg[strlen(arg)-1]=='\r') arg[strlen(arg)-1] = '\0';
 	if(ins->argLen>=ins->capacity) {
         size_t newCapacity = ins->capacity==0 ? DEFAULTINSARGSIZE : ins->capacity*2;
-        char **newArgs = realloc(ins->arguments, sizeof(char *)*newCapacity);
+        char **newArgs = (char **)realloc(ins->arguments, sizeof(char *)*newCapacity);
         ins->arguments = newArgs;
     	ins->capacity = newCapacity;
-	} 
-	ins->arguments[ins->argLen] = strdup(arg);
+	}
+	ins->arguments[ins->argLen] = calloc(strlen(arg)+1, sizeof(char));
+    strcpy(ins->arguments[ins->argLen], arg);
 	ins->argLen++;
 
 }
@@ -533,7 +536,8 @@ void getExternals(struct parserData *parser) {
 	int i;
 	for(i=0;i<MAXSCOPES&&parser->scopes[i].scopeName!=NULL;i++) {
 		if(parser->scopes[i].scopeType==EXTERN) {
-			char *line = strdup(parser->fileBuffer[parser->scopes[i].lineNum]);
+			char *line = calloc(strlen(parser->fileBuffer[parser->scopes[i].lineNum])+1, sizeof(char));
+            strcpy(line, parser->fileBuffer[parser->scopes[i].lineNum]);
 			char *external = strstr(line, "~extern");
 			if(external!=NULL) {
 				external+=strlen("~extern");
@@ -545,8 +549,8 @@ void getExternals(struct parserData *parser) {
 						(char **)realloc(parser->externals.externs, 
 								sizeof(char *)*parser->externals.capacity);
 				}
-				parser->externals.externs[parser->externals.externSize] =
-					strdup(external);
+				parser->externals.externs[parser->externals.externSize] = calloc(strlen(external)+1, sizeof(char));
+				strcpy(parser->externals.externs[parser->externals.externSize], external);
 				parser->externals.externSize++;
 			} else {
 				WLOG_WERROR(WERROR_EXTERN_NOVALUE,
@@ -571,7 +575,8 @@ void getIncludedFiles(struct parserData *parser) {
 	int i;
 	for(i=0;i<MAXSCOPES&&parser->scopes[i].scopeName!=NULL;i++) {
 		if(parser->scopes[i].scopeType==INCLUDE) {
-			char *line = strdup(parser->fileBuffer[parser->scopes[i].lineNum]);
+			char *line = calloc(strlen(parser->fileBuffer[parser->scopes[i].lineNum])+1, sizeof(char));
+            strcpy(line, parser->fileBuffer[parser->scopes[i].lineNum]);
 			char *included = strstr(line, "~include");
 			if(included!=NULL) {
 				included+=strlen("~include");
@@ -593,21 +598,23 @@ void getIncludedFiles(struct parserData *parser) {
 									sizeof(char *)*parser->includes.capacity);
 
 					}
-					parser->includes.includedFiles[parser->includes.includeSize] =
-						strdup(included);
+					parser->includes.includedFiles[parser->includes.includeSize] = calloc(strlen(included)+1, sizeof(char));
+					strcpy(parser->includes.includedFiles[parser->includes.includeSize], included);
 					/*set the .s file so we can create objs*/
-					char *tmp = strdup(included);
+					char *tmp = calloc(strlen(included)+1, sizeof(char));
+                    strcpy(tmp, included);
 					char *asmFile = strtok(tmp, ".");
 					strcat(asmFile, ".s");
-					parser->fData->includedFiles[parser->fData->includeSize] =
-						strdup(asmFile);
+					parser->fData->includedFiles[parser->fData->includeSize] = calloc(strlen(asmFile)+1, sizeof(char));
+					strcpy(parser->fData->includedFiles[parser->fData->includeSize], asmFile);
 
 					parser->includes.includeSize++;
 					parser->fData->includeSize++;
 					/*Run the parser on the included file*/
 					wData *data = calloc(1, sizeof(wData));
 					data->main = fopen(included, "r");
-					data->fileName = strdup(included);
+					data->fileName = calloc(strlen(included)+1, sizeof(char));
+                    strcpy(data->fileName, included);
 					WASSERT(data->main!=NULL,
 						"FATAL:: Failed to open file: %s", included);
 					struct parserData *p = calloc(1, sizeof(struct parserData));

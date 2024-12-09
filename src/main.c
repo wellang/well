@@ -166,7 +166,8 @@ void cleanupAsm(wData *data, char *asmOut) {
 void tokenizeCCFlags(wData *data) {
 	char *token = strtok(data->ccFlags, " ");
 	for(;token!=NULL;data->flagLen++) {
-		data->flags[data->flagLen] = strdup(token);
+		data->flags[data->flagLen] = calloc(strlen(token)+1, sizeof(char *));
+        strcpy(data->flags[data->flagLen], token);
 		data->cap++;
 		data->flags = (char **)realloc(data->flags, sizeof(char *)*data->cap);
 		token = strtok(NULL, " ");
@@ -184,7 +185,8 @@ void compileFile(wData *data) {
 	if(data->outputFile!=NULL) {
 		char buf[256];
 		snprintf(buf, sizeof(buf), "-o %s", data->outputFile);
-		data->outputFile = strdup(buf);
+		data->outputFile = calloc(strlen(buf)+1, sizeof(char *));
+        strcpy(data->outputFile, buf);
 	}
 	tokenizeCCFlags(data);
 	char *args[] = {"gcc", fileDirect, "-c", NULL};
@@ -212,7 +214,8 @@ void compileFile(wData *data) {
 
 		int i;
 		for(i=0;i<data->includeSize;i++) {
-			args[1] = strdup(data->includedFiles[i]);
+			args[1] = calloc(strlen(data->includedFiles[i])+1, sizeof(char *));
+            strcpy(args[1], data->includedFiles[i]);
 			if(data->USEINFO) {
 				char *buf = calloc(256, sizeof(char));
 				int j;
@@ -234,16 +237,20 @@ void compileFile(wData *data) {
 		linkArgs[1] = data->outputFile;
 		fileDirect = strtok(fileDirect, ".");
 		strcat(fileDirect, ".o");
-		linkArgs[2] = strdup(fileDirect);
+		linkArgs[2] = calloc(strlen(fileDirect)+1, sizeof(char *));
+        strcpy(linkArgs[2], fileDirect);
 		for(i=0;i<data->includeSize;i++) {
 			char *curInclude = strtok(data->includedFiles[i], ".");
 			strcat(curInclude, ".o");
-			linkArgs[i+3] = strdup(curInclude);
+			linkArgs[i+3] = calloc(strlen(curInclude)+1, sizeof(char *));
+            strcpy(linkArgs[i+3], curInclude);
 		}
 		/*Get C flags*/
 		int l;
-		for(l=0;l<data->flagLen;l++)
-			linkArgs[l+data->includeSize+3] = strdup(data->flags[l]);
+		for(l=0;l<data->flagLen;l++) {
+			linkArgs[l+data->includeSize+3] = calloc(strlen(data->flags[l])+1, sizeof(char *));
+            strcpy(linkArgs[l+data->includeSize+3], data->flags[l]);
+        }
 		linkArgs[l+data->includeSize+4] = NULL;
 		
 		/*trim up linkArgs*/

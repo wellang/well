@@ -12,6 +12,7 @@
  * */
 
 int checkRegister(char *reg) {
+	if(reg==NULL||reg[0]=='\0') return 0;
 	char *num = strstr(reg, "r");
 	if(num!=NULL) {
 		num++;
@@ -60,10 +61,24 @@ char *getCPUMain() {
 char *createFunctionHeader(char *name) {
 	if(!strcmp(name, "main")) name = getCPUMain();
 	char head[strlen(name)+100];
-	snprintf(head,sizeof(head),
-			"\t.section __TEXT,__text\n\t.global _%s\n\t.p2align 2\n_%s:\n",
-			name, name);
-	char *ret = (char *)malloc(sizeof(char)*strlen(head)+2);
+    switch(CPU) {
+				case ALPHA: break; /*TODO*/
+				case AMD_X86_64: snprintf(head, sizeof(head),
+                                           "\t.text\n\t.global %s\n%s:\n", name, name);
+                                  break;
+				case I386: break; /*TODO*/
+				case ITANIUM_64: break; /*TODO*/
+				case ARM_MAC: snprintf(head,sizeof(head),
+                                           "\t.section __TEXT,__text\n\t.global _%s\n\t.p2align 2\n_%s:\n",
+                                           name, name);
+                              break;
+				case ARMv7: break; /*TODO*/
+				case POWERPC: break; /*TODO*/
+				case RS6000: break; /*TODO*/
+				case SZ_IBM: break; /*TODO*/
+				case SPARC: break; /*TODO*/
+	};
+	char *ret = calloc(strlen(head)+1, sizeof(char));
 	strcat(ret, head);
 	return ret;
 }
@@ -159,12 +174,26 @@ void convertFunctions(AsmOut *out) {
 
 char *getAsmString(char *name, char *value) {
 	static int strCount = 0;
-	char buf[strlen(name)+strlen(value)+100];
-	snprintf(buf, sizeof(buf),
-			"wl_str.%s:\n\t.asciz %s\n",
-			name, value);
+	char buf[strlen(name)+strlen(value)+1024];
+    switch(CPU) {
+		case ALPHA: break; /*TODO*/
+		case AMD_X86_64: snprintf(buf, sizeof(buf),
+                           "\t.text\n\t.global wl_str_%s\n.rawwl_str%s:\n\t.ascii %s\n\t"
+                           ".data\n\t.align 8\nwl_str_%s:\n\t.quad .rawwl_str%s\n",
+                           name, name, value, name, name);break;
+		case I386: break; /*TODO*/
+		case ITANIUM_64: break; /*TODO*/
+		case ARM_MAC: snprintf(buf, sizeof(buf), "wl_str.%s:\n\t.asciz %s\n",
+                           name, value);break;
+        case ARMv7: break; /*TODO*/
+		case POWERPC: break; /*TODO*/
+		case RS6000: break; /*TODO*/
+		case SZ_IBM: break; /*TODO*/
+		case SPARC: break; /*TODO*/
+	};
 	strCount++;
-	char *ret = strdup(buf);
+	char *ret = calloc(strlen(buf)+1, sizeof(char));
+	strcpy(ret, buf);
 	return ret;
 }
 
@@ -179,7 +208,8 @@ char *getAsmChar(char *name, char *value) {
 			"\n\t.global %s\n%s:\n\t.byte %d\n",
 			nameBuf, nameBuf, value[0]);
 	cCount++;
-	char *ret = strdup(buf);
+	char *ret = calloc(strlen(buf)+1, sizeof(char));
+	strcpy(ret, buf);
 	return ret;
 }
 
@@ -191,9 +221,10 @@ char *getAsmInt(char *name, char *value) {
 	char buf[strlen(nameBuf)+strlen(hexValue)+100];
 	snprintf(buf, sizeof(buf), 
 			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.long %s\n",
-			nameBuf, nameBuf, value);	
+			nameBuf, nameBuf, hexValue);	
 	iCount++;
-	char *ret = strdup(buf);
+	char *ret = calloc(strlen(buf)+1, sizeof(char));
+	strcpy(ret, buf);
 	return ret;
 }
 
@@ -202,16 +233,15 @@ char *getAsmFloat(char *name, char *value) {
 }
 
 void convertVariables(AsmOut *out) {
-	out->buffers.variables = (char *)malloc(sizeof(char));
+	out->buffers.variables = calloc(1, sizeof(char));
 	int totalSize = 1;
 	int i;
-	for(i=0;i<out->parser->totalVariables;i++) {		
-		/* debugging
-		 * printf("%s = %s\n", 
-				out->parser->variables[i].varName,
-				out->parser->variables[i].value);*/
-		char *curName = strdup(out->parser->variables[i].varName);
-		char *curValue = strdup(out->parser->variables[i].value);
+	for(i=0;i<out->parser->totalVariables;i++) {	
+
+		char *curName = calloc(strlen(out->parser->variables[i].varName)+1, sizeof(char));
+		strcpy(curName, out->parser->variables[i].varName);
+		char *curValue = calloc(strlen(out->parser->variables[i].value)+1, sizeof(char));
+		strcpy(curValue, out->parser->variables[i].value);
 		char *asmVar;	
 		switch(out->parser->variables[i].type) {
 			case INT: asmVar = getAsmInt(curName, curValue);break;
@@ -226,6 +256,8 @@ void convertVariables(AsmOut *out) {
 					out->buffers.variables, sizeof(char)*(totalSize+2));
 			strcat(out->buffers.variables, asmVar);	
 		}	
+		free(curName);
+		free(curValue);
 	}
 }
 
@@ -293,10 +325,10 @@ void freeAsm(AsmOut *out) {
 
 void initAsmOut(struct parserData *parser, AsmOut *output) {
 	if(output==NULL) output = calloc(1, sizeof(AsmOut));
-	output->parser = (struct parserData *)malloc(sizeof(*parser));
+	output->parser = calloc(1, sizeof(struct parserData));
 	output->parser = parser;
 	int i;
-	output->functions = (Function *)malloc(sizeof(Function)*parser->totalFunctions);
+	output->functions = calloc(parser->totalFunctions, sizeof(Function));
 
 	char *fileName = strtok(parser->fData->fileName, ".");
 	strcat(fileName, ".s");

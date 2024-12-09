@@ -1,5 +1,5 @@
 CC= gcc
-CFLAGS= -g -O2 -std=c89 -Iinclude
+CFLAGS= -g -std=c89 -Iinclude
 
 COMMON_C= src/*.c \
 		  include/*.c
