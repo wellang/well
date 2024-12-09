@@ -113,7 +113,7 @@ void convertFunctions(AsmOut *out) {
 				/*SUN*/
 				case SPARC: break; /*TODO*/
 			};
-			if(asmInstruction!=NULL&&!strcmp(asmInstruction, "")) {
+			if(asmInstruction!=NULL&&strcmp(asmInstruction, "")) {
 				bufferSize+=strlen(asmInstruction)+
 							strlen(stackAllocation)+2;
 				out->buffers.functions =

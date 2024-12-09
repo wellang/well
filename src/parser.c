@@ -311,6 +311,7 @@ void disectInstructionName(Instruction *ins) {
 			ins->instruction = calloc(strlen(name)+1, sizeof(char));
             strcpy(ins->instruction, name);
         }
+
 		free(backup);
 	}
 }
@@ -357,11 +358,14 @@ int checkBrackFrom(int lineFrom, int lineTo, struct parserData *parser) {
 /* Get all lines from a function scope into function buffer */
 void buffToFunc(Function *func, struct parserData *parser) {
 	/*NOTE: func data buffer must already be allocated, I aint checking it!*/
-	int i = func->scope.lineNum+1;
+	int i = func->scope.lineNum+1, j=0;
 	int scopeCarry=0; /*amount of scopes inside the function I.E. loops*/
 	func->dataLength = 0;
 	for(;i<parser->bufferSize;i++) {
-        if(parser->fileBuffer[i]==NULL||parser->fileBuffer[i][0]=='\n') continue;
+        if(parser->fileBuffer[i]==NULL||parser->fileBuffer[i][0]=='\n') {
+			j++;
+			continue;
+		}
 		if(checkFuncForExternScope(i, parser)) scopeCarry++;
 		if(strstr(parser->fileBuffer[i], "}")) {
 
@@ -376,14 +380,13 @@ void buffToFunc(Function *func, struct parserData *parser) {
 			}
 			if(scopeCarry<0) break;
 		}
-		int pos = i-(func->scope.lineNum+1);
+		int pos = (i-(func->scope.lineNum+1))-j;
         if(pos>=func->capacity) {
           	func->capacity+=DEFAULTINSARGSIZE/2;
           	func->data = (char **)realloc(func->data, sizeof(char *)*func->capacity);
         }
         func->data[pos] = calloc(strlen(parser->fileBuffer[i])+1, sizeof(char));
 		strcpy(func->data[pos], parser->fileBuffer[i]);
-
 		func->dataLength++;
 	}
 	if(scopeCarry>0) {
@@ -397,8 +400,6 @@ void buffToFunc(Function *func, struct parserData *parser) {
 void parseFunctionInstructions(Function *func) {
 	int i,j=0;
 	for(i=0;i<func->dataLength;i++,j++) {
-
-        if(func->data[i][0]=='\n'||func->data[i][0]=='\0') continue;
 		if(func->data[i]==NULL||
 				checkImportantType(func->data[i])) {
 			if(j>0) j--;
@@ -413,6 +414,7 @@ void parseFunctionInstructions(Function *func) {
 		func->instructions[j].arguments = NULL;
 		parseInstruction(cpy,
 				&func->instructions[j]);
+
 	}
 }
 

@@ -90,7 +90,7 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 	} else if(!strcmp(ins.instruction, "return")) {
 		if(ins.arguments[0]!=NULL) {
 			if(strlen(ins.arguments[0])==0) ins.arguments[0] = "0";
-			sprintf(outBuf, "\tmov $0, %%eax\n%s\tret\n",
+			sprintf(outBuf, "\tmov $%s, %%eax\n%s\tret\n",
 					ins.arguments[0], stackDeallocateAMD_X86_64());
 		}
     }
