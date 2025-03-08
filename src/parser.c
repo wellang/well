@@ -405,6 +405,7 @@ void parseFunctionInstructions(Function *func) {
 	for(i=0;i<func->dataLength;i++,j++) {
 		if(func->data[i]==NULL||
 				checkImportantType(func->data[i])) {
+			/*Get if or loop statement data and convert*/
 			if(j>0) j--;
 			continue;
 		}

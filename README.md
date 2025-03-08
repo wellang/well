@@ -39,7 +39,7 @@ $ make
 ~include <std.well>
 
 ~constants {
-	~string:text = 'Hello World!'
+    ~string:text = 'Hello World!'
 }
 
 ~int:main {

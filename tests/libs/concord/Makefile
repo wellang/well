@@ -1,4 +1,4 @@
-WELL= ../../well
+WELL= ../../../well
 WFLAGS= -i -cc "-ldiscord -lcurl -lpthread"
 
 all: a.out
