@@ -1,16 +1,20 @@
-	.section __TEXT,__text
-	.global _main
-	.p2align 2
-_main:
-	sub sp, sp, #16
-	stp x29, x30, [sp, #0]
-	add x29, sp, #0
-	adrp x0,wl_str.text@PAGE
-	add x0, x0, wl_str.text@PAGEOFF
-	bl _printf
-	mov x0, #0
-	ldp x29, x30, [sp, #0]
-	add sp, sp, #16
+	.text
+	.global main
+main:
+	pushq %rbp
+	movq %rsp, %rbp
+	subq $16, %rsp
+	movq wl_str_text(%rip),%rdi
+	call printf
+	movl $0, %eax
+	addq $16, %rsp
+	popq %rbp
 	ret
-wl_str.text:
-	.asciz "Hello World!\n"
+	.text
+	.global wl_str_text
+.rawwl_strtext:
+	.ascii "Hello World!\n"
+	.data
+	.align 8
+wl_str_text:
+	.quad .rawwl_strtext

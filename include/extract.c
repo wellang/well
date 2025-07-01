@@ -274,7 +274,7 @@ int argparse_repeatable_option_start(struct ArgparseParser parser, const char *o
     if(option_index == ARGPARSE_NOT_FOUND)
         return ARGPARSE_NOT_FOUND;
 
-    for(option_index = option_index; option_index < parser.argc; option_index++) {
+    for(; option_index < parser.argc; option_index++) {
         if(argparse_is_option(parser, parser.argv[option_index]) == 0)
             continue;
 

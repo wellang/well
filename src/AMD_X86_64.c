@@ -1,4 +1,6 @@
 /*Copyright (c) 2024 Tristan Wellman*/
+#include <stdio.h>
+#include <stdlib.h>
 #include "AMD_X86_64.h"
 
 char *stackAllocateAMD_X86_64() {

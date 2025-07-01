@@ -1,4 +1,7 @@
 /*Copyright (c) 2024 Tristan Wellman*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "parser.h"
 #include "asmout.h"
 #include "werror.h"
@@ -11,7 +14,7 @@ struct parserData *gPData;
  * */
 int checkImportantType(char *line) {
     if(line==NULL||*line=='\0') return 0;
-	int i, stype=0;
+	int i;
 	for(i=0;i<strlen(line)&&line[i]!='\0';i++) {
 		/* 
 		 * ~ is the special sensor for types or instructions
@@ -66,7 +69,7 @@ char *getWT(enum wTypes t) {
 }
 
 char *getScopeName(char *line) {
-	char tmp[1024];
+	char *tmp = calloc(strlen(line)+1, sizeof(char));
 	strcpy(tmp, line);
 	char *aftrcurl = strstr(tmp, "~");
 	if(aftrcurl!=NULL) {
@@ -105,7 +108,7 @@ void getScopes(struct parserData *parser) {
 				checkImportantType(currentLine)) {
 			char *name = getScopeName(currentLine);
 			Scope s = (Scope){ getScopeType(currentLine), NULL, i};
-			s.scopeName = (char *)malloc(sizeof(char)*256);
+			s.scopeName = calloc(strlen(name)+1, sizeof(char));
 			strcpy(s.scopeName, name);
 			if(s.scopeType == NONE) continue;
 			parser->scopes[j] = s;
@@ -199,11 +202,11 @@ void getVariables(struct parserData *parser) {
 				data++;
 				if(data[strlen(data)-1]=='\n') data[strlen(data)-1] = '\0';
 				while(data[0]==' ') data++;
-				parser->variables[j].value = (char *)malloc(sizeof(char)*strlen(data));
+				parser->variables[j].value = calloc(strlen(data)+1, sizeof(char));
 				strcpy(parser->variables[j].value, data);
 				/*save data*/
 				/*EATTABS(line);*/
-				char *tmp  = (char *)malloc(sizeof(char)*strlen(line));
+				char *tmp  = calloc(strlen(line)+1, sizeof(char));
 				strcpy(tmp, line);
 				
 				/*type*/
@@ -220,7 +223,7 @@ void getVariables(struct parserData *parser) {
 				
 				name = strtok(name, "=");
 				while(name[strlen(name)-1]==' ') name[strlen(name)-1] = '\0';
-				parser->variables[j].varName = (char *)malloc(sizeof(char)*strlen(name));
+				parser->variables[j].varName = calloc(strlen(name)+1, sizeof(char));
 				strcpy(parser->variables[j].varName, name);
 				parser->totalVariables++;
 				j = parser->totalVariables;
@@ -246,8 +249,10 @@ Instruction instructionDup(const Instruction *src) {
 
 	ret.argLen = src->argLen;
 	ret.capacity = src->capacity;
-	if(src->line!=NULL) ret.line = strdup(src->line);
-	if(src->instruction!=NULL) ret.instruction = strdup(src->instruction);
+	if(src->line!=NULL) {ret.line = calloc(strlen(src->line)+1,sizeof(char));
+		strcpy(ret.line,src->line);}
+	if(src->instruction!=NULL) {ret.instruction = calloc(strlen(src->instruction)+1,sizeof(char));
+		strcpy(ret.instruction, src->instruction);}
 
 	if(src->argLen>0&&src->arguments!=NULL) {
 		ret.arguments = calloc(src->capacity>0 ? src->capacity : DEFAULTINSARGSIZE, 
@@ -255,7 +260,8 @@ Instruction instructionDup(const Instruction *src) {
 		int i;
 		for(i=0;i<src->argLen;i++) {
 			if(src->arguments[i]!=NULL) 
-				ret.arguments[i] = strdup(src->arguments[i]);
+				ret.arguments[i] = calloc(strlen(src->arguments[i])+1,sizeof(char));
+				strcpy(ret.arguments[i], src->arguments[i]);
 		}
 	}
 	return ret;
@@ -418,7 +424,7 @@ void parseFunctionInstructions(Function *func) {
 		func->instructions[j].arguments = NULL;
 		parseInstruction(cpy,
 				&func->instructions[j]);
-
+		free(cpy);
 	}
 }
 
@@ -687,6 +693,7 @@ struct parserData *initParser(wData *data) {
 	gPData->bufferSize = i;
 
 	fclose(gPData->fData->main);
+	gPData->fData->main = NULL;
 
 	gPData->totalFunctions = 0;
 

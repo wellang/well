@@ -60,15 +60,16 @@ char *getCPUMain() {
 
 char *createFunctionHeader(char *name) {
 	if(!strcmp(name, "main")) name = getCPUMain();
-	char head[strlen(name)+100];
+	int bSize = strlen(name)+1024;
+	char *head = calloc(bSize, sizeof(char));
     switch(CPU) {
 				case ALPHA: break; /*TODO*/
-				case AMD_X86_64: snprintf(head, sizeof(head),
+				case AMD_X86_64: snprintf(head, bSize,
                                            "\t.text\n\t.global %s\n%s:\n", name, name);
                                   break;
 				case I386: break; /*TODO*/
 				case ITANIUM_64: break; /*TODO*/
-				case ARM_MAC: snprintf(head,sizeof(head),
+				case ARM_MAC: snprintf(head,bSize,
                                            "\t.section __TEXT,__text\n\t.global _%s\n\t.p2align 2\n_%s:\n",
                                            name, name);
                               break;
@@ -78,15 +79,12 @@ char *createFunctionHeader(char *name) {
 				case SZ_IBM: break; /*TODO*/
 				case SPARC: break; /*TODO*/
 	};
-	char *ret = calloc(strlen(head)+1, sizeof(char));
-	strcat(ret, head);
-	return ret;
+	return head;
 }
 
 void convertFunctions(AsmOut *out) {
 	out->buffers.functions = (char *)malloc(sizeof(char));
-	/*It actually makes me mad that I'm making sure memory is okay
-	 * because of my schizo ass instruction issues. */
+
 	*out->buffers.functions = '\0'; 
 	size_t bufferSize=1;
 	int i,j;
@@ -96,6 +94,7 @@ void convertFunctions(AsmOut *out) {
 		out->buffers.functions =
 			realloc(out->buffers.functions, bufferSize);
 		strcat(out->buffers.functions, header);
+		free(header);
 
 		static int setAllocation = 0;
 		/*instructions*/
@@ -139,7 +138,10 @@ void convertFunctions(AsmOut *out) {
 				}
 				strcat(out->buffers.functions, asmInstruction);
 				free(asmInstruction);
+				asmInstruction = NULL;
             }
+			free(stackAllocation);
+			if(asmInstruction!=NULL) free(asmInstruction);
 		}
 		setAllocation = 0;
 
@@ -158,7 +160,8 @@ void convertFunctions(AsmOut *out) {
 				case SZ_IBM: break; /*TODO*/
 				case SPARC: break; /*TODO*/
 			};
-			strcat(deallocateStack, "\tret\n");
+			if(deallocateStack!=NULL) strcat(deallocateStack, "\tret\n");
+			else deallocateStack = "\tret\n";
 			bufferSize+=strlen(deallocateStack)+2;
 			out->buffers.functions =
 				(char *)realloc(out->buffers.functions, bufferSize);
@@ -173,7 +176,6 @@ void convertFunctions(AsmOut *out) {
  * */
 
 char *getAsmString(char *name, char *value) {
-	static int strCount = 0;
 	char buf[strlen(name)+strlen(value)+1024];
     switch(CPU) {
 		case ALPHA: break; /*TODO*/
@@ -191,7 +193,6 @@ char *getAsmString(char *name, char *value) {
 		case SZ_IBM: break; /*TODO*/
 		case SPARC: break; /*TODO*/
 	};
-	strCount++;
 	char *ret = calloc(strlen(buf)+1, sizeof(char));
 	strcpy(ret, buf);
 	return ret;
@@ -200,14 +201,12 @@ char *getAsmString(char *name, char *value) {
 char *getAsmChar(char *name, char *value) {
 	while(value[0]=='\''||value[0]==' ') value++;
 	while(value[strlen(value)-1]=='\'') value[strlen(value)-1] = '\0';
-	static int cCount = 0;
 	char nameBuf[strlen(name)+100];
 	snprintf(nameBuf, sizeof(nameBuf), "wl_ch_%s", name);
 	char buf[strlen(name)+strlen(value)+100];
 	snprintf(buf, sizeof(buf),
 			"\n\t.global %s\n%s:\n\t.byte %d\n",
 			nameBuf, nameBuf, value[0]);
-	cCount++;
 	char *ret = calloc(strlen(buf)+1, sizeof(char));
 	strcpy(ret, buf);
 	return ret;
@@ -215,14 +214,12 @@ char *getAsmChar(char *name, char *value) {
 
 char *getAsmInt(char *name, char *value) {
 	char *hexValue = uint64ToHex(value);
-	static int iCount = 0;
 	char nameBuf[strlen(name)+100];
 	snprintf(nameBuf, sizeof(nameBuf), "wl_int_%s", name);
 	char buf[strlen(nameBuf)+strlen(hexValue)+100];
 	snprintf(buf, sizeof(buf), 
 			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.long %s\n",
 			nameBuf, nameBuf, hexValue);	
-	iCount++;
 	char *ret = calloc(strlen(buf)+1, sizeof(char));
 	strcpy(ret, buf);
 	return ret;
@@ -242,7 +239,7 @@ void convertVariables(AsmOut *out) {
 		strcpy(curName, out->parser->variables[i].varName);
 		char *curValue = calloc(strlen(out->parser->variables[i].value)+1, sizeof(char));
 		strcpy(curValue, out->parser->variables[i].value);
-		char *asmVar;	
+		char *asmVar = NULL;	
 		switch(out->parser->variables[i].type) {
 			case INT: asmVar = getAsmInt(curName, curValue);break;
 			case FLOAT: asmVar = getAsmFloat(curName, curValue);break;
@@ -271,7 +268,8 @@ void convertExternals_Includes(AsmOut *out) {
 	int i;
 	/*Externals*/
 	for(i=0;i<out->parser->externals.externSize;i++) {
-		char *curEx = strdup(out->parser->externals.externs[i]);
+		char *curEx = calloc(strlen(out->parser->externals.externs[i])+1,sizeof(char));
+		strcpy(curEx, out->parser->externals.externs[i]);
 		char buf[strlen(curEx)+100];
 		snprintf(buf, sizeof(buf), "\t.extern %s\n", curEx);
 		if(curEx!=NULL) {
@@ -307,6 +305,10 @@ void convertToAsm(AsmOut *out) {
 
 	completeBuffer(out);
 	fprintf(out->asmOut, "%s", out->buffers.output.asmOutBuffer);
+	free(out->buffers.output.asmOutBuffer);
+	free(out->buffers.externals);
+	free(out->buffers.functions);
+	free(out->buffers.variables);
 }
 
 
@@ -325,9 +327,7 @@ void freeAsm(AsmOut *out) {
 
 void initAsmOut(struct parserData *parser, AsmOut *output) {
 	if(output==NULL) output = calloc(1, sizeof(AsmOut));
-	output->parser = calloc(1, sizeof(struct parserData));
 	output->parser = parser;
-	int i;
 	output->functions = calloc(parser->totalFunctions, sizeof(Function));
 
 	char *fileName = strtok(parser->fData->fileName, ".");
@@ -339,8 +339,7 @@ void initAsmOut(struct parserData *parser, AsmOut *output) {
 		char rm[100];
 		snprintf(rm, sizeof(rm), "rm %s", fileName);
 		system(rm);
-	} 
-	fclose(output->asmOut);
+	} else fclose(output->asmOut);
 	
 	/*reopen with write mode/create file*/
 	output->asmOut = fopen(fileName, "wr");

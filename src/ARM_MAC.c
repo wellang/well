@@ -1,5 +1,9 @@
 /*Copyright (c) 2024 Tristan Wellman*/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "parser.h"
 #include "asmout.h"
 #include "hexconvert.h"
@@ -53,7 +57,8 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 		char *val2;
 		if(checkRegister(ins.arguments[0])) {
 			char *ARMReg = mapRegister(ins.arguments[0]);
-			val1 = strdup(ARMReg);
+			val1 = calloc(strlen(ARMReg)+1, sizeof(char));
+			strcpy(val1, ARMReg);
 		} else {
 			Variable v = getVarFrom(out->parser, ins.arguments[0]);
 			char asmVName[1024];
@@ -64,11 +69,13 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 				case FLOAT: sprintf(asmVName, "wl_fl_%s", ins.arguments[0]);break;
 				case VOID: /*TODO*/break;
 			};
-			val1 = strdup(asmVName);
+			val1 = calloc(strlen(asmVName)+1, sizeof(char));
+			strcpy(val1, asmVName);
 		}
 		if(checkRegister(ins.arguments[1])) {
 			char *ARMReg = mapRegister(ins.arguments[1]);
-			val2 = strdup(ARMReg);
+			val2 = calloc(strlen(ARMReg)+1, sizeof(char)); 
+			strcpy(val2, ARMReg);
 		} else {
 			Variable v = getVarFrom(out->parser, ins.arguments[1]);
 			char asmVName[1024];
@@ -79,7 +86,8 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 				case FLOAT: sprintf(asmVName, "wl_fl_%s", ins.arguments[1]);break;
 				case VOID: /*TODO*/break;
 			};
-			val2 = strdup(asmVName);
+			val2 = calloc(strlen(asmVName)+1, sizeof(char));
+			strcpy(val2, asmVName);
 		}
 
 		snprintf(outBuf, sizeof(outBuf), 
@@ -130,9 +138,12 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 	 * NOTE: same as Jump
 	 * */
 	} else if(!strcmp(ins.instruction, "cmpz")) {
-		char *arg1 = strdup(ins.arguments[0]);
-		char *arg2 = strdup(ins.arguments[1]);
-		char *arg3 = strdup(ins.arguments[2]);
+		char *arg1 = calloc(strlen(ins.arguments[0])+1, sizeof(char));
+		strcpy(arg1, ins.arguments[0]);
+		char *arg2 = calloc(strlen(ins.arguments[1])+1, sizeof(char));
+		strcpy(arg2, ins.arguments[1]);
+		char *arg3 = calloc(strlen(ins.arguments[2])+1, sizeof(char));
+		strcpy(arg3, ins.arguments[2]);
 		if(checkRegister(arg1)) arg1 = mapRegister(arg1);
 		if(checkRegister(arg2)) arg2 = mapRegister(arg2);
 		snprintf(outBuf, sizeof(outBuf), "\ttbz %s, %s, _%s\n", arg1, arg2, arg3);

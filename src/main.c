@@ -1,4 +1,5 @@
 /*Copyright (c) 2024 Tristan Wellman*/
+#include <sys/types.h>
 #include <time.h>
 #include "util.h"
 #include "wdata.h"
@@ -68,7 +69,7 @@ void runArgParsing(wData *data) {
     "--help      | -h: Need help? Use -h\n"
     "--output    | -o: Set name of executable output\n"
 	"--cobject   | -c: Compiler to object(.o) file.\n"
-    "--gcc       | -cc: Set your cflags (ex: wesm main.well -cc '-g -lpthread')\n"
+    "--cflags    | -cf: Set your cflags (ex: well main.well -cc '-g -lpthread')\n"
     "--assembly  | -a: Keep the assembly output file\n"
     "--info      | -i: Shows extra debug information at compile time\n\n"
     "--use-gnuld | -use-ld: Use gnu linker rather than gcc\n"
@@ -99,11 +100,11 @@ void runArgParsing(wData *data) {
 	if(argCheckOption(&data->argParser, "--assembly", "-a"))
 		data->KEEPASM=1;
 	
-	if(argCheckOption(&data->argParser, "--gcc", "-cc")) {
+	if(argCheckOption(&data->argParser, "--cflags", "-cf")) {
 		int i;
 		for(i=0;i<data->argParser.argc;i++) {
-			if(!strcmp(data->argParser.argv[i], "-cc")||
-				!strcmp(data->argParser.argv[i], "--gcc")) {
+			if(!strcmp(data->argParser.argv[i], "-cf")||
+				!strcmp(data->argParser.argv[i], "--cflags")) {
 				if(i+1<data->argParser.argc) {
 					data->ccFlags = data->argParser.argv[i+1];
 					break;
@@ -120,7 +121,7 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	data->USEINFO=0;
 	data->USELD=0;
 	data->COBJ=0;
-	data->outputFile=NULL;
+	data->outputFile="a.out";
 	data->ccFlags=NULL;
 	data->ldflags=NULL;
 	data->flagLen=0;
@@ -147,7 +148,7 @@ void initArgParseArgs(wData *data, int argc, char **argv) {
 	argparse_add_option(&data->argParser, "--help", "-h", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--output", "-o", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--cobject", "-c", ARGPARSE_FLAG);
-	argparse_add_option(&data->argParser, "--gcc", "-cc", ARGPARSE_FLAG);
+	argparse_add_option(&data->argParser, "--cflags", "-cf", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--assembly", "-a", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--info", "-i", ARGPARSE_FLAG);
 	argparse_add_option(&data->argParser, "--use-gnuld", "-use-ld", ARGPARSE_FLAG);
@@ -178,13 +179,10 @@ void tokenizeCCFlags(wData *data) {
 void compileFile(wData *data) {
 	char *fileDirect = strtok(data->fileName, ".");
 	strcat(fileDirect, ".s");
-	char comp[256];
-	if(data->USELD) {
-		return;
-	}
+	if(data->USELD) return;
 	if(data->outputFile!=NULL) {
 		char buf[256];
-		snprintf(buf, sizeof(buf), "-o %s", data->outputFile);
+		snprintf(buf, sizeof(buf), "-o%s", data->outputFile);
 		data->outputFile = calloc(strlen(buf)+1, sizeof(char *));
         strcpy(data->outputFile, buf);
 	}
@@ -232,7 +230,7 @@ void compileFile(wData *data) {
 			else if(pid>0) waitpid(pid, &status, 0);
 		}
 		/*link objs*/
-		char *linkArgs[ARRLEN(args)+data->includeSize+data->flagLen];
+		char **linkArgs = calloc(ARRLEN(args)+data->includeSize+data->flagLen+1, sizeof(char*));
 		linkArgs[0] = "gcc";
 		linkArgs[1] = data->outputFile;
 		fileDirect = strtok(fileDirect, ".");
@@ -265,7 +263,7 @@ void compileFile(wData *data) {
 		if(data->USEINFO) {
 			char *buf = calloc(256, sizeof(char));
 			int j;
-			for(j=0;j<ARRLEN(linkArgs)-1;j++) {
+			for(j=0;linkArgs[j]!=NULL;j++) {
 				if(linkArgs[j]==NULL) break;
 				char str[100];
 				snprintf(str, sizeof(str), "%s ", linkArgs[j]);	
@@ -274,7 +272,10 @@ void compileFile(wData *data) {
 			WLOG(INFO, buf);
 		}
 		if(fork()==0) execvp("gcc", linkArgs);
+		free(linkArgs[2]);
+		free(linkArgs);
 	}
+	free(data->flags);
 	/*cleanupAsm(data, fileDirect);*/
 }
 

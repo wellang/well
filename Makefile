@@ -1,5 +1,5 @@
 CC= gcc
-CFLAGS= -g -std=c89 -Iinclude
+CFLAGS= -g -O2 -std=c89 -Iinclude
 
 SRCS:= $(wildcard src/*.c) \
 	   $(wildcard include/*.c)
@@ -7,7 +7,7 @@ OBJS:= $(SRCS:.c=.o)
 
 BIN= well
 
-.PHONY: all base run_test vim_ clean_vim clean
+.PHONY: all base run_test vim clean_vim clean
 
 all: base
 
@@ -20,7 +20,7 @@ base: $(OBJS)
 run_test:
 	well tests/helloWorld/helloworld.well -i
 
-vim_:
+vim:
 	mkdir -p ~/.vim/syntax
 	mkdir -p ~/.vim/ftdetect
 	cp vim/syntax/well.vim ~/.vim/syntax/
