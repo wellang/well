@@ -13,31 +13,29 @@
 
 # NOTE
 
-* Wellang is currently under a complete rewrite, it is currently barely functional so please be patient. Thank you!
-
 * Wellang is in an extremely early state with pending syntax changes and the development of the compiler. MAKE SURE you keep wellang up to date in these early stages.
 
 # About
-	
- This is a project by Tristan Wellman. Wellang is a high level compiled assembly language; you will have your low level assembly programming but with some features from high level language. See below for compilation and simple documentation.
+
+Wellang is a high-level assembly language targeted as an educational resource for people looking to learn assembly language and CPU logic. Wellang comes with a single instruction set that will compile to any system architecture making it very portable and easy to use on any device.
 
 ### NEED HELP?
 
-Email: wellangcode@gmail.com
-
 Wellang discord server: https://discord.gg/K4ufunGxJv
+
+MinervaWare Contact: https://www.minervaware.net/contact
 
 # Compile Wellang
 
+To compile Wellang simply run:
+
 ```
-$ make
+make
 ```
 
 ## Hello World program
 
 ```
-~include <std.well>
-
 ~constants {
     ~string:text = 'Hello World!'
 }

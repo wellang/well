@@ -29,6 +29,14 @@ enum registersAMD_X86_64 {
 #endif
 };
 
+/*The registers here are just the ones I currently map to, not all the registers*/
+#define ISREG(a_) \
+	(!strcmp(a_,"rdi")||!strcmp(a_,"rsi")|| \
+	 !strcmp(a_,"rdx")||!strcmp(a_,"rcx")|| \
+	 !strcmp(a_,"r8")||!strcmp(a_,"r9")|| \
+	 !strcmp(a_,"rax")||!strcmp(a_,"xmm0")|| \
+	 !strcmp(a_,"sp"))
+
 char *stackAllocateAMD_X86_64();
 char *stackDeallocateAMD_X86_64();
 char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins);

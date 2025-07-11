@@ -13,7 +13,7 @@ main:
 	.text
 	.global wl_str_text
 .rawwl_strtext:
-	.ascii "Hello World!\n"
+	.asciz "Hello World!\n"
 	.data
 	.align 8
 wl_str_text:

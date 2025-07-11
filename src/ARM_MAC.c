@@ -147,7 +147,16 @@ char *convertInstructionARM_MAC(AsmOut *out, Instruction ins) {
 		if(checkRegister(arg1)) arg1 = mapRegister(arg1);
 		if(checkRegister(arg2)) arg2 = mapRegister(arg2);
 		snprintf(outBuf, sizeof(outBuf), "\ttbz %s, %s, _%s\n", arg1, arg2, arg3);
-	}
+
+	/*
+	 * Arithmatic & Logic Instructions
+	 * */
+
+	/* NOT: not~ r1, r2
+	 * r1 = !r2
+	 * */
+	} 	
+
 
 	char *ret = calloc(strlen(outBuf)+1, sizeof(char));
 	strcpy(ret, outBuf);

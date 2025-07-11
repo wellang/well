@@ -1,0 +1,63 @@
+; logic.well
+~constants {
+	~string:hello = "- - - Bitwise logic test - - -\n"
+	~int:a = 1
+	~int:b = 1
+
+	; a = 001 -> 110 = -2
+	~string:ntest = "NOT:: should be: -2. Is: %d\n"
+	; a == b
+	~string:atest = "AND:: should be: 1. Is: %d\n"
+	; a | b
+	~string:otest = "OR:: Should be: 1. Is: %d\n"
+
+	; ~(a|b)
+	~string:notest = "NOR:: Should be: -2. Is: %d\n"
+	; ~(a==b)
+	~string:natest = "NAND:: Should be: -2. Is: %d\n"
+}
+
+~int:main {
+	move~ hello, r1
+	call~ printf
+
+	; not
+	move~ a, r1
+	not~ r2, r1
+	move~ ntest, r1
+	call~ printf
+	
+	; and
+	move~ a, r1
+	move~ b, r2
+	and~ r3, r1, r2
+	move~ r3, r2 
+	move~ atest, r1
+	call~ printf
+
+	; or
+	move~ a, r1
+	move~ b, r2
+	or~ r3, r1, r2
+	move~ r3, r2
+	move~ otest, r1
+	call~ printf
+
+	; nor
+	move~ a, r1
+	move~ b, r2
+	nor~ r3, r1, r2
+	move~ r3, r2
+	move~ notest, r1
+	call~ printf
+
+	; nand
+	move~ a, r1
+	move~ b, r2
+	nand~ r3, r1, r2
+	move~ r3, r2
+	move~ natest, r1
+	call~ printf
+
+	return~ 0
+}

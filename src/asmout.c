@@ -12,6 +12,7 @@
  * */
 
 int checkRegister(char *reg) {
+	WTRIM(reg);
 	if(reg==NULL||reg[0]=='\0') return 0;
 	char *num = strstr(reg, "r");
 	if(num!=NULL) {
@@ -67,7 +68,9 @@ char *createFunctionHeader(char *name) {
 				case AMD_X86_64: snprintf(head, bSize,
                                            "\t.text\n\t.global %s\n%s:\n", name, name);
                                   break;
-				case I386: break; /*TODO*/
+				case I386: snprintf(head, bSize,
+                                           "\t.text\n\t.global %s\n%s:\n", name, name);
+						   break;				
 				case ITANIUM_64: break; /*TODO*/
 				case ARM_MAC: snprintf(head,bSize,
                                            "\t.section __TEXT,__text\n\t.global _%s\n\t.p2align 2\n_%s:\n",
@@ -112,7 +115,10 @@ void convertFunctions(AsmOut *out) {
 							asmInstruction = convertInstructionAMD_X86_64(out, *curIns);
                             stackAllocation = stackAllocateAMD_X86_64();
 							break;
-				case I386: break; /*TODO*/
+				/*The x86_64 code checks for 32-bit and switches.*/
+				case I386: 	asmInstruction = convertInstructionAMD_X86_64(out, *curIns);
+                            stackAllocation = stackAllocateAMD_X86_64();
+							break;
 				case ITANIUM_64: break; /*TODO*/
 				/*ARM*/
 				case ARM_MAC: 
@@ -150,8 +156,8 @@ void convertFunctions(AsmOut *out) {
 			char *deallocateStack = NULL;
 			switch(CPU) {
 				case ALPHA: break; /*TODO*/
-				case AMD_X86_64: break;
-				case I386: break; /*TODO*/
+				case AMD_X86_64: stackDeallocateAMD_X86_64();break;
+				case I386: stackDeallocateAMD_X86_64();break;
 				case ITANIUM_64: break; /*TODO*/
 				case ARM_MAC: deallocateStack = stackDeallocateARM_MAC();break;
 				case ARMv7: break; /*TODO*/
@@ -180,10 +186,13 @@ char *getAsmString(char *name, char *value) {
     switch(CPU) {
 		case ALPHA: break; /*TODO*/
 		case AMD_X86_64: snprintf(buf, sizeof(buf),
-                           "\t.text\n\t.global wl_str_%s\n.rawwl_str%s:\n\t.ascii %s\n\t"
+                           "\t.text\n\t.global wl_str_%s\n.rawwl_str%s:\n\t.asciz %s\n\t"
                            ".data\n\t.align 8\nwl_str_%s:\n\t.quad .rawwl_str%s\n",
                            name, name, value, name, name);break;
-		case I386: break; /*TODO*/
+		case I386: break; snprintf(buf, sizeof(buf),
+                           "\t.text\n\t.global wl_str_%s\n.rawwl_str%s:\n\t.asciz %s\n\t"
+                           ".data\n\t.align 8\nwl_str_%s:\n\t.quad .rawwl_str%s\n",
+                           name, name, value, name, name);break;
 		case ITANIUM_64: break; /*TODO*/
 		case ARM_MAC: snprintf(buf, sizeof(buf), "wl_str.%s:\n\t.asciz %s\n",
                            name, value);break;
@@ -218,7 +227,7 @@ char *getAsmInt(char *name, char *value) {
 	snprintf(nameBuf, sizeof(nameBuf), "wl_int_%s", name);
 	char buf[strlen(nameBuf)+strlen(hexValue)+100];
 	snprintf(buf, sizeof(buf), 
-			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.long %s\n",
+			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.quad %s\n",
 			nameBuf, nameBuf, hexValue);	
 	char *ret = calloc(strlen(buf)+1, sizeof(char));
 	strcpy(ret, buf);
@@ -339,7 +348,8 @@ void initAsmOut(struct parserData *parser, AsmOut *output) {
 		char rm[100];
 		snprintf(rm, sizeof(rm), "rm %s", fileName);
 		system(rm);
-	} else fclose(output->asmOut);
+		fclose(output->asmOut);
+	}
 	
 	/*reopen with write mode/create file*/
 	output->asmOut = fopen(fileName, "wr");

@@ -23,6 +23,21 @@ int main(int argc, char **argv) {
 	start = clock();
 
 	wData data;
+	data.main = NULL;
+	data.fileName = NULL;
+	data.includedFiles = NULL;
+	data.includeSize = 0;
+	data.argParser = (struct ArgparseParser){0};
+	data.outputFile = NULL;
+	data.ccFlags = NULL;
+	data.flags = NULL;
+	data.flagLen = 0;
+	data.cap = 0;
+	data.ldflags = NULL;
+	data.KEEPASM = 0;
+	data.USEINFO = 0;
+	data.USELD = 0;
+	data.COBJ = 0;
 	initArgParseArgs(&data, argc, argv);
 	runArgParsing(&data);	
 

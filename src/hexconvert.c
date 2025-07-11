@@ -9,7 +9,7 @@ char *uint64ToHex(char *value) {
 	unsigned long int val = strtoul(value, NULL, 10);
 	int remainder;
 	char output = '0';
-	char *hex = (char *)malloc(sizeof(char)*(strlen(value)+10));
+	char *hex = calloc((strlen(value)+10), sizeof(char));
 	do {
 		remainder = val % 16;
 		val /= 16;
@@ -17,10 +17,9 @@ char *uint64ToHex(char *value) {
 			output = (char)(offset+(remainder-10));
 		} else output = (char)(remainder+'0');
 		STARTAPPCHAR(hex, output);
-		hex = STRET;
 	} while(remainder>0&&val>0);
-	char *ret = (char *)malloc(sizeof(char)*(strlen(hex)+10));
-	sprintf(ret, "0x%s", hex);
+	char *ret = calloc((strlen(hex)+10), sizeof(char));
+	sprintf(ret, "0x%s\0", hex);
 	free(hex);
 	return ret;
 }
