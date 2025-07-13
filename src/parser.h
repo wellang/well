@@ -62,6 +62,7 @@ typedef struct {
 	char **arguments; /* ["1", "r1"] */
 	int argLen;
 	int capacity;
+	WerrorData errData;
 } Instruction;
 
 typedef struct {

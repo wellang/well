@@ -46,7 +46,7 @@ enum wTypes getScopeType(char *line) {
 		if(strstr(line, "if")) return IFSTATE;
 		if(strstr(line, "while")||
 				strstr(line, "for")) return LOOP;
-}
+	}
 
 	if(col&&curl) return FUNCTION;
 	if(col&&!curl) return VARIABLE;
@@ -179,9 +179,7 @@ Variable getVarFrom(struct parserData *parser, char *name) {
 /*This is expected to be ran AFTER scopes have been initialized*/
 void getVariables(struct parserData *parser) {
 
-	/*default to 1 and realloc for each one so it's more dynamic
-	 * I know it's slower...*/
-	parser->variables = (Variable *)malloc(sizeof(Variable));
+	parser->variables = calloc(1, sizeof(Variable));
 	parser->totalVariables = 0;
 
 	int i, j=0;
@@ -192,7 +190,7 @@ void getVariables(struct parserData *parser) {
 			
 			parser->variables = (Variable *)realloc(parser->variables, 
 					sizeof(Variable)*(parser->totalVariables+1));
-		char *line = parser->fileBuffer[parser->scopes[i].lineNum];
+			char *line = parser->fileBuffer[parser->scopes[i].lineNum];
 			char *data = strstr(line, "=");
 			if(data==NULL) {
  				WLOG_WERROR(WERROR_UNINITIALIZED_VARIABLE,
@@ -236,13 +234,6 @@ void getVariables(struct parserData *parser) {
 /* * * * *
  * Instruction related functions.
  * * * * */
-
-/*copy the whole structure.
- * I have been trying to figure out this stupid 
- * missing instruction argument with the second instruction(specifically) issue.
- *
- * Maybe this will help me fix it. Idk, I've been up figuring this out for 10 hours.
- * Update: It didn't fix anything and is now useless :) */
 Instruction instructionDup(const Instruction *src) {
 	Instruction ret;
 	memset(&ret, 0, sizeof(Instruction));
@@ -418,10 +409,14 @@ void parseFunctionInstructions(Function *func) {
         char *cpy = calloc(strlen(func->data[i])+1, sizeof(char));
         strcpy(cpy, func->data[i]);
 		/*memset(func->instructions[i], 0, sizeof(Instruction));*/
+		func->instructions[j].line = NULL;
 		func->instructions[j].line = calloc(strlen(func->data[i])+1, sizeof(char));
 		strcpy(func->instructions[j].line, func->data[i]);
 		func->instructions[j].instruction = NULL;
 		func->instructions[j].arguments = NULL;
+		func->instructions[j].errData.lineNum = func->scope.lineNum+j;
+		func->instructions[j].errData.function = calloc(strlen(func->funName)+1, sizeof(char));
+		strcpy(func->instructions[j].errData.function, func->funName);
 		parseInstruction(cpy,
 				&func->instructions[j]);
 		free(cpy);
@@ -687,8 +682,8 @@ struct parserData *initParser(wData *data) {
 			mul++;
 		} 
 
-		gPData->fileBuffer[i] = (char*)malloc(sizeof(char)*ARRLEN(line));
-		memcpy(gPData->fileBuffer[i], line, sizeof(line));
+		gPData->fileBuffer[i] = calloc(ARRLEN(line)+1, sizeof(char));
+		strcpy(gPData->fileBuffer[i], line);
 	}
 	gPData->bufferSize = i;
 

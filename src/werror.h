@@ -8,6 +8,12 @@ struct wErrors {
 };
 static struct wErrors errors;
 
+typedef struct {
+	int lineNum;
+	char *fileName;
+	char *function;
+} WerrorData;
+
 #define WERROR_MISSING_BRACKET 1
 #define WERROR_MAIN 2
 #define WERROR_UNDEFINED_INSTRUCTION 3

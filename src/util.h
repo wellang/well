@@ -26,23 +26,20 @@
 
 #define STARTAPPCHAR(str_, c_) \
 	do{char *STRET_ = calloc((strlen(str_)+2),sizeof(char)); \
-	STRET_[0] = c_; 											   \
-	memcpy(STRET_+1, str_, strlen(str_));						   \
+	STRET_[0] = c_; \
+	memcpy(STRET_+1, str_, strlen(str_)); \
 	STRET_[strlen(str_)+1] = '\0'; \
-	str_ = STRET_;}while(0)							   \
+	str_ = STRET_;}while(0)	\
 
 #define WTRIM(s_) \
 	do{while(*(s_)&&isspace((unsigned char)*(s_)))(s_)++; \
 	if(*(s_)){char *endp = (s_)+strlen(s_)-1; \
 	while(endp>(s_)&&isspace((unsigned char)*endp))*endp--='\0';}}while(0);
 
-/*Please don't ever use this piece of shit I made.
- * I am sorry.
- * */
-#define EATTABS(line) 							\
-	do{int i,j=0; 									\
-	for(i=0;line[i];i++) {						\
-		if(line[j+1]=='\0') break; 				\
+#define EATTABS(line) \
+	do{int i,j=0; \
+	for(i=0;line[i];i++) { \
+		if(line[j+1]=='\0') break; \
 		if(line[i]!='\t') line[j++] = line[i];} \
 	line[j]='\0';}while(0)
 

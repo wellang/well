@@ -86,9 +86,8 @@ char *createFunctionHeader(char *name) {
 }
 
 void convertFunctions(AsmOut *out) {
-	out->buffers.functions = (char *)malloc(sizeof(char));
+	out->buffers.functions = calloc(1, sizeof(char));
 
-	*out->buffers.functions = '\0'; 
 	size_t bufferSize=1;
 	int i,j;
 	for(i=0;i<out->parser->totalFunctions;i++) {
@@ -156,8 +155,8 @@ void convertFunctions(AsmOut *out) {
 			char *deallocateStack = NULL;
 			switch(CPU) {
 				case ALPHA: break; /*TODO*/
-				case AMD_X86_64: stackDeallocateAMD_X86_64();break;
-				case I386: stackDeallocateAMD_X86_64();break;
+				case AMD_X86_64: deallocateStack = stackDeallocateAMD_X86_64();break;
+				case I386: deallocateStack = stackDeallocateAMD_X86_64();break;
 				case ITANIUM_64: break; /*TODO*/
 				case ARM_MAC: deallocateStack = stackDeallocateARM_MAC();break;
 				case ARMv7: break; /*TODO*/

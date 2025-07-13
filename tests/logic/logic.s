@@ -1,11 +1,9 @@
 	.text
-	.global main
-main:
+	.global logic
+logic:
 	pushq %rbp
 	movq %rsp, %rbp
 	subq $16, %rsp
-	movq wl_str_hello(%rip),%rdi
-	call printf
 	movq wl_int_a(%rip),%rdi
 	movq %rdi, %rsi
 	notq %rsi
@@ -41,6 +39,74 @@ main:
 	movq %rdx,%rsi
 	movq wl_str_natest(%rip),%rdi
 	call printf
+	movq wl_int_a(%rip),%rdi
+	movq wl_int_b(%rip),%rsi
+	movq %rdi, %rdx
+	xorq %rdx, %rdx
+	movq %rdx,%rsi
+	movq wl_str_xtest(%rip),%rdi
+	call printf
+	addq $16, %rsp
+	popq %rbp
+	ret
+	.text
+	.global math
+math:
+	pushq %rbp
+	movq %rsp, %rbp
+	subq $16, %rsp
+	movq wl_int_a(%rip),%rdi
+	movq wl_int_b(%rip),%rsi
+	movq %rdi, %rdx
+	addq %rdx, %rdx
+	movq %rdx,%rsi
+	movq wl_str_adtest(%rip),%rdi
+	call printf
+	movq wl_int_a(%rip),%rdi
+	movq wl_int_b(%rip),%rsi
+	movq %rdi, %rdx
+	subq %rdx, %rdx
+	movq %rdx,%rsi
+	movq wl_str_sutest(%rip),%rdi
+	call printf
+	movq wl_int_a(%rip),%rdi
+	movq wl_int_b(%rip),%rsi
+	movq %rdi, %rdx
+	imulq %rdx, %rdx
+	movq %rdx,%rsi
+	movq wl_str_mutest(%rip),%rdi
+	call printf
+	movq wl_int_a(%rip),%rdi
+	movq wl_int_b(%rip),%rsi
+	movq %rdi, %rax
+	cqto
+	idivq %rsi
+	movq %rax, %rdx
+	movq %rdx,%rsi
+	movq wl_str_ditest(%rip),%rdi
+	call printf
+	movq wl_int_a(%rip),%rdi
+	movq wl_int_b(%rip),%rsi
+	movq %rdi, %rax
+	cqto
+	idivq %rsi
+	movq %rdx, %rdx
+	movq %rdx,%rsi
+	movq wl_str_motest(%rip),%rdi
+	call printf
+	addq $16, %rsp
+	popq %rbp
+	ret
+	.text
+	.global main
+main:
+	pushq %rbp
+	movq %rsp, %rbp
+	subq $16, %rsp
+	movq wl_str_hello(%rip),%rdi
+	call printf
+	call logic
+	call math
 	movl $0, %eax
 	addq $16, %rsp
 	popq %rbp
@@ -48,7 +114,7 @@ main:
 	.text
 	.global wl_str_hello
 .rawwl_strhello:
-	.asciz "- - - Bitwise logic test - - -\n"
+	.asciz "- - - Bitwise/Arithmetic logic test - - -\n"
 	.data
 	.align 8
 wl_str_hello:
@@ -66,7 +132,7 @@ wl_int_b:
 	.text
 	.global wl_str_ntest
 .rawwl_strntest:
-	.asciz "NOT:: should be: -2. Is: %d\n"
+	.asciz "NOT::  Should be: -2.  Is: %d\n"
 	.data
 	.align 8
 wl_str_ntest:
@@ -74,7 +140,7 @@ wl_str_ntest:
 	.text
 	.global wl_str_atest
 .rawwl_stratest:
-	.asciz "AND:: should be: 1. Is: %d\n"
+	.asciz "AND::  Should be:  1.  Is: %d\n"
 	.data
 	.align 8
 wl_str_atest:
@@ -82,7 +148,7 @@ wl_str_atest:
 	.text
 	.global wl_str_otest
 .rawwl_strotest:
-	.asciz "OR:: Should be: 1. Is: %d\n"
+	.asciz "OR::   Should be:  1.  Is: %d\n"
 	.data
 	.align 8
 wl_str_otest:
@@ -90,7 +156,7 @@ wl_str_otest:
 	.text
 	.global wl_str_notest
 .rawwl_strnotest:
-	.asciz "NOR:: Should be: -2. Is: %d\n"
+	.asciz "NOR::  Should be: -2.  Is: %d\n"
 	.data
 	.align 8
 wl_str_notest:
@@ -98,8 +164,56 @@ wl_str_notest:
 	.text
 	.global wl_str_natest
 .rawwl_strnatest:
-	.asciz "NAND:: Should be: -2. Is: %d\n"
+	.asciz "NAND:: Should be: -2.  Is: %d\n"
 	.data
 	.align 8
 wl_str_natest:
 	.quad .rawwl_strnatest
+	.text
+	.global wl_str_xtest
+.rawwl_strxtest:
+	.asciz "XOR::  Should be:  0.  Is: %d\n"
+	.data
+	.align 8
+wl_str_xtest:
+	.quad .rawwl_strxtest
+	.text
+	.global wl_str_adtest
+.rawwl_stradtest:
+	.asciz "ADD::  Should be:  2.  Is: %d\n"
+	.data
+	.align 8
+wl_str_adtest:
+	.quad .rawwl_stradtest
+	.text
+	.global wl_str_sutest
+.rawwl_strsutest:
+	.asciz "SUB::  Should be:  0.  Is: %d\n"
+	.data
+	.align 8
+wl_str_sutest:
+	.quad .rawwl_strsutest
+	.text
+	.global wl_str_mutest
+.rawwl_strmutest:
+	.asciz "MUL::  Should be:  1.  Is: %d\n"
+	.data
+	.align 8
+wl_str_mutest:
+	.quad .rawwl_strmutest
+	.text
+	.global wl_str_ditest
+.rawwl_strditest:
+	.asciz "DIV::  Should be:  1.  Is: %d\n"
+	.data
+	.align 8
+wl_str_ditest:
+	.quad .rawwl_strditest
+	.text
+	.global wl_str_motest
+.rawwl_strmotest:
+	.asciz "MOD::  Should be:  0.  Is: %d\n"
+	.data
+	.align 8
+wl_str_motest:
+	.quad .rawwl_strmotest

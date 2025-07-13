@@ -1,25 +1,39 @@
 ; logic.well
 ~constants {
-	~string:hello = "- - - Bitwise logic test - - -\n"
+	~string:hello = "- - - Bitwise/Arithmetic logic test - - -\n"
 	~int:a = 1
 	~int:b = 1
 
+	; LOGIC INSTRUCTIONS
 	; a = 001 -> 110 = -2
-	~string:ntest = "NOT:: should be: -2. Is: %d\n"
+	~string:ntest =   "NOT::  Should be: -2.  Is: %d\n"
 	; a == b
-	~string:atest = "AND:: should be: 1. Is: %d\n"
+	~string:atest =   "AND::  Should be:  1.  Is: %d\n"
 	; a | b
-	~string:otest = "OR:: Should be: 1. Is: %d\n"
+	~string:otest =   "OR::   Should be:  1.  Is: %d\n"
 
 	; ~(a|b)
-	~string:notest = "NOR:: Should be: -2. Is: %d\n"
+	~string:notest =  "NOR::  Should be: -2.  Is: %d\n"
 	; ~(a==b)
-	~string:natest = "NAND:: Should be: -2. Is: %d\n"
+	~string:natest =  "NAND:: Should be: -2.  Is: %d\n"
+	; a^b
+	~string:xtest =   "XOR::  Should be:  0.  Is: %d\n"
+
+	; MATH INSTRUCTIONS
+	; a+b
+	~string:adtest =  "ADD::  Should be:  2.  Is: %d\n"
+	; a-b
+	~string:sutest =  "SUB::  Should be:  0.  Is: %d\n"
+	; a*b
+	~string:mutest =  "MUL::  Should be:  1.  Is: %d\n"
+	; a/b
+	~string:ditest =  "DIV::  Should be:  1.  Is: %d\n"
+	; a%b
+	~string:motest =  "MOD::  Should be:  0.  Is: %d\n"
 }
 
-~int:main {
-	move~ hello, r1
-	call~ printf
+~void:logic {
+	; LOGIC INSTRUCTIONS
 
 	; not
 	move~ a, r1
@@ -58,6 +72,66 @@
 	move~ r3, r2
 	move~ natest, r1
 	call~ printf
+
+	; xor
+	move~ a, r1
+	move~ b, r2
+	xor~ r3, r1, r2
+	move~ r3, r2
+	move~ xtest, r1
+	call~ printf
+}
+
+~void:math {
+	; MATH INSTRUCTIONS
+	
+	; add
+	move~ a, r1
+	move~ b, r2
+	add~ r3, r1, r2
+	move~ r3, r2
+	move~ adtest, r1
+	call~ printf
+
+	; sub
+	move~ a, r1
+	move~ b, r2
+	sub~ r3, r1, r2
+	move~ r3, r2
+	move~ sutest, r1
+	call~ printf
+
+	; mul
+	move~ a, r1
+	move~ b, r2
+	mul~ r3, r1, r2
+	move~ r3, r2
+	move~ mutest, r1
+	call~ printf
+
+	; div
+	move~ a, r1
+	move~ b, r2
+	div~ r3, r1, r2
+	move~ r3, r2
+	move~ ditest, r1
+	call~ printf
+
+	; mod
+	move~ a, r1
+	move~ b, r2
+	mod~ r3, r1, r2
+	move~ r3, r2
+	move~ motest, r1
+	call~ printf
+}
+
+~int:main {
+	move~ hello, r1
+	call~ printf
+
+	call~ logic
+	call~ math
 
 	return~ 0
 }
