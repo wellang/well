@@ -190,7 +190,7 @@ char *getAsmString(char *name, char *value) {
                            name, name, value, name, name);break;
 		case I386: break; snprintf(buf, sizeof(buf),
                            "\t.text\n\t.global wl_str_%s\n.rawwl_str%s:\n\t.asciz %s\n\t"
-                           ".data\n\t.align 8\nwl_str_%s:\n\t.quad .rawwl_str%s\n",
+                           ".data\n\t.align 8\nwl_str_%s:\n\t.long .rawwl_str%s\n",
                            name, name, value, name, name);break;
 		case ITANIUM_64: break; /*TODO*/
 		case ARM_MAC: snprintf(buf, sizeof(buf), "wl_str.%s:\n\t.asciz %s\n",
@@ -226,7 +226,7 @@ char *getAsmInt(char *name, char *value) {
 	snprintf(nameBuf, sizeof(nameBuf), "wl_int_%s", name);
 	char buf[strlen(nameBuf)+strlen(hexValue)+100];
 	snprintf(buf, sizeof(buf), 
-			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.quad %s\n",
+			"\n\t.global %s\n\t.p2align 2,0x0\n%s:\n\t.long %s\n",
 			nameBuf, nameBuf, hexValue);	
 	char *ret = calloc(strlen(buf)+1, sizeof(char));
 	strcpy(ret, buf);

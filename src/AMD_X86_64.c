@@ -15,6 +15,7 @@ char *stackAllocateAMD_X86_64() {
 		sprintf(ret, "\tpushl %%ebp\n\tmovl %%esp, %%ebp\n\tsubl $16, %%esp\n");
 		return ret;
 	}
+	return NULL;
 }
 
 char *stackDeallocateAMD_X86_64() {
@@ -28,6 +29,7 @@ char *stackDeallocateAMD_X86_64() {
 		sprintf(ret, "\taddl $16, %%esp\n\tpopl %%ebp\n");
 		return ret;
 	}
+	return NULL;
 }
 
 char *mapRegisterAMD_X86_64(char *reg) {
