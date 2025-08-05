@@ -6,16 +6,28 @@
 
 char *stackAllocateAMD_X86_64() {
 	/*auto to 16*/
-	char *ret = calloc(1024, sizeof(char));
-	sprintf(ret, "\tpushq %%rbp\n\tmovq %%rsp, %%rbp\n\tsubq $16, %%rsp\n");
-	return ret;
+	if(CPU==AMD_X86_64) {
+		char *ret = calloc(1024, sizeof(char));
+		sprintf(ret, "\tpushq %%rbp\n\tmovq %%rsp, %%rbp\n\tsubq $16, %%rsp\n");
+		return ret;
+	} else if(CPU==I386) {
+		char *ret = calloc(1024, sizeof(char));
+		sprintf(ret, "\tpushl %%ebp\n\tmovl %%esp, %%ebp\n\tsubl $16, %%esp\n");
+		return ret;
+	}
 }
 
 char *stackDeallocateAMD_X86_64() {
 	/*auto to 16*/
-	char *ret = calloc(1024, sizeof(char));
-	sprintf(ret, "\taddq $16, %%rsp\n\tpopq %%rbp\n");
-	return ret;
+	if(CPU==AMD_X86_64) {
+		char *ret = calloc(1024, sizeof(char));
+		sprintf(ret, "\taddq $16, %%rsp\n\tpopq %%rbp\n");
+		return ret;
+	} else if(CPU==I386) {
+		char *ret = calloc(1024, sizeof(char));
+		sprintf(ret, "\taddl $16, %%esp\n\tpopl %%ebp\n");
+		return ret;
+	}
 }
 
 char *mapRegisterAMD_X86_64(char *reg) {
@@ -155,14 +167,16 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 				strcpy(val2, asmVName);
 			}
 			char *mov = "movq";
-			if(!ISREG(val1)) strcat(val1, "(%rip)");
-			else STARTAPPCHAR(val1, '%');
-			if(!ISREG(val2)) strcat(val2, "(%rip)");
-			else STARTAPPCHAR(val2, '%');
 			if(CPU==AMD_X86_64) {
+				if(!ISREG(val1)) strcat(val1, "(%rip)");
+				else STARTAPPCHAR(val1, '%');
+				if(!ISREG(val2)) strcat(val2, "(%rip)");
+				else STARTAPPCHAR(val2, '%');
 				snprintf(outBuf, sizeof(outBuf),
 						"\t%s %s,%s\n", mov, val1, val2);
 			} else if(CPU==I386) {
+				if(ISREG(val1)) STARTAPPCHAR(val1, '%');
+				if(ISREG(val2)) STARTAPPCHAR(val2, '%');
 				snprintf(outBuf, sizeof(outBuf),
 						"\tmovl %s,%s\n", val1, val2);
 			}
