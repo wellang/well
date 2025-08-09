@@ -17,6 +17,10 @@ enum registersARM_MAC {
 	MACARMSP
 };
 
+typedef struct {
+	char prevRegType;
+} MacRegData;
+
 char *stackAllocateARM_MAC();
 char *stackDeallocateARM_MAC();
 char *convertInstructionARM_MAC(AsmOut *out, Instruction ins);

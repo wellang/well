@@ -44,17 +44,19 @@ int regToEnum(char *reg) {
 
 char *getCPUMain() {
 	char *ret = (char *)malloc(sizeof(char)*10);
+	/*I know this is redundant,
+	 * I still need to go through different compilers and sort the main per compiler, not CPU.*/
 	switch(CPU) {
 		case ARM_MAC: strcpy(ret, "main"); break;
 		case AMD_X86_64: strcpy(ret, "main"); break;
 		case I386: strcpy(ret, "main"); break; 
-		case ALPHA: break; /*TODO*/
-		case ITANIUM_64: break; /*TODO*/
-		case ARMv7: break; /*TODO*/
-		case POWERPC: break; /*TODO*/
-		case RS6000: break; /*TODO*/
-		case SZ_IBM: break; /*TODO*/
-		case SPARC: break; /*TODO*/
+		case ALPHA: strcpy(ret, "main"); break; 
+		case ITANIUM_64: strcpy(ret, "main"); break; 
+		case ARMv7: strcpy(ret, "main"); break;
+		case POWERPC: strcpy(ret, "main"); break;
+		case RS6000: strcpy(ret, "main"); break;
+		case SZ_IBM: strcpy(ret, "main"); break;
+		case SPARC: strcpy(ret, "main"); break;
 	}
 	return ret;
 }

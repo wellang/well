@@ -173,7 +173,7 @@ Variable getVarFrom(struct parserData *parser, char *name) {
 	for(i=0;i<parser->totalVariables&&parser->variables[i].varName!=NULL;i++) {
 		if(!strcmp(parser->variables[i].varName, name)) return parser->variables[i];
 	}
-	return (Variable){};
+	return (Variable){.varName=NULL};
 }
 
 /*This is expected to be ran AFTER scopes have been initialized*/
