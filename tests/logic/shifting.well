@@ -22,22 +22,23 @@
 }
 
 ~void:printIStatus {
+	move~ r7, r3
 	move~ a0, r1
 	move~ i, r2
-	move~ r4, r3
 	call~ printf
 }
 
 ~int:main {
 	move~ welcome, r1
 	call~ printf
-	
-	move~ i, r3
+
+	; before: i = 1010 after: i = 10100
+	move~ i, r7
 	call~ printIStatus
 	call~ shiftBasic
 	call~ printIStatus
 	
-	move~ i, r3
+	move~ i, r7
 	call~ printIStatus
 	call~ shiftWell
 	call~ printIStatus

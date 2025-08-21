@@ -28,9 +28,9 @@ printIStatus:
 	pushq %rbp
 	movq %rsp, %rbp
 	subq $16, %rsp
+	movq %rax,%rdx
 	movq wl_str_a0(%rip),%rdi
 	movq wl_int_i(%rip),%rsi
-	movq %rcx,%rdx
 	call printf
 	addq $16, %rsp
 	popq %rbp
@@ -43,11 +43,11 @@ main:
 	subq $16, %rsp
 	movq wl_str_welcome(%rip),%rdi
 	call printf
-	movq wl_int_i(%rip),%rdx
+	movq wl_int_i(%rip),%rax
 	call printIStatus
 	call shiftBasic
 	call printIStatus
-	movq wl_int_i(%rip),%rdx
+	movq wl_int_i(%rip),%rax
 	call printIStatus
 	call shiftWell
 	call printIStatus
