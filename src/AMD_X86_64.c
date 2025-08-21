@@ -117,10 +117,17 @@ char *convertInstructionAMD_X86_64(AsmOut *out, Instruction ins) {
 		 * */
 		} else if(!strcmp(ins.instruction, "return")) {
 			if(ins.arguments[0]!=NULL) {
+				char *reg = NULL;
 				if(strlen(ins.arguments[0])==0) ins.arguments[0] = "0";
+				else reg = mapRegisterAMD_X86_64(ins.arguments[0]);
 				char *dealloc = stackDeallocateAMD_X86_64();
-				snprintf(outBuf, sizeof(outBuf), "\tmovl $%s, %%eax\n%s\tret\n",
-						ins.arguments[0], dealloc);
+				if(reg!=NULL) {
+					snprintf(outBuf, sizeof(outBuf), "\tmovq %%%s, %%rax\n%s\tret\n",
+							reg, dealloc);
+				} else {
+					snprintf(outBuf, sizeof(outBuf), "\tmovl $%s, %%eax\n%s\tret\n",
+							ins.arguments[0], dealloc);
+				}
 				free(dealloc);
 			}
 		}

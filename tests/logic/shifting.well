@@ -1,0 +1,46 @@
+; Bit-shifting tests
+~constants {
+	~string:welcome = "- - - Bit shifting tests - -\n";
+
+	~int:i = 10
+	~string:a0 = "%d : %b\n"
+}
+
+; shifting using instructions.
+~int:shiftBasic {
+	; (i<<1)
+	move~ i, r1
+	add~ r4, r1, r1
+	return~ r4	
+}
+
+; shifting using shift operators.
+~int:shiftWell {
+	; in the future this should be like "move~ (i<<1), r3"
+	move~ i, r4
+	return~ r4
+}
+
+~void:printIStatus {
+	move~ a0, r1
+	move~ i, r2
+	move~ r4, r3
+	call~ printf
+}
+
+~int:main {
+	move~ welcome, r1
+	call~ printf
+	
+	move~ i, r3
+	call~ printIStatus
+	call~ shiftBasic
+	call~ printIStatus
+	
+	move~ i, r3
+	call~ printIStatus
+	call~ shiftWell
+	call~ printIStatus
+
+	return~ 0	
+}

@@ -7,7 +7,7 @@
   </p>
   <br />
   <p>
-    <br> <a href="https://discord.gg/3mdNFb8ZyE"><img src="https://img.shields.io/discord/957338481108074517?color=5865F2&logo=discord&logoColor=white" alt="Well discord server" /></a> </br>
+    <br> <a href="https://discord.gg/sBqBFKq3Ab"><img src="https://img.shields.io/discord/1377132755392925727?color=5865F2&logo=discord&logoColor=white" alt="MinervaWare discord server" /></a> </br>
   </p>
 </div>
 
@@ -21,7 +21,7 @@ Wellang is a high-level assembly language targeted as an educational resource fo
 
 ### NEED HELP?
 
-Wellang discord server: https://discord.gg/K4ufunGxJv
+Wellang discord server: https://discord.gg/sBqBFKq3Ab
 
 MinervaWare Contact: https://www.minervaware.net/contact
 
@@ -37,7 +37,7 @@ make
 
 ```
 ~constants {
-    ~string:text = 'Hello World!'
+    ~string:text = "Hello World!"
 }
 
 ~int:main {
@@ -50,7 +50,7 @@ make
 ## compile program
 to compile your well program you can run ``well`` in your terminal:
 ```
-$ well main.well -o out
+well main.well -o out
 ```
 
 ## Vim syntax highlighting

@@ -8,6 +8,7 @@ enum cpuType {
 	I386, /*32-bit x86*/
 	ARM_MAC,
 	ARMv7, /*32-bit arm*/
+	ARMv8,
 	ITANIUM_64, /*You know good and well I ain't ever getting around to this*/
 	POWERPC,
 	RS6000,
@@ -25,7 +26,13 @@ static enum cpuType CPU =
 #if defined __APPLE__
 	ARM_MAC;
 #else
-	ARMV7;
+#if defined __ARM_ARCH_7A__ || __ARM_ARCH_7R__ \
+		|| __ARM_ARCH_7M__ || __ARM_ARCH_7EM__
+	ARMv7;
+#elif defined __ARM_ARCH_8A__ || __ARM_ARCH_81A__ \
+		|| __ARM_ARCH_82A__
+	ARMv8
+#endif
 #endif
 #elif defined __i386__ || _M_IX86 || \
 		__X86__ || _x86_ /*mingw & watcom*/
@@ -47,7 +54,8 @@ static enum cpuType CPU =
 		case ALPHA: str="ALPHA";break; \
 		case AMD_X86_64: str="AMD_X86_64";break; \
 		case ARM_MAC: str="ARM_MAC";break; \
-		case ARMv7: str="ARMV7";break; \
+		case ARMv7: str="ARMv7";break; \
+		case ARMv8: str="ARMv8";break; \
 		case I386: str="I386";break; \
 		case ITANIUM_64: str="ITANIUM_64";break; \
 		case POWERPC: str="POWERPC";break; \
